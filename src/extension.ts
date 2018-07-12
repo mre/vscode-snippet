@@ -14,11 +14,6 @@ function find() {
         return
     }
 
-    // let workspaceRoot = vscode.workspace.rootPath
-    // let filename = editor.document.uri.fsPath.substr(workspaceRoot.length +
-    // 1)
-
-
     vscode.window.showInputBox()
         .then(query => {
             asyncRequest(query, function (data) {
@@ -30,8 +25,10 @@ function find() {
 var requestCache = new Object()
 function asyncRequest(queryRaw: string, callback: (data: string) => void) {
     let query = encodeURI(queryRaw.replace(" ", "+").replace("\t", "+"))
+    let language = vscode.window.activeTextEditor.document.languageId
+    let path = `/${language}/${query}?qT&style=bw`;
 
-    let data = requestCache[query]
+    let data = requestCache[path]
     if (data) {
         callback(data)
         return
@@ -39,10 +36,9 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
 
     console.log(`asyncRequest: ${query}`)
 
-    let language = vscode.window.activeTextEditor.document.languageId
     http.get({
         'host': 'cht.sh',
-        'path': `/${language}/${query}?qT&style=bw`,
+        'path': path,
         // Fake user agent to get plain-text output.
         // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
         'headers': {
@@ -56,7 +52,7 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
         })
 
         message.on("end", function () {
-            requestCache[query] = data
+            requestCache[path] = data
             callback(data)
         })
     }).on("error", function (err) {
