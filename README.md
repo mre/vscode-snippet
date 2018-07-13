@@ -4,7 +4,12 @@
 
 A VisualStudioCode extension for [cht.sh](https://cht.sh/).
 
+## Installation
+
+[**Click here to install the extension**](vscode:extension/vscode-snippet.Snippet)
+
 ## Usage
 
-Open the extensions menu with Cmd + Shift + P and type `Snippet: Find`.
-Then type your query and the snippet should be inserted into your current file.
+1. Hit `Cmd` + `Shift` + `P`
+2. Run `Snippet: Find`.
+3. Type your query and hit enter.

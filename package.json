@@ -1,6 +1,6 @@
 {
     "name": "Snippet",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -12,7 +12,7 @@
     "license": "MIT",
     "displayName": "Snippet",
     "description": "Insert a snippet from cht.sh",
-    "icon": "contrib/icon.png",
+    "icon": "assets/logo.png",
     "categories": [
         "Snippets",
         "Other"
