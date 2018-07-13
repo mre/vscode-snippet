@@ -6,7 +6,8 @@ A VisualStudioCode extension for [cht.sh](https://cht.sh/).
 
 ## Installation
 
-[Click here to install the extension.](vscode:extension/vscode-snippet.Snippet)
+Install this extension from the [VSCode
+Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.Snippet)
 
 ## Usage
 
