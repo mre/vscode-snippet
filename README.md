@@ -1,5 +1,7 @@
 # Snippets
 
+![Preview](preview.gif)
+
 A VisualStudioCode extension for `cht.sh`.
 
 ## Usage
