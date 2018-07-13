@@ -2,7 +2,7 @@
 
 ![Preview](preview.gif)
 
-A VisualStudioCode extension for `cht.sh`.
+A VisualStudioCode extension for [cht.sh](http://cht.sh/).
 
 ## Usage
 
