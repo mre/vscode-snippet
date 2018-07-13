@@ -14,6 +14,7 @@
     "description": "Insert a snippet from cht.sh",
     "icon": "contrib/icon.png",
     "categories": [
+        "Snippets",
         "Other"
     ],
     "main": "./out/extension",
