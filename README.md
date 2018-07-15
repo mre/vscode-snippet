@@ -2,12 +2,17 @@
 
 ![Preview](preview.gif)
 
-A VisualStudioCode extension for [cht.sh](https://cht.sh/).
+A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 
 ## Installation
 
 Install this extension from the [VSCode
 Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.Snippet)
+
+## Features
+
+* Zero configuration: works out of the box.
+* Automatically detects programming language from current editor window.
 
 ## Usage
 
