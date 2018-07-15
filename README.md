@@ -22,5 +22,6 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 
 ## Contributing
 
-If you want to work on this plugin, feel free to pick one of the open issues and give it a shot.  
+This plugin is far from feature-complete.  
+If you want to improve it, feel free to pick one of the [open issues](/issues) and give it a shot.  
 In case you need any help, just add a comment to the issue to get a conversation started. :smiley:
