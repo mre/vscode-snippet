@@ -1,6 +1,6 @@
 {
     "name": "Snippet",
-    "version": "0.0.5",
+    "version": "0.1.0",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -24,6 +24,11 @@
                 "title": "Find",
                 "command": "snippet.find",
                 "category": "Snippet"
+            },
+            {
+                "title": "Find selected text",
+                "command": "snippet.findSelectedText",
+                "category": "Snippet"
             }
         ],
         "configuration": {
@@ -32,7 +37,8 @@
         }
     },
     "activationEvents": [
-        "onCommand:snippet.find"
+        "onCommand:snippet.find",
+        "onCommand:snippet.findSelectedText"
     ],
     "devDependencies": {
         "typescript": "^2.6.1",

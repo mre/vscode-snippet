@@ -6,12 +6,14 @@ import * as vscode from 'vscode'
 export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', find))
+    ctx.subscriptions.push(vscode.commands.registerCommand(
+        'snippet.findSelectedText', findSelectedText))
 }
 
 function find() {
     let editor = vscode.window.activeTextEditor
     if (!editor) {
-        return
+        return; // No open text editor
     }
 
     vscode.window.showInputBox()
@@ -21,6 +23,21 @@ function find() {
             })
         });
 }
+
+function findSelectedText() {
+    let editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        return; // No open text editor
+    }
+
+    let selection = editor.selection;
+    let query = editor.document.getText(selection);
+
+    asyncRequest(query, function (data) {
+        insertText(editor, data)
+    })
+}
+
 
 var requestCache = new Object()
 function asyncRequest(queryRaw: string, callback: (data: string) => void) {
