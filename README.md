@@ -1,7 +1,5 @@
 # vscode-snippet
 
-![Preview](preview.gif)
-
 A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 
 ## Features
@@ -16,13 +14,17 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 
 ## Usage
 
-### Search for a snippet
+## Search for a snippet
+
+![Preview](/contrib/find.gif)
 
 1. Hit <kbd>⌘ Command</kbd> + <kbd>⇧ Shift</kbd> + <kbd>p</kbd>
 2. Run `Snippet: Find`.
 3. Type your query and hit enter.
 
 ### Search for snippet based on selected text 
+
+![Preview](/contrib/findSelected.gif)
 
 1. Hit <kbd>⌘ Command</kbd> + <kbd>⇧ Shift</kbd> + <kbd>p</kbd>
 2. Run `Snippet: Find Selected Text`.
