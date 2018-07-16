@@ -81,8 +81,7 @@ function insertText(editor: vscode.TextEditor, data: string) {
     editor.edit(
         edit => editor.selections.forEach(
             selection => {
-                edit.delete(selection);
-                edit.insert(selection.start, data);
+                edit.insert(selection.end, "\n" + data);
             }
         )
     );
