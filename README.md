@@ -1,6 +1,6 @@
 # vscode-snippet
 
-A Visual Studio Code extension for [cht.sh](https://cht.sh/).
+A Visual Studio Code extension for [cht.sh](https://cht.sh/) / [cheat.sh](https://cheat.sh/).
 
 ## Features
 
