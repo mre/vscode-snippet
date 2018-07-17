@@ -35,6 +35,10 @@ command menu:
 
 ![Preview](/contrib/findSelected.gif)
 
+You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd> + <kbd>⇧ Shift</kbd> + <kbd>s</kbd>:
+
+![Preview](/contrib/findSelectedShortcut.gif)
+
 ## Contributing
 
 This plugin is far from feature-complete.  

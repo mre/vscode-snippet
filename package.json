@@ -1,6 +1,6 @@
 {
     "name": "Snippet",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -43,7 +43,15 @@
                     "group": "1_modification"
                 }
             ]
-        }
+        },
+        "keybindings": [
+            {
+                "command": "snippet.findSelectedText",
+                "key": "ctrl+shift+s",
+                "mac": "cmd+shift+s",
+                "when": "editorHasSelection"
+            }
+        ]
     },
     "activationEvents": [
         "onCommand:snippet.find",
