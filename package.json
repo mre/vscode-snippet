@@ -26,7 +26,7 @@
                 "category": "Snippet"
             },
             {
-                "title": "Find selected text",
+                "title": "Find snippet for selected text",
                 "command": "snippet.findSelectedText",
                 "category": "Snippet"
             }
@@ -34,6 +34,15 @@
         "configuration": {
             "title": "Snippet Configuration",
             "properties": {}
+        },
+        "menus": {
+            "editor/context": [
+                {
+                    "when": "editorHasSelection",
+                    "command": "snippet.findSelectedText",
+                    "group": "1_modification"
+                }
+            ]
         }
     },
     "activationEvents": [
