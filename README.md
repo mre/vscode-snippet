@@ -1,5 +1,9 @@
 # vscode-snippet
 
+[![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT)
+[![GitHub](https://img.shields.io/github/release/mre/vscode-snippet.svg?style=flat-square)](https://github.com/mre/vscode-snippet/releases)
+[![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/installs/vscode-snippet.Snippet.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.Snippet)
+
 A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 
 ## Features
