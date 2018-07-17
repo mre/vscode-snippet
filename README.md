@@ -16,18 +16,24 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 
 ## Search for a snippet
 
-![Preview](/contrib/find.gif)
-
 1. Hit <kbd>⌘ Command</kbd> + <kbd>⇧ Shift</kbd> + <kbd>p</kbd>
 2. Run `Snippet: Find`.
 3. Type your query and hit enter.
 
+![Preview](/contrib/find.gif)
+
 ### Search for snippet based on selected text 
 
-![Preview](/contrib/findSelected.gif)
 
-1. Hit <kbd>⌘ Command</kbd> + <kbd>⇧ Shift</kbd> + <kbd>p</kbd>
-2. Run `Snippet: Find Selected Text`.
+1. Select some text in an editor window.
+2. Right click and choose "Find snippet for selected text"
+
+![Preview](/contrib/findSelectedMenu.gif)
+
+Alternatively, you can also run the `Snippet: Find Selected Text` from the
+command menu:
+
+![Preview](/contrib/findSelected.gif)
 
 ## Contributing
 
