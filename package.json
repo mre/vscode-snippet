@@ -59,6 +59,11 @@
                     "type": "boolean",
                     "default": true,
                     "description": "Open snippet result in new editor."
+                },
+                "snippet.verbose": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Also show explanations for code snippets."
                 }
             }
         },

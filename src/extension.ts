@@ -39,7 +39,15 @@ var requestCache = new Object()
 function asyncRequest(queryRaw: string, callback: (data: string) => void) {
     let query = encodeURI(queryRaw.replace(" ", "+").replace("\t", "+"))
     let language = vscode.window.activeTextEditor.document.languageId
-    let path = `/${language}/${query}?qT&style=bw`;
+
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    let verbose: boolean = configuration["verbose"]
+    let params = "QT"
+    if (verbose) {
+        params = "qT"
+    }
+
+    let path = `/${language}/${query}?${params}&style=bw`;
 
     let data = requestCache[path]
     if (data) {
