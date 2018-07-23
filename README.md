@@ -11,6 +11,11 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 * Zero configuration: works out of the box.
 * Automatically detects programming language from current editor window.
 
+## Config options
+
+* `openInNewEditor`: open snippets or in new editor window (default) in line with current document.
+* `verbose`: add comments around code snippets.
+
 ## Installation
 
 Install this extension from the [VSCode
@@ -27,7 +32,6 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 ![Preview](/contrib/find.gif)
 
 ### Search for snippet based on selected text 
-
 
 1. Select some text in an editor window.
 2. Right click and choose "Find snippet from selected text"
