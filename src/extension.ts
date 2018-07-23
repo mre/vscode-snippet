@@ -7,14 +7,39 @@ export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', find))
     ctx.subscriptions.push(vscode.commands.registerCommand(
+        'snippet.findInplace', findInplace))
+    ctx.subscriptions.push(vscode.commands.registerCommand(
+        'snippet.findInNewEditor', findInNewEditor))
+    ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.findSelectedText', findSelectedText))
 }
 
 function find() {
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    let openInNewEditor: boolean = configuration["openInNewEditor"]
+
     vscode.window.showInputBox()
         .then(query => {
             asyncRequest(query, function (data) {
-                insertText(data)
+                insertText(data, openInNewEditor)
+            })
+        });
+}
+
+function findInplace() {
+    vscode.window.showInputBox()
+        .then(query => {
+            asyncRequest(query, function (data) {
+                insertText(data, false)
+            })
+        });
+}
+
+function findInNewEditor() {
+    vscode.window.showInputBox()
+        .then(query => {
+            asyncRequest(query, function (data) {
+                insertText(data, true)
             })
         });
 }
@@ -29,8 +54,11 @@ function findSelectedText() {
     let selection = editor.selection;
     let query = editor.document.getText(selection);
 
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    let openInNewEditor: boolean = configuration["openInNewEditor"]
+
     asyncRequest(query, function (data) {
-        insertText(data)
+        insertText(data, openInNewEditor)
     })
 }
 
@@ -81,9 +109,7 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
     })
 }
 
-function insertText(content: string) {
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let openInNewEditor: boolean = configuration["openInNewEditor"]
+function insertText(content: string, openInNewEditor = true) {
 
     if (openInNewEditor) {
         let language = vscode.window.activeTextEditor.document.languageId

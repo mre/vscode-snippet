@@ -47,6 +47,16 @@
                 "category": "Snippet"
             },
             {
+                "title": "Find Inplace",
+                "command": "snippet.findInplace",
+                "category": "Snippet"
+            },
+            {
+                "title": "Find in new editor window",
+                "command": "snippet.findInNewEditor",
+                "category": "Snippet"
+            },
+            {
                 "title": "Find snippet from selected text",
                 "command": "snippet.findSelectedText",
                 "category": "Snippet"
@@ -87,7 +97,9 @@
     },
     "activationEvents": [
         "onCommand:snippet.find",
-        "onCommand:snippet.findSelectedText"
+        "onCommand:snippet.findSelectedText",
+        "onCommand:snippet.findInplace",
+        "onCommand:snippet.findInNewEditor"
     ],
     "devDependencies": {
         "typescript": "^2.6.1",
