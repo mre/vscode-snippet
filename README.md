@@ -30,7 +30,7 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 
 
 1. Select some text in an editor window.
-2. Right click and choose "Find snippet for selected text"
+2. Right click and choose "Find snippet from selected text"
 
 ![Preview](/contrib/findSelectedMenu.gif)
 

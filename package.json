@@ -47,7 +47,7 @@
                 "category": "Snippet"
             },
             {
-                "title": "Find snippet for selected text",
+                "title": "Find snippet from selected text",
                 "command": "snippet.findSelectedText",
                 "category": "Snippet"
             }
