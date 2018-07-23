@@ -11,30 +11,26 @@ export function activate(ctx: vscode.ExtensionContext) {
 }
 
 function find() {
-    let editor = vscode.window.activeTextEditor
-    if (!editor) {
-        return; // No open text editor
-    }
-
     vscode.window.showInputBox()
         .then(query => {
             asyncRequest(query, function (data) {
-                insertText(editor, data)
+                insertText(data)
             })
         });
 }
 
 function findSelectedText() {
-    let editor = vscode.window.activeTextEditor;
+    let editor = vscode.window.activeTextEditor
     if (!editor) {
-        return; // No open text editor
+        vscode.window.showErrorMessage('There is no open editor window');
+        return
     }
 
     let selection = editor.selection;
     let query = editor.document.getText(selection);
 
     asyncRequest(query, function (data) {
-        insertText(editor, data)
+        insertText(data)
     })
 }
 
@@ -77,12 +73,28 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
     })
 }
 
-function insertText(editor: vscode.TextEditor, data: string) {
-    editor.edit(
-        edit => editor.selections.forEach(
-            selection => {
-                edit.insert(selection.end, "\n" + data);
-            }
+function insertText(content: string) {
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    let openInNewEditor: boolean = configuration["openInNewEditor"]
+
+    if (openInNewEditor) {
+        let language = vscode.window.activeTextEditor.document.languageId
+        vscode.workspace.openTextDocument({ language, content }).then(
+            document => vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
         )
-    );
+    }
+    else {
+        let editor = vscode.window.activeTextEditor
+        if (!editor) {
+            vscode.window.showErrorMessage('There is no open editor window');
+            return;
+        }
+        editor.edit(
+            edit => editor.selections.forEach(
+                selection => {
+                    edit.insert(selection.end, "\n" + content);
+                }
+            )
+        );
+    }
 }
