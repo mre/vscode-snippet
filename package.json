@@ -1,6 +1,6 @@
 {
     "name": "Snippet",
-    "version": "0.2.2",
+    "version": "0.2.3",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -14,8 +14,8 @@
     "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
     "icon": "contrib/icon.png",
     "galleryBanner": {
-        "color": "#061526",
-        "theme": "dark"
+        "color": "#6cfff9",
+        "theme": "light"
     },
     "categories": [
         "Programming Languages",
