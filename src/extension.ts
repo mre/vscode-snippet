@@ -75,7 +75,7 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
         params = "qT"
     }
 
-    let path = `/${language}/${query}?${params}&style=bw`;
+    let path = `/vscode:${language}/${query}?${params}&style=bw`;
 
     let data = requestCache[path]
     if (data) {
