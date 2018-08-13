@@ -17,7 +17,10 @@ export function activate(ctx: vscode.ExtensionContext) {
 function find() {
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
+    query(openInNewEditor)
+}
 
+function query(openInNewEditor: boolean) {
     vscode.window.showInputBox()
         .then(query => {
             asyncRequest(query, function (data) {
@@ -27,21 +30,11 @@ function find() {
 }
 
 function findInplace() {
-    vscode.window.showInputBox()
-        .then(query => {
-            asyncRequest(query, function (data) {
-                insertText(data, false)
-            })
-        });
+    query(false)
 }
 
 function findInNewEditor() {
-    vscode.window.showInputBox()
-        .then(query => {
-            asyncRequest(query, function (data) {
-                insertText(data, true)
-            })
-        });
+    query(true)
 }
 
 function findSelectedText() {
