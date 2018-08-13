@@ -75,6 +75,8 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
         params = "qT"
     }
 
+    let baseUrl: String = configuration["baseUrl"]
+
     let path = `/vscode:${language}/${query}?${params}&style=bw`;
 
     let data = requestCache[path]
@@ -86,7 +88,7 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
     console.log(`asyncRequest: ${query}`)
 
     http.get({
-        'host': 'cht.sh',
+        'host': baseUrl,
         'path': path,
         // Fake user agent to get plain-text output.
         // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47

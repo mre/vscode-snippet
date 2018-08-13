@@ -69,6 +69,11 @@
         "configuration": {
             "title": "Snippet Configuration",
             "properties": {
+                "snippet.baseUrl": {
+                    "type": "string",
+                    "default": "cht.sh",
+                    "description": "Base URL of the cheat sheet server"
+                },
                 "snippet.openInNewEditor": {
                     "type": "boolean",
                     "default": true,
