@@ -15,6 +15,11 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 
 * `openInNewEditor`: open snippets or in new editor window (default) in line with current document.
 * `verbose`: add comments around code snippets.
+* `baseUrl`: base url of the cheat server ([see cheat.sh documentation](https://github.com/chubin/cheat.sh/issues/98#issuecomment-412472258))
+
+
+
+
 
 ## Installation
 
