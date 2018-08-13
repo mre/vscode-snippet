@@ -65,7 +65,7 @@ function findSelectedText() {
 
 var requestCache = new Object()
 function asyncRequest(queryRaw: string, callback: (data: string) => void) {
-    let query = encodeURI(queryRaw.replace(" ", "+").replace("\t", "+"))
+    let query = encodeURI(queryRaw.replace(/ /g, '+'))
     let language = vscode.window.activeTextEditor.document.languageId
 
     let configuration = vscode.workspace.getConfiguration('snippet')
