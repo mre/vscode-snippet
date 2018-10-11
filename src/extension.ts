@@ -58,6 +58,10 @@ function findSelectedText() {
 
 var requestCache = new Object()
 function asyncRequest(queryRaw: string, callback: (data: string) => void) {
+    let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
+    loadingStatus.text =  'Loading Snippet ...'
+    loadingStatus.show()
+
     let query = encodeURI(queryRaw.replace(/ /g, '+'))
     let language = vscode.window.activeTextEditor.document.languageId
 
@@ -74,6 +78,7 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
 
     let data = requestCache[path]
     if (data) {
+        loadingStatus.hide()
         callback(data)
         return
     }
@@ -97,6 +102,7 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
 
         message.on("end", function () {
             requestCache[path] = data
+            loadingStatus.hide()
             callback(data)
         })
     }).on("error", function (err) {
