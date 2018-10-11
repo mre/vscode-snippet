@@ -1,6 +1,6 @@
 {
     "name": "Snippet",
-    "version": "0.2.4",
+    "version": "0.3.0",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
