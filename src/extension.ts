@@ -3,7 +3,12 @@ import * as cp from 'child_process'
 import * as http from 'http'
 import * as vscode from 'vscode'
 
+const cache = {
+    state: <vscode.Memento> null
+}
+
 export function activate(ctx: vscode.ExtensionContext) {
+    cache.state = ctx.globalState
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', find))
     ctx.subscriptions.push(vscode.commands.registerCommand(
