@@ -39,7 +39,8 @@ function query(openInNewEditor: boolean) {
         suggestionsQuickItems.push(tempQuickItem)
     }
 
-    const quickPick = vscode.window.createQuickPick()
+    let window = vscode.window
+    const quickPick = (<any>window).createQuickPick()
     quickPick.items = suggestionsQuickItems
     quickPick.onDidChangeValue(() => {
         quickPick.activeItems = []
