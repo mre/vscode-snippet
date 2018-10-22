@@ -3,10 +3,13 @@ import * as cp from 'child_process'
 import * as http from 'http'
 import * as vscode from 'vscode'
 
+
+let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
+loadingStatus.text =  'Loading Snippet ...'
+
 const cache = {
     state: <vscode.Memento> null
 }
-
 export function activate(ctx: vscode.ExtensionContext) {
     cache.state = ctx.globalState
     ctx.subscriptions.push(vscode.commands.registerCommand(
@@ -90,10 +93,15 @@ function findSelectedText() {
 
 var requestCache = new Object()
 function asyncRequest(queryRaw: string, callback: (data: string) => void) {
-    let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
-    loadingStatus.text =  'Loading Snippet ...'
     loadingStatus.show()
 
+    try {
+        let query = encodeURI(queryRaw.replace(/ /g, '+'))
+    } catch(TypeError) {
+        loadingStatus.hide()
+        return
+    }
+    
     let query = encodeURI(queryRaw.replace(/ /g, '+'))
     let language = vscode.window.activeTextEditor.document.languageId
 
