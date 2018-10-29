@@ -2,6 +2,7 @@
 import * as cp from 'child_process'
 import * as http from 'http'
 import * as vscode from 'vscode'
+import * as HttpProxyAgent from 'http-proxy-agent'
 
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
 loadingStatus.text =  'Loading Snippet ...'
@@ -93,15 +94,26 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
 
     console.log(`asyncRequest: ${query}`)
 
-    http.get({
+    let opts = {
         'host': baseUrl,
         'path': path,
         // Fake user agent to get plain-text output.
         // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
         'headers': {
             'User-Agent': 'curl/7.43.0'
-        }
-    }, function (message) {
+        },
+    }
+
+    // Apply proxy setting if provided
+    let httpConfiguration = vscode.workspace.getConfiguration('http')
+    let proxy = httpConfiguration['proxy']
+
+    if(proxy !== ''){
+        let agent = new HttpProxyAgent(proxy)
+        opts['agent'] = agent
+    }
+
+    http.get(opts, function (message) {
         let data = ""
 
         message.on("data", function (chunk) {
