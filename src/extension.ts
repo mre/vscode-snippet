@@ -7,7 +7,12 @@ import * as HttpProxyAgent from 'http-proxy-agent'
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
 loadingStatus.text =  'Loading Snippet ...'
 
+const cache = {
+    state: <vscode.Memento> null
+}
+
 export function activate(ctx: vscode.ExtensionContext) {
+    cache.state = ctx.globalState
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', find))
     ctx.subscriptions.push(vscode.commands.registerCommand(
@@ -25,12 +30,46 @@ function find() {
 }
 
 function query(openInNewEditor: boolean) {
-    vscode.window.showInputBox()
-        .then(query => {
-            asyncRequest(query, function (data) {
+    let language = vscode.window.activeTextEditor.document.languageId
+    let tree = cache.state.get(`snippet_${language}`)
+    if(!tree) {
+        let newTree = {}
+        cache.state.update(`snippet_${language}`, newTree)
+        tree = cache.state.get(`snippet_${language}`)
+    }
+    let suggestions = []
+    for(var key in tree) {
+        suggestions.push(tree[key])
+    }
+    suggestions.sort()
+    
+    let suggestionsQuickItems: Array<vscode.QuickPickItem> = []
+    let tempQuickItem: vscode.QuickPickItem = null
+    for(var key in suggestions) {
+        tempQuickItem = {description: '', label: suggestions[key]}
+        suggestionsQuickItems.push(tempQuickItem)
+    }
+
+    let window = vscode.window
+    const quickPick = (<any>window).createQuickPick()
+    quickPick.items = suggestionsQuickItems
+    quickPick.onDidChangeValue(() => {
+        quickPick.activeItems = []
+    })
+    quickPick.onDidAccept(() => {
+        if(quickPick.activeItems.length) {
+            asyncRequest(quickPick.activeItems[0]['label'], function (data) {
                 insertText(data, openInNewEditor)
             })
-        });
+        } else {
+            asyncRequest(quickPick.value, function (data) {
+                insertText(data, openInNewEditor)
+            })
+        }
+        quickPick.hide()
+        quickPick.dispose()
+    })
+    quickPick.show()
 }
 
 function findInplace() {
@@ -122,6 +161,13 @@ function asyncRequest(queryRaw: string, callback: (data: string) => void) {
 
         message.on("end", function () {
             requestCache[path] = data
+            let cacheData = cache.state.get(`snippet_${language}`)
+            if(query !== undefined && query !== '') {
+                if(!cacheData[queryRaw]) {
+                    cacheData[queryRaw] = queryRaw
+                    cache.state.update(`snippet_${language}`, cacheData)
+                }
+            }
             loadingStatus.hide()
             callback(data)
         })
