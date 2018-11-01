@@ -1,10 +1,16 @@
-# Ignore everything
-*
-*/**
+# standard
+.vscode/**
+typings/**
+out/test/**
+test/**
+src/**
+**/*.map
+**.ts
+**/.gitignore
+**/tsconfig.json
+vsc-extension-quickstart.md
+contrib/**
+Makefile
 
-# Whitelist what you need
-!contrib/icon.png
-!out/extension.js
-!CHANGELOG.md
-!LICENSE
-!README.md
+# test
+test-folder/**
