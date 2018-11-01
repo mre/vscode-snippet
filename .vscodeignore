@@ -9,7 +9,6 @@ src/**
 **/.gitignore
 **/tsconfig.json
 vsc-extension-quickstart.md
-contrib/**
 Makefile
 
 # test
