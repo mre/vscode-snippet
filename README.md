@@ -1,3 +1,5 @@
+<img width="50" src="contrib/icon.png">
+
 # vscode-snippet
 
 [![The MIT License](https://img.shields.io/badge/license-MIT-orange.svg?style=flat-square)](http://opensource.org/licenses/MIT)
