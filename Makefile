@@ -1,15 +1,22 @@
+# Needed SHELL since I'm using zsh
+SHELL := /bin/bash
+.PHONY: help
+
 .PHONY: install
-install:
+install: ## Install npm package
 	npm install
 
 .PHONY: ls
-ls: 
+ls: ## Lists all the files that will be published
 	vsce ls
 
 .PHONY: package
-package:
+package: ## Package extension for publication
 	vsce package
 
 .PHONY: publish
-publish: ls install package
+publish: ls install package ## Publish on VSCode Marketplace
 	vsce publish
+
+help: ## This help message
+	@echo -e "$$(grep -hE '^\S+:.*##' $(MAKEFILE_LIST) | sed -e 's/:.*##\s*/:/' -e 's/^\(.\+\):\(.*\)/\\x1b[36m\1\\x1b[m:\2/' | column -c2 -t -s :)"
