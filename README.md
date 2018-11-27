@@ -1,4 +1,4 @@
-<img width="50" src="contrib/icon.png">
+<img width="50" src="https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/icon.png">
 
 # vscode-snippet
 
@@ -37,23 +37,23 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 2. Run `Snippet: Find`.
 3. Type your query and hit enter.
 
-![Preview](/contrib/find.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/find.gif)
 
 ### Search for snippet based on selected text 
 
 1. Select some text in an editor window.
 2. Right click and choose "Find snippet from selected text"
 
-![Preview](/contrib/findSelectedMenu.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/findSelectedMenu.gif)
 
 Alternatively, you can also run the `Snippet: Find Selected Text` from the
 command menu:
 
-![Preview](/contrib/findSelected.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/findSelected.gif)
 
 You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd> + <kbd>⇧ Shift</kbd> + <kbd>s</kbd>:
 
-![Preview](/contrib/findSelectedShortcut.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/findSelectedShortcut.gif)
 
 ## Contributing
 
