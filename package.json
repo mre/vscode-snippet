@@ -1,6 +1,6 @@
 {
     "name": "Snippet",
-    "version": "0.4.2",
+    "version": "0.4.3",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -124,6 +124,7 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "dependencies": {
-        "http-proxy-agent": "^2.1.0"
+        "http-proxy-agent": "^2.1.0",
+        "event-stream": "3.3.4"
     }
 }
