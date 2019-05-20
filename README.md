@@ -39,6 +39,11 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/find.gif)
 
+### Moving between answers
+
+Sometimes the first answer is not what you're looking for.  
+In that case, use `Snippet: Show next answer` and `Snippet: Show previous answer` to show alternative snippets.
+
 ### Search for snippet based on selected text 
 
 1. Select some text in an editor window.
