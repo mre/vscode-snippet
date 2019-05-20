@@ -55,6 +55,11 @@ You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd>
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/findSelectedShortcut.gif)
 
+## Development
+
+To get a list of all available commands, try `make help`.  
+To test your changes, go to the Debug panel in VSCode and click on the `play` button. This will start the extension in a new window where you can test it.
+
 ## Contributing
 
 This plugin is far from feature-complete.  
