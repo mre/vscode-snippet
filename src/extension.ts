@@ -11,13 +11,20 @@ const cache = {
     state: <vscode.Memento>null
 }
 
-// Last query string that was executed (not escaped)
+// Query string that was executed (not escaped)
 var currQuery = null
-// Last answer number that was executed
+// Answer number that was shown
 var currNum = 0
+// Current state of comments (for toggleComments)
+var verboseState = true
 
 export function activate(ctx: vscode.ExtensionContext) {
     cache.state = ctx.globalState
+
+    // Required for toggleComments
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    verboseState = configuration["verbose"]
+
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', find))
     ctx.subscriptions.push(vscode.commands.registerCommand(
@@ -30,6 +37,8 @@ export function activate(ctx: vscode.ExtensionContext) {
         'snippet.showPreviousAnswer', showPreviousAnswer))
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.showNextAnswer', showNextAnswer))
+    ctx.subscriptions.push(vscode.commands.registerCommand(
+        'snippet.toggleComments', toggleComments))
 }
 
 function find() {
@@ -65,13 +74,17 @@ function query(openInNewEditor: boolean) {
     quickPick.onDidChangeValue(() => {
         quickPick.activeItems = []
     })
+
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    let verbose: boolean = configuration["verbose"]
+
     quickPick.onDidAccept(() => {
         if (quickPick.activeItems.length) {
-            asyncRequest(quickPick.activeItems[0]['label'], 0, function (data) {
+            asyncRequest(quickPick.activeItems[0]['label'], 0, verbose, function (data) {
                 insertText(data, openInNewEditor)
             })
         } else {
-            asyncRequest(quickPick.value, 0, function (data) {
+            asyncRequest(quickPick.value, 0, verbose, function (data) {
                 insertText(data, openInNewEditor)
             })
         }
@@ -96,15 +109,13 @@ function showNextAnswer() {
         return
     }
 
-    let selection = editor.selection;
-    let query = editor.document.getText(selection);
-
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
 
     currNum += 1;
-    query = currQuery
-    asyncRequest(query, currNum, function (data) {
+
+    let verbose: boolean = configuration["verbose"]
+    asyncRequest(currQuery, currNum, verbose, function (data) {
         insertText(data, openInNewEditor)
     })
 }
@@ -116,17 +127,31 @@ function showPreviousAnswer() {
         return
     }
 
-    let selection = editor.selection;
-    let query = editor.document.getText(selection);
-
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
 
     if (currNum > 0) {
         currNum -= 1;
     }
-    query = currQuery
-    asyncRequest(query, currNum, function (data) {
+    let verbose: boolean = configuration["verbose"]
+
+    asyncRequest(currQuery, currNum, verbose, function (data) {
+        insertText(data, openInNewEditor)
+    })
+}
+
+function toggleComments() {
+    let editor = vscode.window.activeTextEditor
+    if (!editor) {
+        vscode.window.showErrorMessage('There is no open editor window');
+        return
+    }
+
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    let openInNewEditor: boolean = configuration["openInNewEditor"]
+    verboseState = !verboseState
+
+    asyncRequest(currQuery, currNum, verboseState, function (data) {
         insertText(data, openInNewEditor)
     })
 }
@@ -143,15 +168,16 @@ function findSelectedText() {
 
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
+    let verbose: boolean = configuration["verbose"]
 
-    asyncRequest(query, 0, function (data) {
+    asyncRequest(query, 0, verbose, function (data) {
         insertText(data, openInNewEditor)
     })
 }
 
 
 var requestCache = new Object()
-function asyncRequest(queryRaw: string, num: number, callback: (data: string) => void) {
+function asyncRequest(queryRaw: string, num: number, verbose: boolean, callback: (data: string) => void) {
 
     currQuery = queryRaw
     currNum = num
@@ -169,7 +195,6 @@ function asyncRequest(queryRaw: string, num: number, callback: (data: string) =>
     let language = vscode.window.activeTextEditor.document.languageId
 
     let configuration = vscode.workspace.getConfiguration('snippet')
-    let verbose: boolean = configuration["verbose"]
     let params = "QT"
     if (verbose) {
         params = "qT"
