@@ -1,5 +1,5 @@
 {
-    "name": "Snippet",
+    "name": "snippet",
     "version": "0.5.0",
     "publisher": "vscode-snippet",
     "engines": {
@@ -44,8 +44,7 @@
     ],
     "main": "./out/extension",
     "contributes": {
-        "commands": [
-            {
+        "commands": [{
                 "title": "Find",
                 "command": "snippet.find",
                 "category": "Snippet"
@@ -63,6 +62,16 @@
             {
                 "title": "Find snippet from selected text",
                 "command": "snippet.findSelectedText",
+                "category": "Snippet"
+            },
+            {
+                "title": "Show previous answer",
+                "command": "snippet.showPreviousAnswer",
+                "category": "Snippet"
+            },
+            {
+                "title": "Show next answer",
+                "command": "snippet.showNextAnswer",
                 "category": "Snippet"
             }
         ],
@@ -87,28 +96,26 @@
             }
         },
         "menus": {
-            "editor/context": [
-                {
-                    "when": "editorHasSelection",
-                    "command": "snippet.findSelectedText",
-                    "group": "1_modification"
-                }
-            ]
-        },
-        "keybindings": [
-            {
+            "editor/context": [{
+                "when": "editorHasSelection",
                 "command": "snippet.findSelectedText",
-                "key": "ctrl+shift+s",
-                "mac": "cmd+shift+s",
-                "when": "editorHasSelection"
-            }
-        ]
+                "group": "1_modification"
+            }]
+        },
+        "keybindings": [{
+            "command": "snippet.findSelectedText",
+            "key": "ctrl+shift+s",
+            "mac": "cmd+shift+s",
+            "when": "editorHasSelection"
+        }]
     },
     "activationEvents": [
         "onCommand:snippet.find",
         "onCommand:snippet.findSelectedText",
         "onCommand:snippet.findInplace",
-        "onCommand:snippet.findInNewEditor"
+        "onCommand:snippet.findInNewEditor",
+        "onCommand:snippet.showPreviousAnswer",
+        "onCommand:snippet.showNextAnswer"
     ],
     "devDependencies": {
         "@types/mocha": "^2.2.48",
