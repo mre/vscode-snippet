@@ -2,6 +2,10 @@
 SHELL := /bin/bash
 .PHONY: help
 
+.PHONY: update
+update: ## Update all dependencies
+	npm update
+
 .PHONY: install
 install: ## Install npm package
 	npm install
