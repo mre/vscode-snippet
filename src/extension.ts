@@ -48,7 +48,20 @@ function find() {
 }
 
 function query(openInNewEditor: boolean) {
-    let language = vscode.window.activeTextEditor.document.languageId
+    let language: string = null
+    let editor = vscode.window.activeTextEditor
+    let configuration = vscode.workspace.getConfiguration('snippet')
+    if (!editor) {
+        let defaultLanguage: string = configuration['defaultLanguage']
+        if (!defaultLanguage || /^\s+$/i.test(defaultLanguage) || !openInNewEditor) {
+            vscode.window.showErrorMessage('There is no open editor window');
+            return
+        }
+        language = defaultLanguage
+    } else {
+        language = editor.document.languageId
+    }
+
     let tree = cache.state.get(`snippet_${language}`)
     if (!tree) {
         let newTree = {}
@@ -75,17 +88,16 @@ function query(openInNewEditor: boolean) {
         quickPick.activeItems = []
     })
 
-    let configuration = vscode.workspace.getConfiguration('snippet')
     let verbose: boolean = configuration["verbose"]
 
     quickPick.onDidAccept(() => {
         if (quickPick.activeItems.length) {
-            asyncRequest(quickPick.activeItems[0]['label'], 0, verbose, function (data) {
-                insertText(data, openInNewEditor)
+            asyncRequest(quickPick.activeItems[0]['label'], 0, verbose, language, function (data) {
+                insertText(data, language, openInNewEditor)
             })
         } else {
-            asyncRequest(quickPick.value, 0, verbose, function (data) {
-                insertText(data, openInNewEditor)
+            asyncRequest(quickPick.value, 0, verbose, language, function (data) {
+                insertText(data, language, openInNewEditor)
             })
         }
         quickPick.hide()
@@ -109,14 +121,16 @@ function showNextAnswer() {
         return
     }
 
+    let language = editor.document.languageId
+
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
 
     currNum += 1;
 
     let verbose: boolean = configuration["verbose"]
-    asyncRequest(currQuery, currNum, verbose, function (data) {
-        insertText(data, openInNewEditor)
+    asyncRequest(currQuery, currNum, verbose, language, function (data) {
+        insertText(data, language, openInNewEditor)
     })
 }
 
@@ -127,6 +141,8 @@ function showPreviousAnswer() {
         return
     }
 
+    let language = editor.document.languageId
+
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
 
@@ -135,8 +151,8 @@ function showPreviousAnswer() {
     }
     let verbose: boolean = configuration["verbose"]
 
-    asyncRequest(currQuery, currNum, verbose, function (data) {
-        insertText(data, openInNewEditor)
+    asyncRequest(currQuery, currNum, verbose, language, function (data) {
+        insertText(data, language, openInNewEditor)
     })
 }
 
@@ -147,12 +163,14 @@ function toggleComments() {
         return
     }
 
+    let language = editor.document.languageId
+
     let configuration = vscode.workspace.getConfiguration('snippet')
     let openInNewEditor: boolean = configuration["openInNewEditor"]
     verboseState = !verboseState
 
-    asyncRequest(currQuery, currNum, verboseState, function (data) {
-        insertText(data, openInNewEditor)
+    asyncRequest(currQuery, currNum, verboseState, language, function (data) {
+        insertText(data, language, openInNewEditor)
     })
 }
 
@@ -163,6 +181,8 @@ function findSelectedText() {
         return
     }
 
+    let language = editor.document.languageId
+
     let selection = editor.selection;
     let query = editor.document.getText(selection);
 
@@ -170,14 +190,14 @@ function findSelectedText() {
     let openInNewEditor: boolean = configuration["openInNewEditor"]
     let verbose: boolean = configuration["verbose"]
 
-    asyncRequest(query, 0, verbose, function (data) {
-        insertText(data, openInNewEditor)
+    asyncRequest(query, 0, verbose, language, function (data) {
+        insertText(data, language, openInNewEditor)
     })
 }
 
 
 var requestCache = new Object()
-function asyncRequest(queryRaw: string, num: number, verbose: boolean, callback: (data: string) => void) {
+function asyncRequest(queryRaw: string, num: number, verbose: boolean, language: string, callback: (data: string) => void) {
 
     currQuery = queryRaw
     currNum = num
@@ -192,7 +212,6 @@ function asyncRequest(queryRaw: string, num: number, verbose: boolean, callback:
     }
 
     let query = encodeURI(queryRaw.replace(/ /g, '+'))
-    let language = vscode.window.activeTextEditor.document.languageId
 
     let configuration = vscode.workspace.getConfiguration('snippet')
     let params = "QT"
@@ -256,10 +275,9 @@ function asyncRequest(queryRaw: string, num: number, verbose: boolean, callback:
     })
 }
 
-function insertText(content: string, openInNewEditor = true) {
+function insertText(content: string, language: string, openInNewEditor = true) {
 
     if (openInNewEditor) {
-        let language = vscode.window.activeTextEditor.document.languageId
         vscode.workspace.openTextDocument({ language, content }).then(
             document => vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
         )
@@ -267,8 +285,16 @@ function insertText(content: string, openInNewEditor = true) {
     else {
         let editor = vscode.window.activeTextEditor
         if (!editor) {
-            vscode.window.showErrorMessage('There is no open editor window');
-            return;
+            let configuration = vscode.workspace.getConfiguration('snippet')
+            let defaultLanguage = configuration['defaultLanguage']
+            if (!defaultLanguage || defaultLanguage != language) {
+                vscode.window.showErrorMessage('There is no open editor window');
+                return;
+            } else {
+                vscode.workspace.openTextDocument({ language, content }).then(
+                    document => vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
+                )
+            }
         }
         editor.edit(
             edit => editor.selections.forEach(

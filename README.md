@@ -19,6 +19,7 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 * `verbose`: add comments around code snippets.
 * `baseUrl`: base url of the cheat server ([see cheat.sh documentation](https://github.com/chubin/cheat.sh/issues/98#issuecomment-412472258))
 * `http.proxy`: VS Code proxy setting. If set, requests made by vscode-snippet will be sent through provided proxy ([see Visual Studio Code network settings](https://code.visualstudio.com/docs/setup/network))
+* `defaultLanguage`: Programming language name in lower case to use as default language when there is no open editor window.
 
 
 

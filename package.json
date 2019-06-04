@@ -97,6 +97,11 @@
                     "type": "boolean",
                     "default": false,
                     "description": "Also show explanations for code snippets."
+                },
+                "snippet.defaultLanguage": {
+                    "type": "string",
+                    "default": null,
+                    "description": "Programming language name in lower case to use as default language when there is no open editor window."
                 }
             }
         },
