@@ -1,8 +1,7 @@
 'use strict'
-import * as cp from 'child_process'
 import * as http from 'http'
 import * as vscode from 'vscode'
-import * as HttpProxyAgent from 'http-proxy-agent'
+import { HttpProxyAgent } from 'http-proxy-agent'
 
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
 loadingStatus.text = 'Loading Snippet ...'
