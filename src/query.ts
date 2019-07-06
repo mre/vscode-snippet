@@ -28,17 +28,6 @@ export async function query(language: string, verbose: boolean): Promise<any> {
 }
 
 export async function asyncRequest(queryRaw: string, num: number, verbose: boolean, language: string): Promise<any> {
-    // TODO
-    // loadingStatus.show()
-
-    // try {
-    //     let query = encodeURI(queryRaw.replace(/ /g, '+'))
-    // } catch (TypeError) {
-    //     // loadingStatus.hide()
-    //     // TODO: Rethrow exception
-    //     return ""
-    // }
-
     let query = encodeURI(queryRaw.replace(/ /g, '+'))
 
     let configuration = vscode.workspace.getConfiguration('snippet')
@@ -50,7 +39,6 @@ export async function asyncRequest(queryRaw: string, num: number, verbose: boole
     let path = `/vscode:${language}/${query}/${num}?${params}&style=bw`;
     let data = await requestCache[path]
     if (data) {
-        // loadingStatus.hide()
         return data;
     }
 
@@ -74,28 +62,4 @@ export async function asyncRequest(queryRaw: string, num: number, verbose: boole
     }
 
     return await axios.get(url, opts)
-
-    // http.get(opts, function (message) {
-    //     let data = ""
-
-    //     message.on("data", function (chunk) {
-    //         data += chunk
-    //     })
-
-    //     message.on("end", function () {
-    //         requestCache[path] = data
-    //         let cacheData = cache.state.get(`snippet_${language}`)
-    //         if (query !== undefined && query !== '') {
-    //             if (!cacheData[queryRaw]) {
-    //                 cacheData[queryRaw] = queryRaw
-    //                 cache.state.update(`snippet_${language}`, cacheData)
-    //             }
-    //         }
-    //         // TODO
-    //         // loadingStatus.hide()
-    //         return data
-    //     })
-    // }).on("error", function (err) {
-    //     vscode.window.showInformationMessage(err.message)
-    // })
 }

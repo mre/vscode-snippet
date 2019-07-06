@@ -60,7 +60,9 @@ async function find() {
     let openInNewEditor: boolean = configuration["openInNewEditor"]
     let language = getLanguage()
     currQuery = await query(language, verbose)
+    loadingStatus.show()
     let response = await asyncRequest(currQuery, 0, verbose, language)
+    loadingStatus.hide()
     insertText(response.data, language, openInNewEditor)
 }
 
@@ -69,7 +71,9 @@ async function findInplace() {
     let verbose: boolean = configuration["verbose"]
     let language = getLanguage()
     currQuery = await query(language, verbose)
+    loadingStatus.show()
     let response = await asyncRequest(currQuery, 0, verbose, language)
+    loadingStatus.hide()
     insertText(response.data, language, false)
 }
 
@@ -78,7 +82,9 @@ async function findInNewEditor() {
     let verbose: boolean = configuration["verbose"]
     let language = getLanguage()
     currQuery = await query(language, verbose)
+    loadingStatus.show()
     let response = await asyncRequest(currQuery, 0, verbose, language)
+    loadingStatus.hide()
     insertText(response.data, language, true)
 }
 
@@ -97,7 +103,9 @@ async function showNextAnswer() {
     currNum += 1;
 
     let verbose: boolean = configuration["verbose"]
+    loadingStatus.show()
     let response = await asyncRequest(currQuery, currNum, verbose, language)
+    loadingStatus.hide()
     insertText(response.data, language, openInNewEditor)
 }
 
