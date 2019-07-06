@@ -85,7 +85,7 @@
             "properties": {
                 "snippet.baseUrl": {
                     "type": "string",
-                    "default": "cht.sh",
+                    "default": "https://cht.sh",
                     "description": "Base URL of the cheat sheet server"
                 },
                 "snippet.openInNewEditor": {
@@ -142,7 +142,8 @@
         "test": "npm run compile && node ./node_modules/vscode/bin/test"
     },
     "dependencies": {
-        "http-proxy-agent": "^2.1.0",
-        "event-stream": "3.3.4"
+        "axios": "^0.19.0",
+        "event-stream": "3.3.4",
+        "http-proxy-agent": "^2.1.0"
     }
 }
