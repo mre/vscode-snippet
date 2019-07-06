@@ -24,8 +24,7 @@ export async function query(language: string, verbose: boolean): Promise<any> {
     }
 
     let selection = await vscode.window.showQuickPick(suggestionsQuickItems);
-    let req = asyncRequest(selection.label, 0, verbose, language)
-    return req;
+    return selection.label;
 }
 
 export async function asyncRequest(queryRaw: string, num: number, verbose: boolean, language: string): Promise<any> {

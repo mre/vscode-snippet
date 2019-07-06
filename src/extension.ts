@@ -59,7 +59,8 @@ async function find() {
     let verbose: boolean = configuration["verbose"]
     let openInNewEditor: boolean = configuration["openInNewEditor"]
     let language = getLanguage()
-    let response = await query(language, verbose)
+    currQuery = await query(language, verbose)
+    let response = await asyncRequest(currQuery, 0, verbose, language)
     insertText(response.data, language, openInNewEditor)
 }
 
@@ -67,7 +68,8 @@ async function findInplace() {
     let configuration = vscode.workspace.getConfiguration('snippet')
     let verbose: boolean = configuration["verbose"]
     let language = getLanguage()
-    let response = await query(language, verbose)
+    currQuery = await query(language, verbose)
+    let response = await asyncRequest(currQuery, 0, verbose, language)
     insertText(response.data, language, false)
 }
 
@@ -75,7 +77,8 @@ async function findInNewEditor() {
     let configuration = vscode.workspace.getConfiguration('snippet')
     let verbose: boolean = configuration["verbose"]
     let language = getLanguage()
-    let response = await query(language, verbose)
+    currQuery = await query(language, verbose)
+    let response = await asyncRequest(currQuery, 0, verbose, language)
     insertText(response.data, language, true)
 }
 
