@@ -9,7 +9,6 @@ const axios = require('axios');
 var requestCache = new Object()
 
 export async function query(language: string, verbose: boolean): Promise<any> {
-
     let tree = cache.state.get(`snippet_${language}`, {})
     let suggestions = []
     for (var key in tree) {

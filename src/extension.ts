@@ -43,7 +43,7 @@ function getLanguage(): string {
     let configuration = vscode.workspace.getConfiguration('snippet')
     if (!editor) {
         let defaultLanguage: string = configuration['defaultLanguage']
-        if (!defaultLanguage || /^\s+$/i.test(defaultLanguage) || !configuration.openInNewEditor) {
+        if (!defaultLanguage || !defaultLanguage.trim() || !configuration.openInNewEditor) {
             vscode.window.showErrorMessage('There is no open editor window');
             return
         }
@@ -53,8 +53,6 @@ function getLanguage(): string {
     }
     return language
 }
-
-
 
 async function find() {
     let configuration = vscode.workspace.getConfiguration('snippet')
