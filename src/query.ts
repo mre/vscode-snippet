@@ -3,11 +3,32 @@
 import * as vscode from 'vscode'
 import { cache } from './cache'
 import { HttpProxyAgent } from 'http-proxy-agent'
-const axios = require('axios');
+import axios from 'axios';
 
 var requestCache = new Object()
 
-export async function query(language: string, verbose: boolean): Promise<any> {
+function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
+    return new Promise((resolve, _reject) => {
+        let window = vscode.window
+        const quickPick = (<any>window).createQuickPick()
+        quickPick.title = "Enter search keywords"
+        quickPick.items = items
+
+        quickPick.onDidAccept(() => {
+            let search = ""
+            if (quickPick.activeItems.length) {
+                search = quickPick.activeItems[0]['label'];
+            } else {
+                search = quickPick.value;
+            }
+            quickPick.hide()
+            resolve(search)
+        })
+        quickPick.show()
+    })
+}
+
+export async function query(language: string): Promise<any> {
     let tree = cache.state.get(`snippet_${language}`, {})
     let suggestions = []
     for (var key in tree) {
@@ -21,9 +42,7 @@ export async function query(language: string, verbose: boolean): Promise<any> {
         tempQuickItem = { description: '', label: suggestions[key] }
         suggestionsQuickItems.push(tempQuickItem)
     }
-
-    let selection = await vscode.window.showQuickPick(suggestionsQuickItems);
-    return selection.label;
+    return quickPickCustom(suggestionsQuickItems)
 }
 
 export async function asyncRequest(queryRaw: string, num: number, verbose: boolean, language: string): Promise<any> {
