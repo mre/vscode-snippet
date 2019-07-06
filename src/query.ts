@@ -1,6 +1,5 @@
 'use strict'
 
-import * as http from 'http'
 import * as vscode from 'vscode'
 import { cache } from './cache'
 import { HttpProxyAgent } from 'http-proxy-agent'
