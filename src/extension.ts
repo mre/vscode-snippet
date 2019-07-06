@@ -62,12 +62,7 @@ function query(openInNewEditor: boolean) {
         language = editor.document.languageId
     }
 
-    let tree = cache.state.get(`snippet_${language}`)
-    if (!tree) {
-        let newTree = {}
-        cache.state.update(`snippet_${language}`, newTree)
-        tree = cache.state.get(`snippet_${language}`)
-    }
+    let tree = cache.state.get(`snippet_${language}`, {})
     let suggestions = []
     for (var key in tree) {
         suggestions.push(tree[key])
