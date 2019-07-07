@@ -15,6 +15,11 @@ var currNum = 0
 // Current state of comments (for toggleComments)
 var verboseState = true
 
+interface Snippet {
+    language: string
+    data: string
+}
+
 export function activate(ctx: vscode.ExtensionContext) {
     cache.state = ctx.globalState
 
@@ -38,21 +43,19 @@ export function activate(ctx: vscode.ExtensionContext) {
         'snippet.toggleComments', toggleComments))
 }
 
-function getLanguage(): string {
-    let language: string = null
+async function getLanguage(): Promise<string> {
     let editor = vscode.window.activeTextEditor
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    if (!editor) {
-        let defaultLanguage: string = configuration['defaultLanguage']
-        if (!defaultLanguage || !defaultLanguage.trim() || !configuration.openInNewEditor) {
-            vscode.window.showErrorMessage('There is no open editor window');
-            return
-        }
-        language = defaultLanguage
-    } else {
-        language = editor.document.languageId
+    if (editor) {
+        return editor.document.languageId
     }
-    return language
+    let defaultLanguage: string = getConfig('defaultLanguage')
+    if (defaultLanguage && defaultLanguage.trim()) {
+        return defaultLanguage
+    }
+    return await vscode.window.showInputBox({
+        value: 'python',
+        placeHolder: 'Find snippet for which programming language?',
+    });
 }
 
 function getConfig(param: string) {
@@ -60,40 +63,28 @@ function getConfig(param: string) {
     return configuration[param]
 }
 
-async function loadSnippet(): Promise<AxiosResponse> {
-    let language = getLanguage()
+async function loadSnippet(): Promise<Snippet> {
+    let language = await getLanguage()
     currQuery = await query(language)
     loadingStatus.show()
     let response = await load(currQuery, 0, getConfig("verbose"), language)
     loadingStatus.hide()
-    return response
+    return { language, data: response.data }
 }
 
 async function find() {
-    let response = await loadSnippet()
-    showSnippet(response.data, getLanguage(), getConfig("openInNewEditor"))
+    let snippet = await loadSnippet()
+    showSnippet(snippet.data, snippet.language, getConfig("openInNewEditor"))
 }
 
 async function findInplace() {
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let language = getLanguage()
-    currQuery = await query(language)
-    loadingStatus.show()
-    let verbose: boolean = configuration["verbose"]
-    let response = await load(currQuery, 0, verbose, language)
-    loadingStatus.hide()
-    showSnippet(response.data, language, false)
+    let snippet = await loadSnippet()
+    showSnippet(snippet.data, snippet.language, false)
 }
 
 async function findInNewEditor() {
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let language = getLanguage()
-    currQuery = await query(language)
-    loadingStatus.show()
-    let verbose: boolean = configuration["verbose"]
-    let response = await load(currQuery, 0, verbose, language)
-    loadingStatus.hide()
-    showSnippet(response.data, language, true)
+    let snippet = await loadSnippet()
+    showSnippet(snippet.data, snippet.language, true)
 }
 
 async function showNextAnswer() {
