@@ -30,20 +30,15 @@ function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
 }
 
 export async function query(language: string): Promise<string> {
-    let tree = cache.state.get(`snippet_${language}`, {})
-    let suggestions = []
-    for (let key in tree) {
-        suggestions.push(tree[key])
-    }
-    suggestions.sort()
+    let suggestions = cache.state.get(`snippet_suggestions_${language}`, [])
 
     let suggestionsQuickItems: Array<vscode.QuickPickItem> = []
-    for (var key in suggestions) {
+    for (let key in suggestions) {
         let tempQuickItem: vscode.QuickPickItem = { label: suggestions[key], description: '' }
         suggestionsQuickItems.push(tempQuickItem)
     }
-    let pick = await quickPickCustom(suggestionsQuickItems)
-    tree[pick] = pick
-    cache.state.update(`snippet_${language}`, tree)
-    return pick
+    let input = await quickPickCustom(suggestionsQuickItems)
+    suggestions.push(input)
+    cache.state.update(`snippet_suggestions_${language}`, suggestions.sort())
+    return input
 }
