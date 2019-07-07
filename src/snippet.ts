@@ -68,6 +68,24 @@ export class Snippet {
         return this.currQuery
     }
 
+    private _requestConfig(): {} {
+        let config = {
+            // Fake user agent to get plain-text output.
+            // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
+            'headers': {
+                'User-Agent': 'curl/7.43.0'
+            },
+        }
+
+        // Apply proxy setting if provided
+        let proxy = vscode.workspace.getConfiguration('http')['proxy']
+        if (proxy !== '') {
+            let agent = new HttpProxyAgent(proxy)
+            config['agent'] = agent
+        }
+        return config
+    }
+
     private async _doRequest(language: string, verbose: boolean): Promise<AxiosResponse> {
         let query = encodeURI(this.currQuery.replace(/ /g, '+'))
         let num = this.currNum
@@ -86,23 +104,7 @@ export class Snippet {
 
         let baseUrl: String = configuration["baseUrl"]
         let url = baseUrl + path;
-        let opts = {
-            // Fake user agent to get plain-text output.
-            // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
-            'headers': {
-                'User-Agent': 'curl/7.43.0'
-            },
-        }
 
-        // Apply proxy setting if provided
-        let httpConfiguration = vscode.workspace.getConfiguration('http')
-        let proxy = httpConfiguration['proxy']
-
-        if (proxy !== '') {
-            let agent = new HttpProxyAgent(proxy)
-            opts['agent'] = agent
-        }
-
-        return await axios.get(url, opts)
+        return await axios.get(url, this._requestConfig())
     }
 }
