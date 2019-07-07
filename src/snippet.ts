@@ -86,22 +86,23 @@ export class Snippet {
         return config
     }
 
+    private getUrl(language: string, query: string) {
+        let baseUrl = getConfig("baseUrl")
+        let num = this.currNum
+        let params = this.verboseState ? "qT" : "QT"
+        let path = `/vscode:${language}/${query}/${num}?${params}&style=bw`;
+        return baseUrl + path;
+    }
+
     private async _doRequest(language: string): Promise<AxiosResponse> {
         let query = encodeURI(this.currQuery.replace(/ /g, '+'))
-        let num = this.currNum
-
-        let configuration = vscode.workspace.getConfiguration('snippet')
-        let params = this.verboseState ? "qT" : "QT"
-
-        let path = `/vscode:${language}/${query}/${num}?${params}&style=bw`;
-        let data = await this.requestCache[path]
+        let url = this.getUrl(language, query)
+        let data = await this.requestCache[url]
         if (data) {
             return data;
         }
-
-        let baseUrl: String = configuration["baseUrl"]
-        let url = baseUrl + path;
-
-        return await axios.get(url, this._requestConfig())
+        let res = await axios.get(url, this._requestConfig())
+        this.requestCache[url] = res
+        return res
     }
 }
