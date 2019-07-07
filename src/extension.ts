@@ -63,7 +63,7 @@ async function find() {
     let verbose: boolean = configuration["verbose"]
     let response = await asyncRequest(currQuery, 0, verbose, language)
     loadingStatus.hide()
-    insertText(response.data, language, openInNewEditor)
+    showSnippet(response.data, language, openInNewEditor)
 }
 
 async function findInplace() {
@@ -74,7 +74,7 @@ async function findInplace() {
     let verbose: boolean = configuration["verbose"]
     let response = await asyncRequest(currQuery, 0, verbose, language)
     loadingStatus.hide()
-    insertText(response.data, language, false)
+    showSnippet(response.data, language, false)
 }
 
 async function findInNewEditor() {
@@ -85,7 +85,7 @@ async function findInNewEditor() {
     let verbose: boolean = configuration["verbose"]
     let response = await asyncRequest(currQuery, 0, verbose, language)
     loadingStatus.hide()
-    insertText(response.data, language, true)
+    showSnippet(response.data, language, true)
 }
 
 async function showNextAnswer() {
@@ -106,7 +106,7 @@ async function showNextAnswer() {
     loadingStatus.show()
     let response = await asyncRequest(currQuery, currNum, verbose, language)
     loadingStatus.hide()
-    insertText(response.data, language, openInNewEditor)
+    showSnippet(response.data, language, openInNewEditor)
 }
 
 async function showPreviousAnswer() {
@@ -127,7 +127,7 @@ async function showPreviousAnswer() {
     let verbose: boolean = configuration["verbose"]
 
     let response = await asyncRequest(currQuery, currNum, verbose, language)
-    insertText(response.data, language, openInNewEditor)
+    showSnippet(response.data, language, openInNewEditor)
 }
 
 async function toggleComments() {
@@ -144,7 +144,7 @@ async function toggleComments() {
     verboseState = !verboseState
 
     let response = await asyncRequest(currQuery, currNum, verboseState, language)
-    insertText(response.data, language, openInNewEditor)
+    showSnippet(response.data, language, openInNewEditor)
 }
 
 async function findSelectedText() {
@@ -164,10 +164,10 @@ async function findSelectedText() {
     let verbose: boolean = configuration["verbose"]
 
     let response = await asyncRequest(query, 0, verbose, language)
-    insertText(response.data, language, openInNewEditor)
+    showSnippet(response.data, language, openInNewEditor)
 }
 
-function insertText(content: string, language: string, openInNewEditor = true) {
+function showSnippet(content: string, language: string, openInNewEditor = true) {
 
     if (openInNewEditor) {
         vscode.workspace.openTextDocument({ language, content }).then(
