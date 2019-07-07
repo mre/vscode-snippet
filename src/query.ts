@@ -38,9 +38,8 @@ export async function query(language: string): Promise<string> {
     suggestions.sort()
 
     let suggestionsQuickItems: Array<vscode.QuickPickItem> = []
-    let tempQuickItem: vscode.QuickPickItem = null
     for (var key in suggestions) {
-        tempQuickItem = { description: '', label: suggestions[key] }
+        let tempQuickItem: vscode.QuickPickItem = { label: suggestions[key], description: '' }
         suggestionsQuickItems.push(tempQuickItem)
     }
     let pick = await quickPickCustom(suggestionsQuickItems)
