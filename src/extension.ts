@@ -176,30 +176,16 @@ async function findSelectedText() {
 }
 
 async function showSnippet(content: string, language: string, openInNewEditor = true) {
-
-    if (openInNewEditor) {
+    let editor = vscode.window.activeTextEditor
+    if (openInNewEditor || !editor) {
         let document = await vscode.workspace.openTextDocument({ language, content })
         vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
     }
-    else {
-        let editor = vscode.window.activeTextEditor
-        if (!editor) {
-            let configuration = vscode.workspace.getConfiguration('snippet')
-            let defaultLanguage = configuration['defaultLanguage']
-            if (!defaultLanguage || defaultLanguage != language) {
-                vscode.window.showErrorMessage('There is no open editor window');
-                return;
-            } else {
-                let document = await vscode.workspace.openTextDocument({ language, content })
-                vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
+    editor.edit(
+        edit => editor.selections.forEach(
+            selection => {
+                edit.insert(selection.end, "\n" + content);
             }
-        }
-        editor.edit(
-            edit => editor.selections.forEach(
-                selection => {
-                    edit.insert(selection.end, "\n" + content);
-                }
-            )
-        );
-    }
+        )
+    );
 }
