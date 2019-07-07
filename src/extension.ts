@@ -1,31 +1,18 @@
 'use strict'
 
 import * as vscode from 'vscode'
-import { query, load } from './query'
+import { getLanguage, getConfig } from './config'
 import { cache } from './cache'
-import { AxiosResponse } from 'axios';
+import { query } from './query'
+import { Snippet } from './snippet'
 
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
 loadingStatus.text = 'Loading Snippet ...'
 
-// Query string that was executed (not escaped)
-var currQuery = null
-// Answer number that was shown
-var currNum = 0
-// Current state of comments (for toggleComments)
-var verboseState = true
-
-interface Snippet {
-    language: string
-    data: string
-}
+let snippet = new Snippet()
 
 export function activate(ctx: vscode.ExtensionContext) {
     cache.state = ctx.globalState
-
-    // Required for toggleComments
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    verboseState = configuration["verbose"]
 
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', find))
@@ -43,92 +30,64 @@ export function activate(ctx: vscode.ExtensionContext) {
         'snippet.toggleComments', toggleComments))
 }
 
-async function getLanguage(): Promise<string> {
-    let editor = vscode.window.activeTextEditor
-    if (editor) {
-        return editor.document.languageId
-    }
-    let defaultLanguage: string = getConfig('defaultLanguage')
-    if (defaultLanguage && defaultLanguage.trim()) {
-        return defaultLanguage
-    }
-    return await vscode.window.showInputBox({
-        value: 'python',
-        placeHolder: 'Find snippet for which programming language?',
-    });
-}
-
-function getConfig(param: string) {
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    return configuration[param]
-}
-
-async function loadVisual(queryRaw: string, num: number, verbose: boolean, language: string): Promise<AxiosResponse> {
-    loadingStatus.show()
-    let response = await load(queryRaw, num, verbose, language)
-    loadingStatus.hide()
-    return response;
-}
-
-async function loadSnippet(): Promise<Snippet> {
-    let language = await getLanguage()
-    currQuery = await query(language)
-    let response = await loadVisual(currQuery, 0, getConfig("verbose"), language)
-    return { language, data: response.data }
-}
-
 async function find() {
-    let snippet = await loadSnippet()
-    showSnippet(snippet.data, snippet.language, getConfig("openInNewEditor"))
+    let language = await getLanguage()
+    let q = await query(language)
+    loadingStatus.show()
+    let response = await snippet.load(language, q, 0)
+    loadingStatus.hide()
+    showSnippet(response.data, response.language, getConfig("openInNewEditor"))
 }
 
 async function findInplace() {
-    let snippet = await loadSnippet()
-    showSnippet(snippet.data, snippet.language, false)
+    let language = await getLanguage()
+    let q = await query(language)
+    loadingStatus.show()
+    let response = await snippet.load(language, q, 0)
+    loadingStatus.hide()
+    showSnippet(response.data, response.language, false)
 }
 
 async function findInNewEditor() {
-    let snippet = await loadSnippet()
-    showSnippet(snippet.data, snippet.language, true)
+    let language = await getLanguage()
+    let q = await query(language)
+    loadingStatus.show()
+    let response = await snippet.load(language, q, 0)
+    loadingStatus.hide()
+    showSnippet(response.data, response.language, true)
 }
 
 async function showNextAnswer() {
-    if (!currQuery) {
+    if (!snippet.getCurrentQuery()) {
         await find()
         return
     }
-    currNum += 1;
-    let language = await getLanguage()
-    let openInNewEditor = getConfig("openInNewEditor")
-    let verbose = getConfig("verbose")
-    let response = await loadVisual(currQuery, currNum, verbose, language)
-    showSnippet(response.data, language, openInNewEditor)
+    loadingStatus.show()
+    let response = await snippet.loadNext()
+    loadingStatus.hide()
+    showSnippet(response.data, await getLanguage(), getConfig("openInNewEditor"))
 }
 
 async function showPreviousAnswer() {
-    if (!currQuery) {
+    if (!snippet.getCurrentQuery()) {
         await find()
         return
     }
-    if (currNum == 0) {
-        vscode.window.showInformationMessage('Already showing the first answer');
-        return
-    }
-    currNum -= 1;
-    let language = await getLanguage()
-    let openInNewEditor = getConfig("openInNewEditor")
-    let verbose = getConfig("verbose")
-    let response = await loadVisual(currQuery, currNum, verbose, language)
-    showSnippet(response.data, language, openInNewEditor)
+    loadingStatus.show()
+    snippet.loadPrevious().then((res) => {
+        showSnippet(res.data, res.language, getConfig("openInNewEditor"))
+    }).catch((err) => {
+        vscode.window.showInformationMessage(err)
+    });
+    loadingStatus.hide()
 }
 
 async function toggleComments() {
-    let language = await getLanguage()
-    let openInNewEditor = getConfig("openInNewEditor")
-    verboseState = !verboseState
-
-    let response = await load(currQuery, currNum, verboseState, language)
-    showSnippet(response.data, language, openInNewEditor)
+    snippet.toggleVerbose()
+    loadingStatus.show()
+    let response = await snippet.load()
+    loadingStatus.hide()
+    showSnippet(response.data, await getLanguage(), getConfig("openInNewEditor"))
 }
 
 async function findSelectedText() {
@@ -137,14 +96,13 @@ async function findSelectedText() {
         vscode.window.showErrorMessage('There is no open editor window');
         return
     }
-
     let selection = editor.selection;
     let query = editor.document.getText(selection);
-    let openInNewEditor = getConfig("openInNewEditor")
-    let verbose = getConfig("verbose")
     let language = await getLanguage()
-    let response = await load(query, 0, verbose, language)
-    showSnippet(response.data, language, openInNewEditor)
+    loadingStatus.show()
+    let response = await snippet.load(language, query, 0)
+    loadingStatus.hide()
+    showSnippet(response.data, language, getConfig("openInNewEditor"))
 }
 
 async function showSnippet(content: string, language: string, openInNewEditor = true) {
