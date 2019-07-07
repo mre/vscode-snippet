@@ -32,7 +32,7 @@ function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
 export async function query(language: string): Promise<string> {
     let tree = cache.state.get(`snippet_${language}`, {})
     let suggestions = []
-    for (var key in tree) {
+    for (let key in tree) {
         suggestions.push(tree[key])
     }
     suggestions.sort()
