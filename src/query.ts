@@ -39,5 +39,8 @@ export async function query(language: string): Promise<string> {
         tempQuickItem = { description: '', label: suggestions[key] }
         suggestionsQuickItems.push(tempQuickItem)
     }
-    return quickPickCustom(suggestionsQuickItems)
+    let pick = await quickPickCustom(suggestionsQuickItems)
+    tree[pick] = pick
+    cache.state.update(`snippet_${language}`, tree)
+    return pick
 }
