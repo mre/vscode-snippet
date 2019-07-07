@@ -175,12 +175,11 @@ async function findSelectedText() {
     showSnippet(response.data, language, openInNewEditor)
 }
 
-function showSnippet(content: string, language: string, openInNewEditor = true) {
+async function showSnippet(content: string, language: string, openInNewEditor = true) {
 
     if (openInNewEditor) {
-        vscode.workspace.openTextDocument({ language, content }).then(
-            document => vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
-        )
+        let document = await vscode.workspace.openTextDocument({ language, content })
+        vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
     }
     else {
         let editor = vscode.window.activeTextEditor
@@ -191,9 +190,8 @@ function showSnippet(content: string, language: string, openInNewEditor = true) 
                 vscode.window.showErrorMessage('There is no open editor window');
                 return;
             } else {
-                vscode.workspace.openTextDocument({ language, content }).then(
-                    document => vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
-                )
+                let document = await vscode.workspace.openTextDocument({ language, content })
+                vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
             }
         }
         editor.edit(
