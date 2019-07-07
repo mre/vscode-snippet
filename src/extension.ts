@@ -105,17 +105,24 @@ async function findSelectedText() {
     showSnippet(response.data, language, getConfig("openInNewEditor"))
 }
 
+async function newDocument(language, content) {
+    let document = await vscode.workspace.openTextDocument({ language, content })
+    let column = vscode.ViewColumn.Two
+    if (!vscode.ViewColumn) {
+        column = vscode.ViewColumn.One
+    }
+    vscode.window.showTextDocument(document, column)
+}
+
 async function showSnippet(content: string, language: string, openInNewEditor = true) {
     if (openInNewEditor) {
-        let document = await vscode.workspace.openTextDocument({ language, content })
-        vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
+        newDocument(language, content)
         return
     }
 
     let editor = vscode.window.activeTextEditor
     if (!editor) {
-        let document = await vscode.workspace.openTextDocument({ language, content })
-        vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
+        newDocument(language, content)
     }
     editor.edit(
         edit => editor.selections.forEach(

@@ -3,7 +3,6 @@
 import * as vscode from 'vscode'
 import { cache } from './cache'
 
-
 function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
     return new Promise((resolve, _reject) => {
         let window = vscode.window
