@@ -1,6 +1,6 @@
 {
     "name": "snippet",
-    "version": "0.6.0",
+    "version": "0.6.1",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -44,7 +44,8 @@
     ],
     "main": "./out/extension",
     "contributes": {
-        "commands": [{
+        "commands": [
+            {
                 "title": "Find",
                 "command": "snippet.find",
                 "category": "Snippet"
@@ -106,18 +107,22 @@
             }
         },
         "menus": {
-            "editor/context": [{
-                "when": "editorHasSelection",
-                "command": "snippet.findSelectedText",
-                "group": "1_modification"
-            }]
+            "editor/context": [
+                {
+                    "when": "editorHasSelection",
+                    "command": "snippet.findSelectedText",
+                    "group": "1_modification"
+                }
+            ]
         },
-        "keybindings": [{
-            "command": "snippet.findSelectedText",
-            "key": "ctrl+shift+s",
-            "mac": "cmd+shift+s",
-            "when": "editorHasSelection"
-        }]
+        "keybindings": [
+            {
+                "command": "snippet.findSelectedText",
+                "key": "ctrl+shift+s",
+                "mac": "cmd+shift+s",
+                "when": "editorHasSelection"
+            }
+        ]
     },
     "activationEvents": [
         "onCommand:snippet.find",
