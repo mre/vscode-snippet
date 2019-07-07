@@ -123,16 +123,8 @@ async function showPreviousAnswer() {
 }
 
 async function toggleComments() {
-    let editor = vscode.window.activeTextEditor
-    if (!editor) {
-        vscode.window.showErrorMessage('There is no open editor window');
-        return
-    }
-
-    let language = editor.document.languageId
-
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let openInNewEditor: boolean = configuration["openInNewEditor"]
+    let language = await getLanguage()
+    let openInNewEditor = getConfig("openInNewEditor")
     verboseState = !verboseState
 
     let response = await load(currQuery, currNum, verboseState, language)
@@ -146,15 +138,11 @@ async function findSelectedText() {
         return
     }
 
-    let language = editor.document.languageId
-
     let selection = editor.selection;
     let query = editor.document.getText(selection);
-
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let openInNewEditor: boolean = configuration["openInNewEditor"]
-    let verbose: boolean = configuration["verbose"]
-
+    let openInNewEditor = getConfig("openInNewEditor")
+    let verbose = getConfig("verbose")
+    let language = await getLanguage()
     let response = await load(query, 0, verbose, language)
     showSnippet(response.data, language, openInNewEditor)
 }
