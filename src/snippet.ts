@@ -47,7 +47,7 @@ export class Snippet {
             this.currNum = num
         }
 
-        let response = await this._doRequest(this.currLanguage, getConfig("verbose"))
+        let response = await this._doRequest(this.currLanguage)
         return { language, data: response.data }
     }
 
@@ -86,15 +86,12 @@ export class Snippet {
         return config
     }
 
-    private async _doRequest(language: string, verbose: boolean): Promise<AxiosResponse> {
+    private async _doRequest(language: string): Promise<AxiosResponse> {
         let query = encodeURI(this.currQuery.replace(/ /g, '+'))
         let num = this.currNum
 
         let configuration = vscode.workspace.getConfiguration('snippet')
-        let params = "QT"
-        if (verbose) {
-            params = "qT"
-        }
+        let params = this.verboseState ? "qT" : "QT"
 
         let path = `/vscode:${language}/${query}/${num}?${params}&style=bw`;
         let data = await this.requestCache[path]
