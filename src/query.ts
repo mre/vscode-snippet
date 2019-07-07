@@ -11,6 +11,10 @@ function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
         quickPick.title = 'Enter keywords for snippet search (e.g. "read file")'
         quickPick.items = items
 
+        quickPick.onDidChangeValue(() => {
+            quickPick.activeItems = []
+        })
+
         quickPick.onDidAccept(() => {
             let search = ""
             if (quickPick.activeItems.length) {
