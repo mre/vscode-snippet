@@ -89,6 +89,10 @@ async function findInNewEditor() {
 }
 
 async function showNextAnswer() {
+    if (!currQuery) {
+        await find()
+        return
+    }
     let editor = vscode.window.activeTextEditor
     if (!editor) {
         vscode.window.showErrorMessage('There is no open editor window');
@@ -110,6 +114,10 @@ async function showNextAnswer() {
 }
 
 async function showPreviousAnswer() {
+    if (!currQuery) {
+        await find()
+        return
+    }
     let editor = vscode.window.activeTextEditor
     if (!editor) {
         vscode.window.showErrorMessage('There is no open editor window');
