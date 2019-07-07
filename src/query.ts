@@ -3,7 +3,7 @@
 import * as vscode from 'vscode'
 import { cache } from './cache'
 import { HttpProxyAgent } from 'http-proxy-agent'
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 var requestCache = new Object()
 
@@ -28,7 +28,7 @@ function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
     })
 }
 
-export async function query(language: string): Promise<any> {
+export async function query(language: string): Promise<string> {
     let tree = cache.state.get(`snippet_${language}`, {})
     let suggestions = []
     for (var key in tree) {
@@ -45,7 +45,7 @@ export async function query(language: string): Promise<any> {
     return quickPickCustom(suggestionsQuickItems)
 }
 
-export async function asyncRequest(queryRaw: string, num: number, verbose: boolean, language: string): Promise<any> {
+export async function load(queryRaw: string, num: number, verbose: boolean, language: string): Promise<AxiosResponse> {
     let query = encodeURI(queryRaw.replace(/ /g, '+'))
 
     let configuration = vscode.workspace.getConfiguration('snippet')

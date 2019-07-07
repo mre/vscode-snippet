@@ -1,8 +1,9 @@
 'use strict'
 
 import * as vscode from 'vscode'
-import { query, asyncRequest } from './query'
+import { query, load } from './query'
 import { cache } from './cache'
+import { AxiosResponse } from 'axios';
 
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
 loadingStatus.text = 'Loading Snippet ...'
@@ -54,16 +55,23 @@ function getLanguage(): string {
     return language
 }
 
-async function find() {
+function getConfig(param: string) {
     let configuration = vscode.workspace.getConfiguration('snippet')
-    let openInNewEditor: boolean = configuration["openInNewEditor"]
+    return configuration[param]
+}
+
+async function loadSnippet(): Promise<AxiosResponse> {
     let language = getLanguage()
     currQuery = await query(language)
     loadingStatus.show()
-    let verbose: boolean = configuration["verbose"]
-    let response = await asyncRequest(currQuery, 0, verbose, language)
+    let response = await load(currQuery, 0, getConfig("verbose"), language)
     loadingStatus.hide()
-    showSnippet(response.data, language, openInNewEditor)
+    return response
+}
+
+async function find() {
+    let response = await loadSnippet()
+    showSnippet(response.data, getLanguage(), getConfig("openInNewEditor"))
 }
 
 async function findInplace() {
@@ -72,7 +80,7 @@ async function findInplace() {
     currQuery = await query(language)
     loadingStatus.show()
     let verbose: boolean = configuration["verbose"]
-    let response = await asyncRequest(currQuery, 0, verbose, language)
+    let response = await load(currQuery, 0, verbose, language)
     loadingStatus.hide()
     showSnippet(response.data, language, false)
 }
@@ -83,7 +91,7 @@ async function findInNewEditor() {
     currQuery = await query(language)
     loadingStatus.show()
     let verbose: boolean = configuration["verbose"]
-    let response = await asyncRequest(currQuery, 0, verbose, language)
+    let response = await load(currQuery, 0, verbose, language)
     loadingStatus.hide()
     showSnippet(response.data, language, true)
 }
@@ -108,7 +116,7 @@ async function showNextAnswer() {
 
     let verbose: boolean = configuration["verbose"]
     loadingStatus.show()
-    let response = await asyncRequest(currQuery, currNum, verbose, language)
+    let response = await load(currQuery, currNum, verbose, language)
     loadingStatus.hide()
     showSnippet(response.data, language, openInNewEditor)
 }
@@ -134,7 +142,7 @@ async function showPreviousAnswer() {
     }
     let verbose: boolean = configuration["verbose"]
 
-    let response = await asyncRequest(currQuery, currNum, verbose, language)
+    let response = await load(currQuery, currNum, verbose, language)
     showSnippet(response.data, language, openInNewEditor)
 }
 
@@ -151,7 +159,7 @@ async function toggleComments() {
     let openInNewEditor: boolean = configuration["openInNewEditor"]
     verboseState = !verboseState
 
-    let response = await asyncRequest(currQuery, currNum, verboseState, language)
+    let response = await load(currQuery, currNum, verboseState, language)
     showSnippet(response.data, language, openInNewEditor)
 }
 
@@ -171,13 +179,19 @@ async function findSelectedText() {
     let openInNewEditor: boolean = configuration["openInNewEditor"]
     let verbose: boolean = configuration["verbose"]
 
-    let response = await asyncRequest(query, 0, verbose, language)
+    let response = await load(query, 0, verbose, language)
     showSnippet(response.data, language, openInNewEditor)
 }
 
 async function showSnippet(content: string, language: string, openInNewEditor = true) {
+    if (openInNewEditor) {
+        let document = await vscode.workspace.openTextDocument({ language, content })
+        vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
+        return
+    }
+
     let editor = vscode.window.activeTextEditor
-    if (openInNewEditor || !editor) {
+    if (!editor) {
         let document = await vscode.workspace.openTextDocument({ language, content })
         vscode.window.showTextDocument(document, vscode.ViewColumn.Two)
     }
