@@ -63,12 +63,17 @@ function getConfig(param: string) {
     return configuration[param]
 }
 
+async function loadVisual(queryRaw: string, num: number, verbose: boolean, language: string): Promise<AxiosResponse> {
+    loadingStatus.show()
+    let response = await load(queryRaw, num, verbose, language)
+    loadingStatus.hide()
+    return response;
+}
+
 async function loadSnippet(): Promise<Snippet> {
     let language = await getLanguage()
     currQuery = await query(language)
-    loadingStatus.show()
-    let response = await load(currQuery, 0, getConfig("verbose"), language)
-    loadingStatus.hide()
+    let response = await loadVisual(currQuery, 0, getConfig("verbose"), language)
     return { language, data: response.data }
 }
 
@@ -92,23 +97,11 @@ async function showNextAnswer() {
         await find()
         return
     }
-    let editor = vscode.window.activeTextEditor
-    if (!editor) {
-        vscode.window.showErrorMessage('There is no open editor window');
-        return
-    }
-
-    let language = editor.document.languageId
-
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let openInNewEditor: boolean = configuration["openInNewEditor"]
-
     currNum += 1;
-
-    let verbose: boolean = configuration["verbose"]
-    loadingStatus.show()
-    let response = await load(currQuery, currNum, verbose, language)
-    loadingStatus.hide()
+    let language = await getLanguage()
+    let openInNewEditor = getConfig("openInNewEditor")
+    let verbose = getConfig("verbose")
+    let response = await loadVisual(currQuery, currNum, verbose, language)
     showSnippet(response.data, language, openInNewEditor)
 }
 
@@ -117,23 +110,15 @@ async function showPreviousAnswer() {
         await find()
         return
     }
-    let editor = vscode.window.activeTextEditor
-    if (!editor) {
-        vscode.window.showErrorMessage('There is no open editor window');
+    if (currNum == 0) {
+        vscode.window.showInformationMessage('Already showing the first answer');
         return
     }
-
-    let language = editor.document.languageId
-
-    let configuration = vscode.workspace.getConfiguration('snippet')
-    let openInNewEditor: boolean = configuration["openInNewEditor"]
-
-    if (currNum > 0) {
-        currNum -= 1;
-    }
-    let verbose: boolean = configuration["verbose"]
-
-    let response = await load(currQuery, currNum, verbose, language)
+    currNum -= 1;
+    let language = await getLanguage()
+    let openInNewEditor = getConfig("openInNewEditor")
+    let verbose = getConfig("verbose")
+    let response = await loadVisual(currQuery, currNum, verbose, language)
     showSnippet(response.data, language, openInNewEditor)
 }
 
