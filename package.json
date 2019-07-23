@@ -1,6 +1,6 @@
 {
     "name": "snippet",
-    "version": "0.6.1",
+    "version": "0.7.0",
     "publisher": "vscode-snippet",
     "engines": {
         "vscode": "^1.19.0"
@@ -47,6 +47,11 @@
         "commands": [{
                 "title": "Find",
                 "command": "snippet.find",
+                "category": "Snippet"
+            },
+            {
+                "title": "Find for language",
+                "command": "snippet.findForLanguage",
                 "category": "Snippet"
             },
             {
@@ -121,6 +126,7 @@
     },
     "activationEvents": [
         "onCommand:snippet.find",
+        "onCommand:snippet.findForLanguage",
         "onCommand:snippet.findSelectedText",
         "onCommand:snippet.findInplace",
         "onCommand:snippet.findInNewEditor",

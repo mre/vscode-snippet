@@ -17,6 +17,8 @@ export function activate(ctx: vscode.ExtensionContext) {
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', findDefault))
     ctx.subscriptions.push(vscode.commands.registerCommand(
+        'snippet.findForLanguage', findForLanguage))
+    ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.findInplace', findInplace))
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.findInNewEditor', findInNewEditor))
@@ -37,6 +39,18 @@ async function find() {
     let response = await snippet.load(language, userQuery, 0)
     loadingStatus.hide()
     return response
+}
+
+async function findForLanguage() {
+    let language = await vscode.window.showInputBox({
+        value: 'python',
+        placeHolder: 'Find snippet for which programming language?',
+    });
+    let userQuery = await query(language)
+    loadingStatus.show()
+    let response = await snippet.load(language, userQuery, 0)
+    loadingStatus.hide()
+    showSnippet(response.data, response.language, false)
 }
 
 async function findDefault() {
@@ -136,5 +150,6 @@ async function showSnippet(content: string, language: string, openInNewEditor = 
         editor.edit(
             edit => edit.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(lineCount, 10000)), content)
         );
+        editor.document.
     }
 }
