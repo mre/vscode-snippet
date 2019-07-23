@@ -21,10 +21,6 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 * `http.proxy`: VS Code proxy setting. If set, requests made by vscode-snippet will be sent through provided proxy ([see Visual Studio Code network settings](https://code.visualstudio.com/docs/setup/network))
 * `defaultLanguage`: Programming language name in lower case to use as default language when there is no open editor window.
 
-
-
-
-
 ## Installation
 
 Install this extension from the [VSCode
