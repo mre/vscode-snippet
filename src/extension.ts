@@ -7,7 +7,7 @@ import { query } from './query'
 import { Snippet } from './snippet'
 
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
-loadingStatus.text = 'Loading Snippet ...'
+loadingStatus.text = `$(clock) Loading Snippet ...`
 
 let snippet = new Snippet()
 
@@ -15,7 +15,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     cache.state = ctx.globalState
 
     ctx.subscriptions.push(vscode.commands.registerCommand(
-        'snippet.find', find))
+        'snippet.find', findDefault))
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.findInplace', findInplace))
     ctx.subscriptions.push(vscode.commands.registerCommand(
@@ -32,50 +32,45 @@ export function activate(ctx: vscode.ExtensionContext) {
 
 async function find() {
     let language = await getLanguage()
-    let q = await query(language)
+    let userQuery = await query(language)
     loadingStatus.show()
-    let response = await snippet.load(language, q, 0)
+    let response = await snippet.load(language, userQuery, 0)
     loadingStatus.hide()
+    return response
+}
+
+async function findDefault() {
+    let response = await find()
     showSnippet(response.data, response.language, getConfig("openInNewEditor"))
 }
 
 async function findInplace() {
-    let language = await getLanguage()
-    let q = await query(language)
-    loadingStatus.show()
-    let response = await snippet.load(language, q, 0)
-    loadingStatus.hide()
+    let response = await find()
     showSnippet(response.data, response.language, false)
 }
 
 async function findInNewEditor() {
-    let language = await getLanguage()
-    let q = await query(language)
-    loadingStatus.show()
-    let response = await snippet.load(language, q, 0)
-    loadingStatus.hide()
+    let response = await find()
     showSnippet(response.data, response.language, true)
 }
 
 async function showNextAnswer() {
     if (!snippet.getCurrentQuery()) {
-        await find()
-        return
+        return await findDefault()
     }
     loadingStatus.show()
     let response = await snippet.loadNext()
     loadingStatus.hide()
-    showSnippet(response.data, await getLanguage(), getConfig("openInNewEditor"))
+    showSnippet(response.data, await getLanguage(), false)
 }
 
 async function showPreviousAnswer() {
     if (!snippet.getCurrentQuery()) {
-        await find()
-        return
+        return await findDefault()
     }
     loadingStatus.show()
     snippet.loadPrevious().then((res) => {
-        showSnippet(res.data, res.language, getConfig("openInNewEditor"))
+        showSnippet(res.data, res.language, false)
     }).catch((err) => {
         vscode.window.showInformationMessage(err)
     });
@@ -87,7 +82,7 @@ async function toggleComments() {
     loadingStatus.show()
     let response = await snippet.load()
     loadingStatus.hide()
-    showSnippet(response.data, await getLanguage(), getConfig("openInNewEditor"))
+    showSnippet(response.data, await getLanguage(), false)
 }
 
 async function findSelectedText() {
@@ -124,11 +119,22 @@ async function showSnippet(content: string, language: string, openInNewEditor = 
     if (!editor) {
         newDocument(language, content)
     }
-    editor.edit(
-        edit => editor.selections.forEach(
-            selection => {
-                edit.insert(selection.end, "\n" + content);
-            }
-        )
-    );
+
+    if (openInNewEditor) {
+        editor.edit(
+            edit => editor.selections.forEach(
+                selection => {
+                    edit.insert(selection.end, "\n" + content);
+                }
+            )
+        );
+    } else {
+        // Replace the old contents of the current editor window.
+        // This should be improved since we use a range over all lines of the document
+        // rather than replacing the entire document of the editor.
+        let lineCount = editor.document.lineCount
+        editor.edit(
+            edit => edit.replace(new vscode.Range(new vscode.Position(0, 0), new vscode.Position(lineCount, 10000)), content)
+        );
+    }
 }
