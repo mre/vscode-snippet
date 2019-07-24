@@ -3,7 +3,7 @@
     "version": "0.7.0",
     "publisher": "vscode-snippet",
     "engines": {
-        "vscode": "^1.19.0"
+        "vscode": "^1.28.0"
     },
     "repository": {
         "type": "git",
@@ -44,7 +44,8 @@
     ],
     "main": "./out/extension",
     "contributes": {
-        "commands": [{
+        "commands": [
+            {
                 "title": "Find",
                 "command": "snippet.find",
                 "category": "Snippet"
@@ -52,6 +53,11 @@
             {
                 "title": "Find for language",
                 "command": "snippet.findForLanguage",
+                "category": "Snippet"
+            },
+            {
+                "title": "Find with Provider",
+                "command": "snippet.findWithProvider",
                 "category": "Snippet"
             },
             {
@@ -111,21 +117,26 @@
             }
         },
         "menus": {
-            "editor/context": [{
-                "when": "editorHasSelection",
-                "command": "snippet.findSelectedText",
-                "group": "1_modification"
-            }]
+            "editor/context": [
+                {
+                    "when": "editorHasSelection",
+                    "command": "snippet.findSelectedText",
+                    "group": "1_modification"
+                }
+            ]
         },
-        "keybindings": [{
-            "command": "snippet.findSelectedText",
-            "key": "ctrl+shift+s",
-            "mac": "cmd+shift+s",
-            "when": "editorHasSelection"
-        }]
+        "keybindings": [
+            {
+                "command": "snippet.findSelectedText",
+                "key": "ctrl+shift+s",
+                "mac": "cmd+shift+s",
+                "when": "editorHasSelection"
+            }
+        ]
     },
     "activationEvents": [
         "onCommand:snippet.find",
+        "onCommand:snippet.findWithProvider",
         "onCommand:snippet.findForLanguage",
         "onCommand:snippet.findSelectedText",
         "onCommand:snippet.findInplace",
@@ -148,8 +159,8 @@
     },
     "devDependencies": {
         "@types/mocha": "^2.2.48",
-        "@types/node": "^7.10.6",
+        "@types/node": "^7.10.7",
         "typescript": "^2.9.2",
-        "vscode": "^1.1.35"
+        "vscode": "^1.28.0"
     }
 }

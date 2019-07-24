@@ -5,6 +5,7 @@ import { getLanguage, getConfig } from './config'
 import { cache } from './cache'
 import { query } from './query'
 import { Snippet } from './snippet'
+import SnippetProvider from './provider'
 
 let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
 loadingStatus.text = `$(clock) Loading Snippet ...`
@@ -13,6 +14,9 @@ let snippet = new Snippet()
 
 export function activate(ctx: vscode.ExtensionContext) {
     cache.state = ctx.globalState
+
+    let provider = new SnippetProvider();
+    let disposableProvider = vscode.workspace.registerTextDocumentContentProvider("snippet", provider);
 
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.find', findDefault))
@@ -30,6 +34,30 @@ export function activate(ctx: vscode.ExtensionContext) {
         'snippet.showNextAnswer', showNextAnswer))
     ctx.subscriptions.push(vscode.commands.registerCommand(
         'snippet.toggleComments', toggleComments))
+    ctx.subscriptions.push(vscode.commands.registerCommand(
+        'snippet.findWithProvider', findWithProvider))
+    ctx.subscriptions.push(
+        disposableProvider,
+    )
+}
+
+async function findWithProvider() {
+    let language = await getLanguage()
+    let userQuery = await query(language)
+    loadingStatus.show()
+    if (userQuery) {
+        let uri = vscode.Uri.parse('snippet:' + userQuery);
+        // calls back into the provider
+        let doc = await vscode.workspace.openTextDocument(uri);
+        vscode.languages.setTextDocumentLanguage(doc, "python");
+
+        let column = vscode.ViewColumn.Two
+        if (!vscode.ViewColumn) {
+            column = vscode.ViewColumn.One
+        }
+        await vscode.window.showTextDocument(doc, { viewColumn: column, preview: true });
+    }
+    loadingStatus.hide()
 }
 
 async function find() {
