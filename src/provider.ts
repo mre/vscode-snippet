@@ -1,33 +1,29 @@
 'use strict';
 import * as vscode from 'vscode';
 import { TextDocumentContentProvider, Uri } from 'vscode';
+import { Snippet } from './snippet';
 
 export default class SnippetProvider implements TextDocumentContentProvider {
+
     /**
      *
      * @param {vscode.Uri} uri - a fake uri
      * @returns {string} - Code Snippet
      **/
-    public provideTextDocumentContent(uri: Uri): string {
-
-        return "x = [i for i in fib() where i > 10]"
-
-        // already loaded?
-        // let document = this._documents.get(uri.toString());
-        // if (document) {
-        //     return document.value;
-        // }
-
-        // let settingsFilePath = vscode.extensions.getExtension('vicerust.snes-asm').extensionPath + "/server/src/Memory/Disassembly.asm";
-        // let returnString: string;
-
-
-        // // read settings file
-        // if (fs.existsSync(settingsFilePath)) {
-        //     returnString = fs.readFileSync(settingsFilePath).toString()
-        // }
-
-        // // return JSON object as a string
-        // return returnString
+    public async provideTextDocumentContent(uri: Uri): Promise<string> {
+        let request = decodeRequest(uri)
+        let snippet = new Snippet()
+        let response = await snippet.load(request.language, request.query, 0)
+        return response.data
     }
+}
+
+export function encodeRequest(query: string, language: string): vscode.Uri {
+    const data = JSON.stringify({ query: query, language: language });
+    return vscode.Uri.parse(`snippet:[${language}] ${query}?${data}`);
+}
+
+export function decodeRequest(uri: vscode.Uri): any {
+    let obj = JSON.parse(uri.query);
+    return obj;
 }
