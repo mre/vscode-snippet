@@ -44,8 +44,7 @@
     ],
     "main": "./out/extension",
     "contributes": {
-        "commands": [
-            {
+        "commands": [{
                 "title": "Find",
                 "command": "snippet.find",
                 "category": "Snippet"
@@ -53,11 +52,6 @@
             {
                 "title": "Find for language",
                 "command": "snippet.findForLanguage",
-                "category": "Snippet"
-            },
-            {
-                "title": "Find with Provider",
-                "command": "snippet.findWithProvider",
                 "category": "Snippet"
             },
             {
@@ -117,26 +111,21 @@
             }
         },
         "menus": {
-            "editor/context": [
-                {
-                    "when": "editorHasSelection",
-                    "command": "snippet.findSelectedText",
-                    "group": "1_modification"
-                }
-            ]
-        },
-        "keybindings": [
-            {
+            "editor/context": [{
+                "when": "editorHasSelection",
                 "command": "snippet.findSelectedText",
-                "key": "ctrl+shift+s",
-                "mac": "cmd+shift+s",
-                "when": "editorHasSelection"
-            }
-        ]
+                "group": "1_modification"
+            }]
+        },
+        "keybindings": [{
+            "command": "snippet.findSelectedText",
+            "key": "ctrl+shift+s",
+            "mac": "cmd+shift+s",
+            "when": "editorHasSelection"
+        }]
     },
     "activationEvents": [
         "onCommand:snippet.find",
-        "onCommand:snippet.findWithProvider",
         "onCommand:snippet.findForLanguage",
         "onCommand:snippet.findSelectedText",
         "onCommand:snippet.findInplace",

@@ -14,7 +14,6 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand('snippet.showPreviousAnswer', endpoints.showPreviousAnswer)
     vscode.commands.registerCommand('snippet.showNextAnswer', endpoints.showNextAnswer)
     vscode.commands.registerCommand('snippet.toggleComments', endpoints.toggleComments)
-    vscode.commands.registerCommand('snippet.findWithProvider', endpoints.findWithProvider)
 
     cache.state = ctx.globalState
     let provider = new SnippetProvider();
