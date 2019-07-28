@@ -48,7 +48,7 @@ export async function findForLanguage() {
     let userQuery = await query(language)
     let response = await snippet.load(language, userQuery, 0)
     loadingStatus.hide()
-    showSnippet(response.data, response.language, false)
+    showSnippet(response.data, response.language, true)
 }
 
 export async function findDefault() {
