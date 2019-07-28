@@ -1,5 +1,7 @@
 {
     "name": "snippet",
+    "displayName": "Snippet",
+    "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
     "version": "0.7.0",
     "publisher": "vscode-snippet",
     "engines": {
@@ -10,8 +12,6 @@
         "url": "https://github.com/mre/vscode-snippet.git"
     },
     "license": "MIT",
-    "displayName": "Snippet",
-    "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
     "icon": "contrib/icon.png",
     "galleryBanner": {
         "color": "#6cfff9",
