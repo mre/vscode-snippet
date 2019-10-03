@@ -1,43 +1,40 @@
-'use strict'
+import * as vscode from 'vscode';
+import { cache } from './cache';
 
-import * as vscode from 'vscode'
-import { cache } from './cache'
 
-function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
-    return new Promise((resolve, _reject) => {
-        let window = vscode.window
-        const quickPick = (<any>window).createQuickPick()
-        quickPick.title = 'Enter keywords for snippet search (e.g. "read file")'
-        quickPick.items = items
+const quickPickCustom = (items: vscode.QuickPickItem[]): Promise<string> => {
+    const window = vscode.window;
+    const quickPick = (<any>window).createQuickPick();
+    quickPick.title = 'Enter keywords for snippet search (e.g. "read file")';
+    quickPick.items = items;
+    let search = '';
+    quickPick.onDidChangeValue(() => quickPick.activeItems = []);
 
-        quickPick.onDidChangeValue(() => {
-            quickPick.activeItems = []
-        })
+    quickPick.onDidAccept(() => {
+        if (quickPick.activeItems.length) {
+            search = quickPick.activeItems[0]['label'];
+        } else {
+            search = quickPick.value;
+        }
+        quickPick.hide();
+    });
+    quickPick.show();
 
-        quickPick.onDidAccept(() => {
-            let search = ""
-            if (quickPick.activeItems.length) {
-                search = quickPick.activeItems[0]['label'];
-            } else {
-                search = quickPick.value;
-            }
-            quickPick.hide()
-            resolve(search)
-        })
-        quickPick.show()
-    })
+    return Promise.resolve(search);
 }
 
-export async function query(language: string): Promise<string> {
-    let suggestions = cache.state.get(`snippet_suggestions_${language}`, [])
+export const query = async (language: string): Promise<string> => {
+    const suggestions = cache.state.get(`snippet_suggestions_${language}`, [])
+    const suggestionsQuickItems: Array<vscode.QuickPickItem> = [];
 
-    let suggestionsQuickItems: Array<vscode.QuickPickItem> = []
-    for (let key in suggestions) {
-        let tempQuickItem: vscode.QuickPickItem = { label: suggestions[key], description: '' }
-        suggestionsQuickItems.push(tempQuickItem)
+    for (const key in suggestions) {
+        const tempQuickItem: vscode.QuickPickItem = { label: suggestions[key], description: '' }
+        suggestionsQuickItems.push(tempQuickItem);
     }
-    let input = await quickPickCustom(suggestionsQuickItems)
-    suggestions.push(input)
-    cache.state.update(`snippet_suggestions_${language}`, suggestions.sort())
-    return input
+
+    const input = await quickPickCustom(suggestionsQuickItems);
+
+    suggestions.push(input);
+    cache.state.update(`snippet_suggestions_${language}`, suggestions.sort());
+    return input;
 }
