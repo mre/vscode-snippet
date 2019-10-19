@@ -5,8 +5,7 @@ import { cache } from './cache'
 
 function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
     return new Promise((resolve, _reject) => {
-        let window = vscode.window
-        const quickPick = (<any>window).createQuickPick()
+        const quickPick = vscode.window.createQuickPick()
         quickPick.title = 'Enter keywords for snippet search (e.g. "read file")'
         quickPick.items = items
 
