@@ -10,7 +10,7 @@ export interface Response {
     data: string
 }
 
-export class Snippet {
+class Snippet {
     // Current language we're searching for
     currLanguage?: string;
 
@@ -47,25 +47,29 @@ export class Snippet {
             this.currNum = num
         }
 
-        let response = await this._doRequest(this.currLanguage)
+        let response = await this._doRequest()
         return { language, data: response.data }
     }
 
-    async loadNext(): Promise<Response> {
+    getNextAnswerNumber(): number {
         this.currNum++
-        return this.load()
+        return this.currNum
     }
 
-    async loadPrevious(): Promise<Response> {
+    getPreviousAnswerNumber(): number {
         if (this.currNum == 0) {
-            return Promise.reject("Already at first answer")
+            return -1;
         }
         this.currNum--
-        return this.load(this.currLanguage)
+        return this.currNum
     }
 
     getCurrentQuery(): string | undefined {
         return this.currQuery
+    }
+
+    getCurrentAnswerNumber(): number {
+        return this.currNum
     }
 
     private _requestConfig(): {} {
@@ -94,9 +98,9 @@ export class Snippet {
         return baseUrl + path;
     }
 
-    private async _doRequest(language: string): Promise<AxiosResponse> {
+    private async _doRequest(): Promise<AxiosResponse> {
         let query = encodeURI(this.currQuery.replace(/ /g, '+'))
-        let url = this.getUrl(language, query)
+        let url = this.getUrl(this.currLanguage, query)
         let data = await this.requestCache[url]
         if (data) {
             return data;
@@ -106,3 +110,5 @@ export class Snippet {
         return res
     }
 }
+
+export default new Snippet();
