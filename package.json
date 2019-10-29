@@ -1,159 +1,159 @@
 {
-    "name": "snippet",
-    "displayName": "Snippet",
-    "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
-    "version": "0.7.0",
-    "publisher": "vscode-snippet",
-    "engines": {
-        "vscode": "^1.34.0"
-    },
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/mre/vscode-snippet.git"
-    },
-    "license": "MIT",
-    "icon": "contrib/icon.png",
-    "galleryBanner": {
-        "color": "#6cfff9",
-        "theme": "light"
-    },
-    "categories": [
-        "Programming Languages",
-        "Snippets",
-        "Other"
+  "name": "snippet",
+  "displayName": "Snippet",
+  "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
+  "version": "0.7.0",
+  "publisher": "vscode-snippet",
+  "engines": {
+    "vscode": "^1.39.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mre/vscode-snippet.git"
+  },
+  "license": "MIT",
+  "icon": "contrib/icon.png",
+  "galleryBanner": {
+    "color": "#6cfff9",
+    "theme": "light"
+  },
+  "categories": [
+    "Programming Languages",
+    "Snippets",
+    "Other"
+  ],
+  "tags": [
+    "python",
+    "ruby",
+    "php",
+    "rust",
+    "C#",
+    "go",
+    "haskell",
+    "typescript",
+    "shell",
+    "javascript",
+    "node",
+    "snippet",
+    "examples",
+    "documentation",
+    "help",
+    "tldr",
+    "helper",
+    "cheatsheet"
+  ],
+  "main": "./out/extension",
+  "contributes": {
+    "commands": [
+      {
+        "title": "Find",
+        "command": "snippet.find",
+        "category": "Snippet"
+      },
+      {
+        "title": "Find for language",
+        "command": "snippet.findForLanguage",
+        "category": "Snippet"
+      },
+      {
+        "title": "Find Inplace",
+        "command": "snippet.findInplace",
+        "category": "Snippet"
+      },
+      {
+        "title": "Find in new editor window",
+        "command": "snippet.findInNewEditor",
+        "category": "Snippet"
+      },
+      {
+        "title": "Find snippet from selected text",
+        "command": "snippet.findSelectedText",
+        "category": "Snippet"
+      },
+      {
+        "title": "Show previous answer",
+        "command": "snippet.showPreviousAnswer",
+        "category": "Snippet"
+      },
+      {
+        "title": "Show next answer",
+        "command": "snippet.showNextAnswer",
+        "category": "Snippet"
+      },
+      {
+        "title": "Toggle comments",
+        "command": "snippet.toggleComments",
+        "category": "Snippet"
+      }
     ],
-    "tags": [
-        "python",
-        "ruby",
-        "php",
-        "rust",
-        "C#",
-        "go",
-        "haskell",
-        "typescript",
-        "shell",
-        "javascript",
-        "node",
-        "snippet",
-        "examples",
-        "documentation",
-        "help",
-        "tldr",
-        "helper",
-        "cheatsheet"
-    ],
-    "main": "./out/extension",
-    "contributes": {
-        "commands": [
-            {
-                "title": "Find",
-                "command": "snippet.find",
-                "category": "Snippet"
-            },
-            {
-                "title": "Find for language",
-                "command": "snippet.findForLanguage",
-                "category": "Snippet"
-            },
-            {
-                "title": "Find Inplace",
-                "command": "snippet.findInplace",
-                "category": "Snippet"
-            },
-            {
-                "title": "Find in new editor window",
-                "command": "snippet.findInNewEditor",
-                "category": "Snippet"
-            },
-            {
-                "title": "Find snippet from selected text",
-                "command": "snippet.findSelectedText",
-                "category": "Snippet"
-            },
-            {
-                "title": "Show previous answer",
-                "command": "snippet.showPreviousAnswer",
-                "category": "Snippet"
-            },
-            {
-                "title": "Show next answer",
-                "command": "snippet.showNextAnswer",
-                "category": "Snippet"
-            },
-            {
-                "title": "Toggle comments",
-                "command": "snippet.toggleComments",
-                "category": "Snippet"
-            }
-        ],
-        "configuration": {
-            "title": "Snippet Configuration",
-            "properties": {
-                "snippet.baseUrl": {
-                    "type": "string",
-                    "default": "https://cht.sh",
-                    "description": "Base URL of the cheat sheet server"
-                },
-                "snippet.openInNewEditor": {
-                    "type": "boolean",
-                    "default": true,
-                    "description": "Open snippet result in new editor."
-                },
-                "snippet.verbose": {
-                    "type": "boolean",
-                    "default": false,
-                    "description": "Also show explanations for code snippets."
-                },
-                "snippet.defaultLanguage": {
-                    "type": "string",
-                    "default": null,
-                    "description": "Programming language name in lower case to use as default language when there is no open editor window."
-                }
-            }
+    "configuration": {
+      "title": "Snippet Configuration",
+      "properties": {
+        "snippet.baseUrl": {
+          "type": "string",
+          "default": "https://cht.sh",
+          "description": "Base URL of the cheat sheet server"
         },
-        "menus": {
-            "editor/context": [
-                {
-                    "when": "editorHasSelection",
-                    "command": "snippet.findSelectedText",
-                    "group": "1_modification"
-                }
-            ]
+        "snippet.openInNewEditor": {
+          "type": "boolean",
+          "default": true,
+          "description": "Open snippet result in new editor."
         },
-        "keybindings": [
-            {
-                "command": "snippet.findSelectedText",
-                "key": "ctrl+shift+s",
-                "mac": "cmd+shift+s",
-                "when": "editorHasSelection"
-            }
-        ]
+        "snippet.verbose": {
+          "type": "boolean",
+          "default": false,
+          "description": "Also show explanations for code snippets."
+        },
+        "snippet.defaultLanguage": {
+          "type": "string",
+          "default": null,
+          "description": "Programming language name in lower case to use as default language when there is no open editor window."
+        }
+      }
     },
-    "activationEvents": [
-        "onCommand:snippet.find",
-        "onCommand:snippet.findForLanguage",
-        "onCommand:snippet.findSelectedText",
-        "onCommand:snippet.findInplace",
-        "onCommand:snippet.findInNewEditor",
-        "onCommand:snippet.showPreviousAnswer",
-        "onCommand:snippet.showNextAnswer",
-        "onCommand:snippet.toggleComments"
-    ],
-    "scripts": {
-        "vscode:prepublish": "npm run compile",
-        "compile": "tsc -p ./",
-        "watch": "tsc -watch -p ./",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test"
+    "menus": {
+      "editor/context": [
+        {
+          "when": "editorHasSelection",
+          "command": "snippet.findSelectedText",
+          "group": "1_modification"
+        }
+      ]
     },
-    "dependencies": {
-        "axios": "^0.19.0",
-        "event-stream": "4.0.1",
-        "http-proxy-agent": "^2.1.0"
-    },
-    "devDependencies": {
-        "@types/node": "^12.11.7",
-        "@types/vscode": "^1.39.0",
-        "tslint": "^5.20.0",
-        "typescript": "^3.6.4"
-    }
+    "keybindings": [
+      {
+        "command": "snippet.findSelectedText",
+        "key": "ctrl+shift+s",
+        "mac": "cmd+shift+s",
+        "when": "editorHasSelection"
+      }
+    ]
+  },
+  "activationEvents": [
+    "onCommand:snippet.find",
+    "onCommand:snippet.findForLanguage",
+    "onCommand:snippet.findSelectedText",
+    "onCommand:snippet.findInplace",
+    "onCommand:snippet.findInNewEditor",
+    "onCommand:snippet.showPreviousAnswer",
+    "onCommand:snippet.showNextAnswer",
+    "onCommand:snippet.toggleComments"
+  ],
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "npm run compile && node ./node_modules/vscode/bin/test"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "event-stream": "4.0.1",
+    "http-proxy-agent": "^2.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^12.11.7",
+    "@types/vscode": "^1.39.0",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.4"
+  }
 }
