@@ -5,7 +5,6 @@ SHELL := /bin/bash
 .PHONY: update
 update: ## Update all dependencies
 	npm update
-	npm run postinstall
 
 .PHONY: install
 install: ## Install npm package
