@@ -19,7 +19,7 @@ export default class SnippetProvider implements TextDocumentContentProvider {
 
 export function encodeRequest(query: string, language: string, answerNumber?: number): vscode.Uri {
     const data = JSON.stringify({ query: query, language: language, answerNumber });
-    return vscode.Uri.parse(`snippet:[${language}] ${query}?${data}`);
+    return vscode.Uri.parse(`snippet:[${language}] ${query} (${answerNumber})?${data}`);
 }
 
 export function decodeRequest(uri: vscode.Uri): any {

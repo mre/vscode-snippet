@@ -19,7 +19,7 @@ export async function findWithProvider(language: string, userQuery: string, numb
 
     // Calls back into the provider
     let doc = await vscode.workspace.openTextDocument(uri);
-    vscode.languages.setTextDocumentLanguage(doc, language);
+    doc = await vscode.languages.setTextDocumentLanguage(doc, language);
 
     let column = vscode.ViewColumn.Two
     if (!vscode.ViewColumn) {
