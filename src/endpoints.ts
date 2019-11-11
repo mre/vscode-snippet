@@ -73,8 +73,9 @@ export async function showPreviousAnswer() {
         return await findDefault()
     }
     const answerNumber = snippet.getPreviousAnswerNumber();
-    if(answerNumber < 0) {
+    if(answerNumber == null) {
         vscode.window.showInformationMessage('already at first answer')
+        return;
     }
     findWithProvider(await getLanguage(), snippet.getCurrentQuery(), answerNumber, false)
 }

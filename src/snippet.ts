@@ -56,9 +56,9 @@ class Snippet {
         return this.currNum
     }
 
-    getPreviousAnswerNumber(): number {
+    getPreviousAnswerNumber(): number | null {
         if (this.currNum == 0) {
-            return -1;
+            return null;
         }
         this.currNum--
         return this.currNum
