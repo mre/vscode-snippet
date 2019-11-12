@@ -87,7 +87,7 @@
       }
     ],
     "configuration": {
-      "title": "Snippet Configuration",
+      "title": "Snippet",
       "properties": {
         "snippet.baseUrl": {
           "type": "string",
