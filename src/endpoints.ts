@@ -25,7 +25,15 @@ export async function findWithProvider(language: string, userQuery: string, numb
     if (!vscode.ViewColumn) {
         column = vscode.ViewColumn.One
     }
-    await vscode.window.showTextDocument(doc, { viewColumn: column, preview: openInNewEditor });
+    if (openInNewEditor) {
+        await vscode.window.showTextDocument(doc, { viewColumn: column, preview: true });
+    } else {
+        let editor = vscode.window.activeTextEditor;
+        if (editor) {
+            let snippet = new vscode.SnippetString(doc.getText());
+            await editor.insertSnippet(snippet)
+        }
+    }
 
     loadingStatus.hide()
 }
