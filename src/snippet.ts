@@ -36,16 +36,10 @@ class Snippet {
         this.verboseState = !this.verboseState
     }
 
-    async load(language?: string, query?: string, num?: number): Promise<Response> {
-        if (language) {
-            this.currLanguage = language
-        }
-        if (query) {
-            this.currQuery = query
-        }
-        if (num) {
-            this.currNum = num
-        }
+    async load(language: string, query: string, num: number): Promise<Response> {
+        this.currLanguage = language
+        this.currQuery = query
+        this.currNum = num
 
         let response = await this._doRequest()
         return { language, data: response.data }
@@ -70,6 +64,10 @@ class Snippet {
 
     getCurrentAnswerNumber(): number {
         return this.currNum
+    }
+
+    getVerbose(): boolean {
+        return this.verboseState
     }
 
     private _requestConfig(): {} {
@@ -101,7 +99,7 @@ class Snippet {
     private async _doRequest(): Promise<AxiosResponse> {
         let query = encodeURI(this.currQuery.replace(/ /g, '+'))
         let url = this.getUrl(this.currLanguage, query)
-        let data = await this.requestCache[url]
+        let data = this.requestCache[url]
         if (data) {
             return data;
         }
