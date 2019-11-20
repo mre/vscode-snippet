@@ -1,122 +1,162 @@
-import * as vscode from 'vscode'
-import { getLanguage, getConfig } from './config'
-import { query } from './query'
-import { showSnippet } from './document'
-import { Snippet } from './snippet'
-import { encodeRequest } from './provider'
+import * as vscode from "vscode";
+import { pickLanguage, getLanguage, getConfig } from "./config";
+import { query } from "./query";
+import { encodeRequest } from "./provider";
+import snippet from "./snippet";
 
 export interface Request {
-    language: string
-    query: string
+  language: string;
+  query: string;
 }
 
-let loadingStatus = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left)
-loadingStatus.text = `$(clock) Loading Snippet ...`
+let loadingStatus = vscode.window.createStatusBarItem(
+  vscode.StatusBarAlignment.Left
+);
+loadingStatus.text = `$(clock) Loading Snippet ...`;
 
-let snippet = new Snippet()
+export async function findWithProvider(
+  language: string,
+  userQuery: string,
+  verbose: boolean,
+  number: number,
+  openInNewEditor = true
+) {
+  loadingStatus.show();
 
-export async function findWithProvider(language: string, userQuery: string) {
-    loadingStatus.show()
+  let uri = encodeRequest(userQuery, language, verbose, number);
 
-    let uri = encodeRequest(userQuery, language);
+  // Calls back into the provider
+  let doc = await vscode.workspace.openTextDocument(uri);
+  loadingStatus.hide();
 
-    // Calls back into the provider
-    let doc = await vscode.workspace.openTextDocument(uri);
-    vscode.languages.setTextDocumentLanguage(doc, language);
+  doc = await vscode.languages.setTextDocumentLanguage(doc, language);
+  let editor = vscode.window.activeTextEditor;
 
-    let column = vscode.ViewColumn.Two
-    if (!vscode.ViewColumn) {
-        column = vscode.ViewColumn.One
+  // Open in new editor in case the respective config flag is set to true
+  // or there is no open user-created editor where we could paste the snippet in.
+  if (openInNewEditor || !editor || editor.document.uri.scheme == "snippet") {
+    await vscode.window.showTextDocument(doc, {
+      viewColumn: vscode.ViewColumn.Two,
+      preview: true,
+      preserveFocus: true
+    });
+  } else {
+    let snippet = new vscode.SnippetString(doc.getText());
+    let success = await editor.insertSnippet(snippet);
+    if (!success) {
+      vscode.window.showInformationMessage("Error while opening snippet.");
     }
-    await vscode.window.showTextDocument(doc, { viewColumn: column, preview: true });
-
-    loadingStatus.hide()
+  }
 }
 
 export async function getInput(): Promise<Request> {
-    let language = await getLanguage()
-    let userQuery = await query(language)
-    return { language, query: userQuery }
+  let language = await getLanguage();
+  let userQuery = await query(language);
+  return { language, query: userQuery };
 }
 
 export async function findForLanguage() {
-    loadingStatus.show()
-    let language = await vscode.window.showInputBox({
-        value: 'python',
-        placeHolder: 'Find snippet for which programming language?',
-    });
-    let userQuery = await query(language)
-    let response = await snippet.load(language, userQuery, 0)
-    loadingStatus.hide()
-    showSnippet(response.data, response.language, true)
+  let language = await pickLanguage();
+  let userQuery = await query(language);
+  await findWithProvider(
+    language,
+    userQuery,
+    snippet.getVerbose(),
+    0,
+    getConfig("openInNewEditor")
+  );
 }
 
 export async function findDefault() {
-    loadingStatus.show()
-    let request = await getInput()
-    let response = await snippet.load(request.language, request.query, 0)
-    showSnippet(response.data, response.language, getConfig("openInNewEditor"))
-    loadingStatus.hide()
+  let request = await getInput();
+  await findWithProvider(
+    request.language,
+    request.query,
+    snippet.getVerbose(),
+    0,
+    getConfig("openInNewEditor")
+  );
 }
 
 export async function findInplace() {
-    loadingStatus.show()
-    let request = await getInput()
-    let response = await snippet.load(request.language, request.query, 0)
-    showSnippet(response.data, response.language, false)
-    loadingStatus.hide()
+  let request = await getInput();
+  await findWithProvider(
+    request.language,
+    request.query,
+    snippet.getVerbose(),
+    0,
+    false
+  );
 }
 
 export async function findInNewEditor() {
-    loadingStatus.show()
-    let request = await getInput()
-    let response = await snippet.load(request.language, request.query, 0)
-    showSnippet(response.data, response.language, true)
-    loadingStatus.hide()
+  let request = await getInput();
+  await findWithProvider(
+    request.language,
+    request.query,
+    snippet.getVerbose(),
+    0,
+    true
+  );
 }
 
 export async function showNextAnswer() {
-    if (!snippet.getCurrentQuery()) {
-        return await findDefault()
-    }
-    loadingStatus.show()
-    let response = await snippet.loadNext()
-    showSnippet(response.data, await getLanguage(), false)
-    loadingStatus.hide()
+  if (!snippet.getCurrentQuery()) {
+    return await findDefault();
+  }
+  const answerNumber = snippet.getNextAnswerNumber();
+  await findWithProvider(
+    await getLanguage(),
+    snippet.getCurrentQuery(),
+    snippet.getVerbose(),
+    answerNumber,
+    getConfig("openInNewEditor")
+  );
 }
 
 export async function showPreviousAnswer() {
-    if (!snippet.getCurrentQuery()) {
-        return await findDefault()
-    }
-    loadingStatus.show()
-    snippet.loadPrevious().then((res) => {
-        showSnippet(res.data, res.language, false)
-    }).catch((err) => {
-        vscode.window.showInformationMessage(err)
-    });
-    loadingStatus.hide()
+  if (!snippet.getCurrentQuery()) {
+    return await findDefault();
+  }
+  const answerNumber = snippet.getPreviousAnswerNumber();
+  if (answerNumber == null) {
+    vscode.window.showInformationMessage("already at first snippet");
+    return;
+  }
+  findWithProvider(
+    await getLanguage(),
+    snippet.getCurrentQuery(),
+    snippet.getVerbose(),
+    answerNumber,
+    getConfig("openInNewEditor")
+  );
 }
 
 export async function toggleComments() {
-    loadingStatus.show()
-    snippet.toggleVerbose()
-    let response = await snippet.load()
-    showSnippet(response.data, await getLanguage(), false)
-    loadingStatus.hide()
+  snippet.toggleVerbose();
+  findWithProvider(
+    await getLanguage(),
+    snippet.getCurrentQuery(),
+    snippet.getVerbose(),
+    snippet.getCurrentAnswerNumber(),
+    getConfig("openInNewEditor")
+  );
 }
 
 export async function findSelectedText() {
-    let editor = vscode.window.activeTextEditor
-    if (!editor) {
-        vscode.window.showErrorMessage('There is no open editor window');
-        return
-    }
-    let selection = editor.selection;
-    let query = editor.document.getText(selection);
-    let language = await getLanguage()
-    loadingStatus.show()
-    let response = await snippet.load(language, query, 0)
-    showSnippet(response.data, language, getConfig("openInNewEditor"))
-    loadingStatus.hide()
+  let editor = vscode.window.activeTextEditor;
+  if (!editor) {
+    vscode.window.showErrorMessage("There is no open editor window");
+    return;
+  }
+  let selection = editor.selection;
+  let query = editor.document.getText(selection);
+  let language = await getLanguage();
+  findWithProvider(
+    language,
+    query,
+    snippet.getVerbose(),
+    0,
+    getConfig("openInNewEditor")
+  );
 }

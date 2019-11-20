@@ -1,7 +1,7 @@
-'use strict'
+"use strict";
 
-import * as vscode from 'vscode'
+import * as vscode from "vscode";
 
 export const cache = {
-    state: <vscode.Memento>null
-}
+  state: <vscode.Memento>null
+};
