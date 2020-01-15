@@ -29,7 +29,11 @@ export async function findWithProvider(
   let doc = await vscode.workspace.openTextDocument(uri);
   loadingStatus.hide();
 
-  doc = await vscode.languages.setTextDocumentLanguage(doc, language);
+  try {
+    doc = await vscode.languages.setTextDocumentLanguage(doc, language);
+  } catch (e) {
+    console.log(`Cannot set document language to ${language}: ${e}`);
+  }
   let editor = vscode.window.activeTextEditor;
 
   // Open in new editor in case the respective config flag is set to true
