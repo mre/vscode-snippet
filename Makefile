@@ -20,7 +20,7 @@ package: ## Package extension for publication
 
 .PHONY: update-vsce
 update-vsce: ## Update vsce extension manager
-	npm install -g vsce
+	npm install vsce
 
 .PHONY: publish
 publish: update-vsce ls install package ## Publish on VSCode Marketplace
