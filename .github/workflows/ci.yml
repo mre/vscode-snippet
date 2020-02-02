@@ -1,0 +1,17 @@
+name: CI
+
+on: [push]
+
+jobs:
+  npmInstall:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: npm install
+        uses: actions/npm@master
+        with:
+          args: install --unsafe-perm
+      - name: Vscode package plugin
+        uses: JCofman/vscodeaction@master
+        with:
+          args: package
