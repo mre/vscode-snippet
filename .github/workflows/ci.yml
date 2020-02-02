@@ -18,6 +18,12 @@ jobs:
           node-version: ${{ matrix.node }}
 
       - run: npm install
+        
+      - name: Lint
+        uses: mooyoul/tslint-actions@v1.1.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          pattern: '*.ts'
 
       - name: Vscode package plugin
         uses: JCofman/vscodeaction@master
