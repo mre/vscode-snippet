@@ -3,7 +3,7 @@
 import * as vscode from "vscode";
 import axios, { AxiosResponse } from "axios";
 import { getConfig } from "./config";
-import * as HttpProxyAgent from "http-proxy-agent";
+import { HttpProxyAgent } from "http-proxy-agent";
 
 export interface Response {
   language: string;
