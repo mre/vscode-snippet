@@ -149,7 +149,7 @@
     "axios": "^0.19.2",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^4.0.1",
-    "vsce": "^1.77.0"
+    "vsce": "^1.78.0"
   },
   "devDependencies": {
     "@types/node": "^12.12.11",
