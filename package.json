@@ -146,7 +146,7 @@
     "test": "npm run compile && node ./node_modules/vscode/bin/test"
   },
   "dependencies": {
-    "axios": "^0.19.2",
+    "axios": "^0.21.0",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^4.0.1",
     "vsce": "^1.81.1"
