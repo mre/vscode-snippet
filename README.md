@@ -6,7 +6,8 @@
 [![GitHub](https://img.shields.io/github/release/mre/vscode-snippet.svg?style=flat-square)](https://github.com/mre/vscode-snippet/releases)
 [![Visual Studio Marketplace](https://vsmarketplacebadge.apphb.com/installs/vscode-snippet.Snippet.svg?style=flat-square)](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.Snippet)
 
-A Visual Studio Code extension for [cht.sh](https://cht.sh/).
+A Visual Studio Code extension for [cht.sh](https://cht.sh/).  
+[Watch this lightning talk to learn more](https://www.youtube.com/watch?v=edGVRJf6uvg).
 
 ## Features
 
