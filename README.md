@@ -9,6 +9,13 @@
 A Visual Studio Code extension for [cht.sh](https://cht.sh/).  
 [Watch this lightning talk to learn more](https://www.youtube.com/watch?v=edGVRJf6uvg).
 
+
+## ⚠️ Looking for maintainers ⚠️
+
+Are you a TypeScript/JavaScript developer and can lend me a hand on maintaining this plugin?  
+There are a couple of issues, which need to get fixed, so if you're interested, please send  
+PRs to get vscode-snippet working again. 🙏
+
 ## Features
 
 * Zero configuration: works out of the box.
