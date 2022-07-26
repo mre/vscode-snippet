@@ -103,9 +103,13 @@ class Snippet {
     if (data) {
       return data;
     }
-    let res = await axios.get(url, this._requestConfig());
-    this.requestCache[url] = res;
-    return res;
+    try {
+      let res = await axios.get(url, this._requestConfig());
+      this.requestCache[url] = res;
+      return res;
+    } catch (err: any) {
+      vscode.window.showErrorMessage("Error while fetching snippets : " + err.toJSON().message)
+    }
   }
 }
 
