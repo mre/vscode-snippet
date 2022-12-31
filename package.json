@@ -108,6 +108,11 @@
           "type": "string",
           "default": null,
           "description": "Programming language name in lower case to use as default language when there is no open editor window."
+        },
+        "snippet.title": {
+          "type": "string",
+          "default": "[${language}] ${query} (${index})",
+          "markdownDescription": "Template string of a snippet title.  \nYou can use the following variables:\n- ${language} - the programming language\n- ${query} - the snippet query (search text)\n- ${index} - the index of the snippet (e.g. 2 for the third answer)"
         }
       }
     },

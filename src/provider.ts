@@ -2,6 +2,7 @@
 import * as vscode from "vscode";
 import { TextDocumentContentProvider, Uri } from "vscode";
 import snippet from "./snippet";
+import { getConfig } from "./config";
 
 export default class SnippetProvider implements TextDocumentContentProvider {
   /**
@@ -30,11 +31,22 @@ export function encodeRequest(
     query: query,
     language: language,
     answerNumber,
-    verbose
+    verbose,
   });
-  return vscode.Uri.parse(
-    `snippet:[${language}] ${query} (${answerNumber})?${data}`
+  const titleTemplate = getConfig("title");
+  const title = titleTemplate.replace(
+    /(\$\{(.*?)\})/g,
+    (match: string, _, variableName: string) => {
+      return variableName === "language"
+        ? language
+        : variableName === "query"
+        ? query
+        : variableName === "index"
+        ? answerNumber
+        : match;
+    }
   );
+  return vscode.Uri.parse(`snippet:${title}?${data}`);
 }
 
 export function decodeRequest(uri: vscode.Uri): any {
