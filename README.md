@@ -30,6 +30,10 @@ PRs to get vscode-snippet working again. 🙏
 * `baseUrl`: base url of the cheat server ([see cheat.sh documentation](https://github.com/chubin/cheat.sh/issues/98#issuecomment-412472258))
 * `http.proxy`: VS Code proxy setting. If set, requests made by vscode-snippet will be sent through provided proxy ([see Visual Studio Code network settings](https://code.visualstudio.com/docs/setup/network))
 * `defaultLanguage`: Programming language name in lower case to use as default language when there is no open editor window.
+* `title`: Template string of a snippet title. You can use the following variables:
+  * ${language} - the programming language
+  * ${query} - the snippet query (search text)
+  * ${index} - the index of the snippet (e.g. 2 for the third answer)
 
 ## Installation
 
