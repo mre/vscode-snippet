@@ -11,22 +11,44 @@ jobs:
     name: Node ${{ matrix.node }} sample
     steps:
       - uses: actions/checkout@v1
-        
+
       - name: Setup node
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
 
       - run: npm install
-        
+
       - name: Lint
         uses: mooyoul/tslint-actions@v1.1.1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: '*.ts'
+          pattern: "*.ts"
 
       - name: Vscode package plugin
         uses: JCofman/vscodeaction@master
         with:
-          args: package
-      
+          args: package -o package.vsix
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: package.vsix
+  release:
+    if: ${{ github.ref == 'refs/heads/master' }}
+    needs: build
+    runs-on: ubuntu-latest
+    name: Release
+    steps:
+      - uses: actions/checkout@v1
+
+      - uses: actions/download-artifact@v2
+        with:
+          name: package
+
+      - name: Vscode release plugin
+        uses: JCofman/vscodeaction@master
+        env:
+          PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
+        with:
+          args: publish -p $PUBLISHER_TOKEN -i package.vsix
