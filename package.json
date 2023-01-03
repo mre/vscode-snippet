@@ -2,7 +2,7 @@
   "name": "snippet",
   "displayName": "Snippet",
   "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "publisher": "vscode-snippet",
   "engines": {
     "vscode": "^1.40.0"
