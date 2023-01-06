@@ -1,18 +1,37 @@
 import * as assert from "assert";
+import * as vscode from "vscode";
 import { after } from "mocha";
 
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-import * as vscode from "vscode";
-// import * as myExtension from '../extension';
-
 suite("Extension Test Suite", () => {
-  after(() => {
-    vscode.window.showInformationMessage("All tests done!");
-  });
+  suite("snippet.findSelectedText", () => {
+    after(async () => {
+      await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+    });
 
-  test("Sample test", () => {
-    assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-    assert.strictEqual(-1, [1, 2, 3].indexOf(0));
+    test("Opens result in the new editor if openInNewEditor is true", async () => {
+      const queryText = "query";
+      const language = "js";
+      const doc = await vscode.workspace.openTextDocument({
+        language,
+        content: queryText,
+      });
+      await vscode.window.showTextDocument(doc);
+      vscode.window.activeTextEditor.selection = new vscode.Selection(
+        0,
+        0,
+        0,
+        queryText.length
+      );
+      const config = vscode.workspace.getConfiguration("snippet");
+      await config.update("openInNewEditor", true, true);
+
+      await vscode.commands.executeCommand("snippet.findSelectedText");
+
+      assert.strictEqual(
+        vscode.window.activeTextEditor.document.getText(),
+        queryText
+      );
+      assert.strictEqual(vscode.workspace.textDocuments.length, 2);
+    });
   });
 });
