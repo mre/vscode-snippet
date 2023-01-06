@@ -148,7 +148,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./ --allowSyntheticDefaultImports",
     "watch": "tsc -watch -p ./",
-    "test": "npm run compile && node ./out/test/runTest.js"
+    "test": "npm run compile && export NODE_ENV=test && node ./out/test/runTest.js"
   },
   "dependencies": {
     "axios": "^1.2.2",

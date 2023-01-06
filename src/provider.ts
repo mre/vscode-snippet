@@ -21,6 +21,13 @@ export default class SnippetProvider implements TextDocumentContentProvider {
   }
 }
 
+export class MockSnippetProvider implements TextDocumentContentProvider {
+  public async provideTextDocumentContent(uri: vscode.Uri): Promise<string> {
+    const request = decodeRequest(uri);
+    return JSON.stringify(request);
+  }
+}
+
 export function encodeRequest(
   query: string,
   language: string,
