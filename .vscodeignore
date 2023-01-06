@@ -13,3 +13,4 @@ Makefile
 
 # test
 test-folder/**
+.vscode-test/**
