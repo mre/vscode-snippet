@@ -26,6 +26,12 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           pattern: "*.ts"
 
+      - run: xvfb-run -a npm test
+        if: runner.os == 'Linux'
+
+      - run: npm test
+        if: runner.os != 'Linux'
+
       - name: Vscode package plugin
         uses: JCofman/vscodeaction@master
         with:
