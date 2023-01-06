@@ -7,9 +7,6 @@ updates:
     time: "04:00"
   open-pull-requests-limit: 10
   ignore:
-  - dependency-name: typescript
-    versions:
-    - "> 3.7.2"
   - dependency-name: "@types/node"
     versions:
     - "> 12.12.11"
