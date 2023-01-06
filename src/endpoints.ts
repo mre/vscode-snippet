@@ -127,7 +127,7 @@ export async function showPreviousAnswer() {
     vscode.window.showInformationMessage("already at first snippet");
     return;
   }
-  findWithProvider(
+  await findWithProvider(
     await getLanguage(),
     snippet.getCurrentQuery(),
     snippet.getVerbose(),
@@ -138,7 +138,7 @@ export async function showPreviousAnswer() {
 
 export async function toggleComments() {
   snippet.toggleVerbose();
-  findWithProvider(
+  await findWithProvider(
     await getLanguage(),
     snippet.getCurrentQuery(),
     snippet.getVerbose(),
@@ -156,7 +156,7 @@ export async function findSelectedText() {
   let selection = editor.selection;
   let query = editor.document.getText(selection);
   let language = await getLanguage();
-  findWithProvider(
+  await findWithProvider(
     language,
     query,
     snippet.getVerbose(),
