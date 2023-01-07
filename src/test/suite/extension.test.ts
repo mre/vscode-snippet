@@ -23,7 +23,8 @@ suite("Extension Test Suite", function () {
           queryText.length
         );
         const config = vscode.workspace.getConfiguration("snippet");
-        await config.update("openInNewEditor", true, true);
+        const configTargetIsGlobal = true;
+        await config.update("openInNewEditor", true, configTargetIsGlobal);
 
         await vscode.commands.executeCommand("snippet.findSelectedText");
       });
