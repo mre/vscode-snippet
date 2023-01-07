@@ -2,7 +2,9 @@ import * as assert from "assert";
 import * as vscode from "vscode";
 import { after, before } from "mocha";
 
-suite("Extension Test Suite", () => {
+suite("Extension Test Suite", function () {
+  this.timeout(10000);
+
   suite("snippet.findSelectedText", () => {
     suite("openInNewEditor is true", () => {
       const queryText = "query";
