@@ -106,6 +106,32 @@ suite("Extension Test Suite", () => {
       });
     });
   });
+
+  suite("snippet.toggleComments", () => {
+    suite("openInNewEditor is true", () => {
+      before(async () => {
+        await openDocumentAndFindSelectedText({
+          openInNewEditor: true,
+        });
+      });
+
+      after(closeAllDocuments);
+
+      test("Toggles verbose state from false to true", async () => {
+        await vscode.commands.executeCommand("snippet.toggleComments");
+        const response = getResponseFromResultDocument();
+
+        assert.strictEqual(response.verbose, true);
+      });
+
+      test("Toggles verbose state from true to false", async () => {
+        await vscode.commands.executeCommand("snippet.toggleComments");
+        const response = getResponseFromResultDocument();
+
+        assert.strictEqual(response.verbose, false);
+      });
+    });
+  });
 });
 
 function getResponseFromResultDocument(): MockResponseData {
@@ -116,18 +142,15 @@ function getResponseFromResultDocument(): MockResponseData {
   return JSON.parse(responseText);
 }
 
-interface Options {
+async function openDocumentAndFindSelectedText({
+  language = "javascript",
+  queryText = Date.now().toString(),
+  openInNewEditor,
+}: {
   language?: string;
   queryText?: string;
   openInNewEditor: boolean;
-}
-
-async function openDocumentAndFindSelectedText(
-  options: Options
-): Promise<void> {
-  const queryText = options.queryText ?? Date.now().toString();
-  const language = options.language ?? "javascript";
-
+}): Promise<void> {
   const document = await vscode.workspace.openTextDocument({
     language: language,
     content: queryText,
@@ -142,12 +165,8 @@ async function openDocumentAndFindSelectedText(
   );
 
   const config = vscode.workspace.getConfiguration("snippet");
-  const configTargetIsGlobal = true;
-  await config.update(
-    "openInNewEditor",
-    options.openInNewEditor,
-    configTargetIsGlobal
-  );
+  const configTarget = vscode.ConfigurationTarget.Global;
+  await config.update("openInNewEditor", openInNewEditor, configTarget);
 
   await vscode.commands.executeCommand("snippet.findSelectedText");
 }
