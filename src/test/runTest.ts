@@ -16,7 +16,6 @@ async function main() {
     await runTests({
       extensionDevelopmentPath,
       extensionTestsPath,
-      timeout: 10000,
     });
   } catch (err) {
     console.error(err);
