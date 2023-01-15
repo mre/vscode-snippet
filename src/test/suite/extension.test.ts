@@ -32,28 +32,23 @@ suite("Extension Test Suite", () => {
       });
 
       test("Sends the correct query", async () => {
-        const request = getResponseFromResultDocument();
+        const response = getResponseFromResultDocument();
 
-        assert.strictEqual(request.query, queryText);
+        assert.strictEqual(response.query, queryText);
       });
 
       test("Sends the correct language", async () => {
-        const request = getResponseFromResultDocument();
+        const response = getResponseFromResultDocument();
 
-        assert.strictEqual(request.language, language);
+        assert.strictEqual(response.language, language);
       });
     });
   });
 
   suite("snippet.showNextAnswer", () => {
     suite("openInNewEditor is true", () => {
-      const queryText = "query";
-      const language = "javascript";
-
       before(async () => {
         await openDocumentAndFindSelectedText({
-          language,
-          queryText,
           openInNewEditor: true,
         });
       });
@@ -61,9 +56,9 @@ suite("Extension Test Suite", () => {
       after(closeAllDocuments);
 
       test("Initial answer number is 0", async () => {
-        const request = getResponseFromResultDocument();
+        const response = getResponseFromResultDocument();
 
-        assert.strictEqual(request.answerNumber, 0);
+        assert.strictEqual(response.answerNumber, 0);
       });
 
       test("Increments answer number", async () => {
@@ -75,36 +70,67 @@ suite("Extension Test Suite", () => {
 
         for (let i = 0; i < maxAnswers; i++) {
           await vscode.commands.executeCommand("snippet.showNextAnswer");
-          const request = getResponseFromResultDocument();
-          answerNumbers[i] = request.answerNumber;
+          const response = getResponseFromResultDocument();
+          answerNumbers[i] = response.answerNumber;
         }
 
         assert.deepEqual(answerNumbers, expectedAnswerNumbers);
       });
     });
   });
+
+  suite("snippet.showPreviousAnswer", () => {
+    suite("openInNewEditor is true", () => {
+      before(async () => {
+        await openDocumentAndFindSelectedText({
+          openInNewEditor: true,
+        });
+      });
+
+      after(closeAllDocuments);
+
+      test("Answer number does not go below 0", async () => {
+        await vscode.commands.executeCommand("snippet.showPreviousAnswer");
+        const response = getResponseFromResultDocument();
+
+        assert.strictEqual(response.answerNumber, 0);
+      });
+
+      test("Decrements answer number", async () => {
+        await vscode.commands.executeCommand("snippet.showNextAnswer");
+        await vscode.commands.executeCommand("snippet.showNextAnswer");
+        await vscode.commands.executeCommand("snippet.showPreviousAnswer");
+        const response = getResponseFromResultDocument();
+
+        assert.strictEqual(response.answerNumber, 1);
+      });
+    });
+  });
 });
 
 function getResponseFromResultDocument(): MockResponseData {
-  const textDocuments = vscode.workspace.textDocuments.filter(
-    (x) => !x.fileName.startsWith("Untitled")
+  const editors = vscode.window.visibleTextEditors.filter(
+    (x) => !x.document.isUntitled
   );
-  const responseText = textDocuments[textDocuments.length - 1].getText();
+  const responseText = editors[editors.length - 1].document.getText();
   return JSON.parse(responseText);
 }
 
 interface Options {
-  language: string;
-  queryText: string;
+  language?: string;
+  queryText?: string;
   openInNewEditor: boolean;
 }
 
 async function openDocumentAndFindSelectedText(
   options: Options
 ): Promise<void> {
+  const queryText = options.queryText ?? Date.now().toString();
+  const language = options.language ?? "javascript";
+
   const document = await vscode.workspace.openTextDocument({
-    language: options.language,
-    content: options.queryText,
+    language: language,
+    content: queryText,
   });
   await vscode.window.showTextDocument(document);
 
@@ -112,7 +138,7 @@ async function openDocumentAndFindSelectedText(
     0,
     0,
     0,
-    options.queryText.length
+    queryText.length
   );
 
   const config = vscode.workspace.getConfiguration("snippet");
