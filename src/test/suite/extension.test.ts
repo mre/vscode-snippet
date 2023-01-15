@@ -1,7 +1,11 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
 import { after, before } from "mocha";
-import { MockResponseData } from "../../snippet";
+import {
+  closeAllDocuments,
+  getResponseFromResultDocument,
+  openDocumentAndFindSelectedText,
+} from "../testUtils";
 
 suite("Extension Test Suite", () => {
   suite("snippet.findSelectedText", () => {
@@ -133,44 +137,3 @@ suite("Extension Test Suite", () => {
     });
   });
 });
-
-function getResponseFromResultDocument(): MockResponseData {
-  const editors = vscode.window.visibleTextEditors.filter(
-    (x) => !x.document.isUntitled
-  );
-  const responseText = editors[editors.length - 1].document.getText();
-  return JSON.parse(responseText);
-}
-
-async function openDocumentAndFindSelectedText({
-  language = "javascript",
-  queryText = Date.now().toString(),
-  openInNewEditor,
-}: {
-  language?: string;
-  queryText?: string;
-  openInNewEditor: boolean;
-}): Promise<void> {
-  const document = await vscode.workspace.openTextDocument({
-    language: language,
-    content: queryText,
-  });
-  await vscode.window.showTextDocument(document);
-
-  vscode.window.activeTextEditor.selection = new vscode.Selection(
-    0,
-    0,
-    0,
-    queryText.length
-  );
-
-  const config = vscode.workspace.getConfiguration("snippet");
-  const configTarget = vscode.ConfigurationTarget.Global;
-  await config.update("openInNewEditor", openInNewEditor, configTarget);
-
-  await vscode.commands.executeCommand("snippet.findSelectedText");
-}
-
-async function closeAllDocuments(): Promise<void> {
-  await vscode.commands.executeCommand("workbench.action.closeAllEditors");
-}
