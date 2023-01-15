@@ -38,6 +38,6 @@ export async function openDocumentAndFindSelectedText({
   await vscode.commands.executeCommand("snippet.findSelectedText");
 }
 
-export async function closeAllDocuments(): Promise<void> {
+export async function closeAllEditors(): Promise<void> {
   await vscode.commands.executeCommand("workbench.action.closeAllEditors");
 }
