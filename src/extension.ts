@@ -2,7 +2,7 @@
 
 import * as vscode from 'vscode'
 import { cache } from './cache'
-import SnippetProvider, { MockSnippetProvider } from './provider'
+import SnippetProvider from './provider'
 import * as endpoints from './endpoints'
 
 export function activate(ctx: vscode.ExtensionContext) {
@@ -16,7 +16,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand('snippet.toggleComments', endpoints.toggleComments)
 
     cache.state = ctx.globalState
-    let provider = process.env.NODE_ENV === 'test' ? new MockSnippetProvider() : new SnippetProvider();
+    let provider = new SnippetProvider();
     let disposableProvider = vscode.workspace.registerTextDocumentContentProvider("snippet", provider);
     ctx.subscriptions.push(
         disposableProvider,

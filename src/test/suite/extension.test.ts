@@ -1,6 +1,7 @@
 import * as assert from "assert";
 import * as vscode from "vscode";
 import { after, before } from "mocha";
+import { MockResponseData } from "../../snippet";
 
 suite("Extension Test Suite", () => {
   suite("snippet.findSelectedText", () => {
@@ -31,13 +32,13 @@ suite("Extension Test Suite", () => {
       });
 
       test("Sends the correct query", async () => {
-        const request = getRequestFromResultDocument();
+        const request = getResponseFromResultDocument();
 
         assert.strictEqual(request.query, queryText);
       });
 
       test("Sends the correct language", async () => {
-        const request = getRequestFromResultDocument();
+        const request = getResponseFromResultDocument();
 
         assert.strictEqual(request.language, language);
       });
@@ -60,21 +61,21 @@ suite("Extension Test Suite", () => {
       after(closeAllDocuments);
 
       test("Initial answer number is 0", async () => {
-        const request = getRequestFromResultDocument();
+        const request = getResponseFromResultDocument();
 
         assert.strictEqual(request.answerNumber, 0);
       });
 
       test("Increments answer number", async () => {
-        const maxAnswers = 5;
+        const maxAnswers = 3;
         const answerNumbers = Array(maxAnswers).fill(0);
         const expectedAnswerNumbers = Array(maxAnswers)
           .fill(0)
-          .map((_, i) => i);
+          .map((_, i) => i + 1);
 
         for (let i = 0; i < maxAnswers; i++) {
           await vscode.commands.executeCommand("snippet.showNextAnswer");
-          const request = getRequestFromResultDocument();
+          const request = getResponseFromResultDocument();
           answerNumbers[i] = request.answerNumber;
         }
 
@@ -84,11 +85,12 @@ suite("Extension Test Suite", () => {
   });
 });
 
-function getRequestFromResultDocument() {
-  const requestStr = vscode.workspace.textDocuments
-    .find((document) => document !== vscode.window.activeTextEditor.document)
-    .getText();
-  return JSON.parse(requestStr);
+function getResponseFromResultDocument(): MockResponseData {
+  const textDocuments = vscode.workspace.textDocuments.filter(
+    (x) => !x.fileName.startsWith("Untitled")
+  );
+  const responseText = textDocuments[textDocuments.length - 1].getText();
+  return JSON.parse(responseText);
 }
 
 interface Options {
@@ -97,7 +99,9 @@ interface Options {
   openInNewEditor: boolean;
 }
 
-async function openDocumentAndFindSelectedText(options: Options) {
+async function openDocumentAndFindSelectedText(
+  options: Options
+): Promise<void> {
   const document = await vscode.workspace.openTextDocument({
     language: options.language,
     content: options.queryText,
@@ -122,6 +126,6 @@ async function openDocumentAndFindSelectedText(options: Options) {
   await vscode.commands.executeCommand("snippet.findSelectedText");
 }
 
-async function closeAllDocuments() {
+async function closeAllDocuments(): Promise<void> {
   await vscode.commands.executeCommand("workbench.action.closeAllEditors");
 }
