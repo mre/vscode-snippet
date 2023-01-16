@@ -10,6 +10,13 @@ export interface Response {
   data: string;
 }
 
+export interface MockResponseData {
+  language: string;
+  query: string;
+  verbose: boolean;
+  answerNumber: number;
+}
+
 class Snippet {
   // Current language we're searching for
   currLanguage?: string;
@@ -75,8 +82,8 @@ class Snippet {
       // Fake user agent to get plain-text output.
       // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
       headers: {
-        "User-Agent": "curl/7.43.0"
-      }
+        "User-Agent": "curl/7.43.0",
+      },
     };
 
     // Apply proxy setting if provided
@@ -104,12 +111,37 @@ class Snippet {
       return data;
     }
     try {
-      let res = await axios.get(url, this._requestConfig());
+      let res =
+        process.env.NODE_ENV === "test"
+          ? await this.getMock()
+          : await axios.get(url, this._requestConfig());
       this.requestCache[url] = res;
       return res;
     } catch (err) {
-      vscode.window.showErrorMessage("Error while fetching snippets : " + err.toJSON().message)
+      vscode.window.showErrorMessage(
+        "Error while fetching snippets : " + err.toJSON().message
+      );
     }
+  }
+
+  private async getMock(): Promise<AxiosResponse> {
+    return {
+      data: this.getMockResponseData(),
+      status: 200,
+      statusText: "OK",
+      headers: {},
+      config: {},
+    };
+  }
+
+  private getMockResponseData(): string {
+    const result: MockResponseData = {
+      language: this.currLanguage,
+      query: this.currQuery,
+      verbose: this.verboseState,
+      answerNumber: this.currNum,
+    };
+    return JSON.stringify(result);
   }
 }
 
