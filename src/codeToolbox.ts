@@ -21,32 +21,32 @@ export default class CodeToolbox {
   constructor(private readonly context: vscode.ExtensionContext) {
     const root = {
       id: nanoid(),
-      label: "label",
+      label: "label 1",
       content: "1",
     };
     const child = {
       id: nanoid(),
-      label: "label",
+      label: "label 2",
       content: "2",
     };
     const child2 = {
       id: nanoid(),
-      label: "label",
+      label: "label 3",
       content: "3",
     };
     const child3 = {
       id: nanoid(),
-      label: "label",
+      label: "label 4",
       content: "4",
     };
     const leaf = {
       id: nanoid(),
-      label: "label",
+      label: "label 5",
       content: "5",
     };
     const leaf2 = {
       id: nanoid(),
-      label: "label",
+      label: "label 6",
       content: "6",
     };
 
