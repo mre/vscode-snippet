@@ -74,7 +74,8 @@ export default class CodeToolbox {
     this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
     this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
 
-    this.save().then(() => this.load());
+    // this.save().then(() => this.load());
+    this.load();
   }
 
   getElement(id?: string): TreeElement {
@@ -111,6 +112,12 @@ export default class CodeToolbox {
       1
     );
 
+    await this.save();
+  }
+
+  async renameElement(id: string, newName: string): Promise<void> {
+    // TODO: save and refresh automatically ?
+    this.getElement(id).item.label = newName;
     await this.save();
   }
 

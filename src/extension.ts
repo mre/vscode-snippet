@@ -23,6 +23,7 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand('snippet.saveToCodeToolbox', endpoints.saveToCodeToolbox(toolbox, toolboxTreeProvider))
     vscode.commands.registerCommand('snippet.insertCodeFromToolbox', endpoints.insertCodeFromToolbox(toolbox))
     vscode.commands.registerCommand('snippet.deleteItemFromToolbox', endpoints.deleteItemFromToolbox(toolbox, toolboxTreeProvider))
+    vscode.commands.registerCommand('snippet.renameItemInToolbox', endpoints.renameItemInToolbox(toolbox, toolboxTreeProvider))
 
     cache.state = ctx.globalState
     let provider = new SnippetProvider();

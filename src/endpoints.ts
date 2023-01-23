@@ -246,10 +246,42 @@ export function deleteItemFromToolbox(
   return (item: ToolboxTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        'Delete item from the Code Toolbox by right clicking on it in the list and selecting "Delete item from a toolbox".'
+        'Delete item from the Code Toolbox by right clicking on it in the list and selecting "Delete"'
       );
+      return;
     }
 
     toolbox.deleteElement(item.id!).then(() => toolboxTreeProvider.refresh());
+  };
+}
+
+export function renameItemInToolbox(
+  toolbox: CodeToolbox,
+  toolboxTreeProvider: CodeToolboxTreeProvider
+) {
+  return async (item: ToolboxTreeItem) => {
+    if (!item) {
+      vscode.window.showInformationMessage(
+        'Rename item by right clicking on it in the list and selecting "Rename"'
+      );
+      return;
+    }
+
+    const opt: vscode.InputBoxOptions = {
+      ignoreFocusOut: false,
+      placeHolder: "Code Fragment Name",
+      prompt: "Rename Code Fragment...",
+      value: item.label,
+    };
+
+    const newName = await vscode.window.showInputBox(opt);
+
+    if (!newName) {
+      return;
+    }
+
+    toolbox
+      .renameElement(item.id, newName)
+      .then(() => toolboxTreeProvider.refresh());
   };
 }

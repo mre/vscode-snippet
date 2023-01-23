@@ -96,8 +96,13 @@
         "category": "Snippet"
       },
       {
-        "title": "Delete item from a toolbox",
+        "title": "Delete",
         "command": "snippet.deleteItemFromToolbox",
+        "category": "Snippet"
+      },
+      {
+        "title": "Rename",
+        "command": "snippet.renameItemInToolbox",
         "category": "Snippet"
       }
     ],
@@ -134,9 +139,14 @@
     "menus": {
       "view/item/context": [
         {
+          "command": "snippet.renameItemInToolbox",
+          "when": "view == codeToolbox",
+          "group": "snippet.viewItemContext.baseGroup@1"
+        },
+        {
           "command": "snippet.deleteItemFromToolbox",
           "when": "view == codeToolbox",
-          "group": "snippet.viewItemContext.baseGroup"
+          "group": "snippet.viewItemContext.baseGroup@2"
         }
       ],
       "editor/context": [

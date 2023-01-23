@@ -49,6 +49,7 @@ export class CodeToolboxTreeProvider
 
         return new ToolboxTreeItem(
           curElement.item.label,
+          curElement.item.content,
           curElement.childIds == null
             ? vscode.TreeItemCollapsibleState.None
             : vscode.TreeItemCollapsibleState.Expanded,
@@ -103,11 +104,13 @@ export class CodeToolboxTreeProvider
 export class ToolboxTreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
+    content: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
     id: string
   ) {
     super(label, collapsibleState);
     this.id = id;
+    this.tooltip = content;
 
     if (collapsibleState === vscode.TreeItemCollapsibleState.None) {
       this.command = {
