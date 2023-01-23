@@ -5,7 +5,7 @@
   "version": "0.9.2",
   "publisher": "vscode-snippet",
   "engines": {
-    "vscode": "^1.40.0"
+    "vscode": "^1.74.0"
   },
   "repository": {
     "type": "git",
@@ -84,6 +84,16 @@
         "title": "Toggle comments",
         "command": "snippet.toggleComments",
         "category": "Snippet"
+      },
+      {
+        "title": "Save to code toolbox",
+        "command": "snippet.saveToCodeToolbox",
+        "category": "Snippet"
+      },
+      {
+        "title": "Insert code",
+        "command": "snippet.insertCodeFromToolbox",
+        "category": "Snippet"
       }
     ],
     "configuration": {
@@ -122,6 +132,18 @@
           "when": "editorHasSelection",
           "command": "snippet.findSelectedText",
           "group": "1_modification"
+        },
+        {
+          "when": "editorHasSelection",
+          "command": "snippet.saveToCodeToolbox"
+        }
+      ]
+    },
+    "views": {
+      "explorer": [
+        {
+          "id": "codeToolbox",
+          "name": "Code toolbox"
         }
       ]
     },
@@ -154,13 +176,14 @@
     "axios": "^1.2.2",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^4.0.1",
+    "nanoid": "^3.3.4",
     "vsce": "^2.15.0"
   },
   "devDependencies": {
     "@types/glob": "^8.0.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^12.12.11",
-    "@types/vscode": "^1.40.0",
+    "@types/vscode": "^1.74.0",
     "@vscode/test-electron": "^2.2.2",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",

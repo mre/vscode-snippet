@@ -3,6 +3,8 @@ import { pickLanguage, getLanguage, getConfig } from "./config";
 import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
+import CodeToolbox from "./codeToolbox";
+import { CodeToolboxTreeProvider } from "./codeToolboxTreeProvider";
 
 export interface Request {
   language: string;
@@ -163,4 +165,72 @@ export async function findSelectedText() {
     0,
     getConfig("openInNewEditor")
   );
+}
+
+export function saveToCodeToolbox(
+  toolbox: CodeToolbox,
+  toolboxTreeProvider: CodeToolboxTreeProvider
+) {
+  return () => {
+    const showNoTextMsg = () =>
+      vscode.window.showInformationMessage(
+        "Select a piece of code in the editor to save it."
+      );
+
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      showNoTextMsg();
+      return;
+    }
+
+    editor.edit(() => {
+      const content = editor.document.getText(editor.selection);
+
+      if (content.length < 1) {
+        showNoTextMsg();
+        return;
+      }
+
+      const defaultLabel = content.substring(0, 100);
+
+      const opt: vscode.InputBoxOptions = {
+        ignoreFocusOut: false,
+        placeHolder: "Code Fragment Name",
+        prompt: "Give the fragment a name...",
+        value: defaultLabel,
+      };
+
+      vscode.window.showInputBox(opt).then((label) => {
+        // TODO: refactor (refresh automatically?)
+        toolbox.saveCode(content, label);
+        toolboxTreeProvider.refresh();
+      });
+    });
+  };
+}
+
+export function insertCodeFromToolbox(toolbox: CodeToolbox) {
+  return (id: string) => {
+    if (!id) {
+      vscode.window.showInformationMessage(
+        "Insert a code fragment into the editor by clicking on it in the Code Fragments view."
+      );
+    }
+
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage(
+        "Open a file in the editor to insert a fragment."
+      );
+      return;
+    }
+
+    const content = toolbox.getCode(id);
+
+    if (content) {
+      editor.edit((builder) => {
+        builder.insert(editor.selection.start, content);
+      });
+    }
+  };
 }
