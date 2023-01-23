@@ -4,7 +4,10 @@ import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
 import CodeToolbox from "./codeToolbox";
-import { CodeToolboxTreeProvider } from "./codeToolboxTreeProvider";
+import {
+  CodeToolboxTreeProvider,
+  ToolboxTreeItem,
+} from "./codeToolboxTreeProvider";
 
 export interface Request {
   language: string;
@@ -213,7 +216,7 @@ export function insertCodeFromToolbox(toolbox: CodeToolbox) {
   return (id: string) => {
     if (!id) {
       vscode.window.showInformationMessage(
-        "Insert a code fragment into the editor by clicking on it in the Code Fragments view."
+        "Insert a code fragment into the editor by clicking on it in the Code Fragments view." // TODO: think about consistent naming (element ? item ? folder ? code ? code fragment ?)
       );
     }
 
@@ -232,5 +235,20 @@ export function insertCodeFromToolbox(toolbox: CodeToolbox) {
         builder.insert(editor.selection.start, content);
       });
     }
+  };
+}
+
+export function deleteItemFromToolbox(
+  toolbox: CodeToolbox,
+  toolboxTreeProvider: CodeToolboxTreeProvider
+) {
+  return (item: ToolboxTreeItem) => {
+    if (!item) {
+      vscode.window.showInformationMessage(
+        'Delete item from the Code Toolbox by right clicking on it in the list and selecting "Delete item from a toolbox".'
+      );
+    }
+
+    toolbox.deleteElement(item.id!).then(() => toolboxTreeProvider.refresh());
   };
 }

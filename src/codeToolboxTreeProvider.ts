@@ -90,12 +90,13 @@ export class CodeToolboxTreeProvider
     const transferItem = dataTransfer.get(
       "application/vnd.code.tree.codeToolbox"
     );
+
     if (!transferItem) {
       return;
     }
 
     this.toolbox
-      .moveElement(transferItem.value.id, target.id)
+      .moveElement(transferItem.value.id, target?.id)
       .then(() => this.refresh());
   }
 }

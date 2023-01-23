@@ -19,62 +19,62 @@ export default class CodeToolbox {
   private rootId: string = "";
 
   constructor(private readonly context: vscode.ExtensionContext) {
-    // const root = {
-    //   id: nanoid(),
-    //   label: "label",
-    //   content: "1",
-    // };
-    // const child = {
-    //   id: nanoid(),
-    //   label: "label",
-    //   content: "2",
-    // };
-    // const child2 = {
-    //   id: nanoid(),
-    //   label: "label",
-    //   content: "3",
-    // };
-    // const child3 = {
-    //   id: nanoid(),
-    //   label: "label",
-    //   content: "4",
-    // };
-    // const leaf = {
-    //   id: nanoid(),
-    //   label: "label",
-    //   content: "5",
-    // };
-    // const leaf2 = {
-    //   id: nanoid(),
-    //   label: "label",
-    //   content: "6",
-    // };
+    const root = {
+      id: nanoid(),
+      label: "label",
+      content: "1",
+    };
+    const child = {
+      id: nanoid(),
+      label: "label",
+      content: "2",
+    };
+    const child2 = {
+      id: nanoid(),
+      label: "label",
+      content: "3",
+    };
+    const child3 = {
+      id: nanoid(),
+      label: "label",
+      content: "4",
+    };
+    const leaf = {
+      id: nanoid(),
+      label: "label",
+      content: "5",
+    };
+    const leaf2 = {
+      id: nanoid(),
+      label: "label",
+      content: "6",
+    };
 
-    // this.rootId = root.id!;
+    this.rootId = root.id!;
 
-    // this.elements.set(this.rootId, {
-    //   item: root,
-    //   childIds: [child.id!, child2.id!, child3.id!],
-    // });
-    // this.elements.set(child2.id!, {
-    //   item: child2,
-    //   parentId: this.rootId,
-    //   childIds: [],
-    // });
-    // this.elements.set(child3.id!, {
-    //   item: child3,
-    //   parentId: this.rootId,
-    //   childIds: [],
-    // });
-    // this.elements.set(child.id!, {
-    //   item: child,
-    //   parentId: root.id,
-    //   childIds: [leaf.id!, leaf2.id!],
-    // });
-    // this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
-    // this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
+    this.elements.set(this.rootId, {
+      item: root,
+      childIds: [child.id!, child2.id!, child3.id!],
+    });
+    this.elements.set(child2.id!, {
+      item: child2,
+      parentId: this.rootId,
+      childIds: [],
+    });
+    this.elements.set(child3.id!, {
+      item: child3,
+      parentId: this.rootId,
+      childIds: [],
+    });
+    this.elements.set(child.id!, {
+      item: child,
+      parentId: root.id,
+      childIds: [leaf.id!, leaf2.id!],
+    });
+    this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
+    this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
 
-    this.load();
+    this.save().then(() => this.load());
   }
 
   getElement(id?: string): TreeElement {
@@ -87,6 +87,33 @@ export default class CodeToolbox {
     return result;
   }
 
+  async deleteElement(id: string): Promise<void> {
+    const toDelete = this.getElement(id);
+    const messageForUser =
+      toDelete.childIds == null
+        ? "Are you sure you want to delete this item?"
+        : "Are you sure you want to delete this folder from a toolbox? Everything inside it will be deleted too.";
+    const answer = await vscode.window.showInformationMessage(
+      messageForUser,
+      "Yes",
+      "No"
+    );
+
+    if (answer !== "Yes") {
+      return;
+    }
+
+    this.elements.delete(id);
+    const parent = this.getElement(toDelete.parentId);
+    // TODO: refactor (dup with move)
+    parent.childIds?.splice(
+      parent.childIds.findIndex((x) => x === id),
+      1
+    );
+
+    await this.save();
+  }
+
   async moveElement(sourceId: string, targetId?: string) {
     if (targetId === sourceId) {
       return;
@@ -95,6 +122,7 @@ export default class CodeToolbox {
     const sourceElement = this.elements.get(sourceId);
     const targetElement = this.elements.get(targetId);
     const targetIsRoot = targetId == null;
+
     const newParentId = targetIsRoot
       ? this.rootId
       : targetElement.childIds == null
