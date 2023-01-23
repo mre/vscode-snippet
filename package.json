@@ -157,7 +157,7 @@
     "vsce": "^2.15.0"
   },
   "devDependencies": {
-    "@types/glob": "^8.0.0",
+    "@types/glob": "^8.0.1",
     "@types/mocha": "^10.0.1",
     "@types/node": "^12.12.11",
     "@types/vscode": "^1.40.0",
