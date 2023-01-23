@@ -205,8 +205,9 @@ export function saveToCodeToolbox(
 
       vscode.window.showInputBox(opt).then((label) => {
         // TODO: refactor (refresh automatically?)
-        toolbox.saveCode(content, label);
-        toolboxTreeProvider.refresh();
+        toolbox
+          .saveCode(content, label)
+          .then(() => toolboxTreeProvider.refresh());
       });
     });
   };
