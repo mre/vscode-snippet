@@ -285,3 +285,26 @@ export function renameItemInToolbox(
       .then(() => toolboxTreeProvider.refresh());
   };
 }
+
+export function createFolderInToolbox(
+  toolbox: CodeToolbox,
+  toolboxTreeProvider: CodeToolboxTreeProvider
+) {
+  return async (item?: ToolboxTreeItem) => {
+    const opt: vscode.InputBoxOptions = {
+      ignoreFocusOut: false,
+      placeHolder: "Folder Name",
+      prompt: "Specify Folder Name...",
+    };
+
+    const folderName = await vscode.window.showInputBox(opt);
+
+    if (!folderName) {
+      return;
+    }
+
+    toolbox
+      .createFolder(folderName, item?.id)
+      .then(() => toolboxTreeProvider.refresh());
+  };
+}

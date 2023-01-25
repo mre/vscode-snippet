@@ -104,6 +104,15 @@
         "title": "Rename",
         "command": "snippet.renameItemInToolbox",
         "category": "Snippet"
+      },
+      {
+        "title": "New Folder",
+        "command": "snippet.createFolderInToolbox",
+        "category": "Snippet",
+        "icon": {
+          "light": "assets/icons/add-light.svg",
+          "dark": "assets/icons/add-dark.svg"
+        }
       }
     ],
     "configuration": {
@@ -137,16 +146,28 @@
       }
     },
     "menus": {
+      "view/title": [
+        {
+          "command": "snippet.createFolderInToolbox",
+          "when": "view == codeToolbox",
+          "group": "navigation"
+        }
+      ],
       "view/item/context": [
         {
-          "command": "snippet.renameItemInToolbox",
+          "command": "snippet.createFolderInToolbox",
           "when": "view == codeToolbox",
           "group": "snippet.viewItemContext.baseGroup@1"
         },
         {
-          "command": "snippet.deleteItemFromToolbox",
+          "command": "snippet.renameItemInToolbox",
           "when": "view == codeToolbox",
           "group": "snippet.viewItemContext.baseGroup@2"
+        },
+        {
+          "command": "snippet.deleteItemFromToolbox",
+          "when": "view == codeToolbox",
+          "group": "snippet.viewItemContext.baseGroup@3"
         }
       ],
       "editor/context": [

@@ -121,6 +121,26 @@ export default class CodeToolbox {
     await this.save();
   }
 
+  async createFolder(name: string, relativeToId?: string) {
+    const relativeToElement = this.getElement(relativeToId); // TODO: use getElement or this.elements.get
+
+    const parentId =
+      relativeToElement.childIds == null
+        ? relativeToElement.parentId
+        : relativeToElement.item.id;
+
+    const folder: TreeElementItem = {
+      id: nanoid(),
+      label: name,
+      content: "", // TODO: make optional (not needed in folders)
+    };
+
+    this.elements.set(folder.id, { childIds: [], item: folder, parentId });
+    this.elements.get(parentId).childIds?.push(folder.id);
+
+    await this.save();
+  }
+
   async moveElement(sourceId: string, targetId?: string) {
     if (targetId === sourceId) {
       return;
