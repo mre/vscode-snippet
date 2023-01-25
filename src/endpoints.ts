@@ -225,6 +225,7 @@ export function insertCodeFromToolbox(
       vscode.window.showInformationMessage(
         "Insert a code fragment into the editor by clicking on it in the Code Toolbox view."
       );
+      return;
     }
 
     const editor = vscode.window.activeTextEditor;
