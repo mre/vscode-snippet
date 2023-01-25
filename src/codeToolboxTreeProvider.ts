@@ -41,7 +41,7 @@ export class CodeToolboxTreeProvider
     element?: ToolboxTreeItem | undefined
   ): vscode.ProviderResult<ToolboxTreeItem[]> {
     return (
-      this.toolbox.getElement(element?.id).childIds?.map((id) => {
+      this.toolbox.getElement(element?.id)?.childIds?.map((id) => {
         const curElement = this.toolbox.getElement(id);
 
         return new ToolboxTreeItem(

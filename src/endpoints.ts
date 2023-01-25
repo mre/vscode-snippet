@@ -3,7 +3,6 @@ import { pickLanguage, getLanguage, getConfig } from "./config";
 import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
-import CodeToolbox from "./codeToolbox";
 import {
   CodeToolboxTreeProvider,
   ToolboxTreeItem,

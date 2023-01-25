@@ -21,76 +21,19 @@ export default class CodeToolbox {
   private rootId: string = "";
 
   constructor(private readonly context: vscode.ExtensionContext) {
-    const root = {
-      id: nanoid(),
-      label: "label 1",
-      content: "1",
-    };
-    const child = {
-      id: nanoid(),
-      label: "label 2",
-      content: "2",
-    };
-    const child2 = {
-      id: nanoid(),
-      label: "label 3",
-      content: "3",
-    };
-    const child3 = {
-      id: nanoid(),
-      label: "label 4",
-      content: "4",
-    };
-    const leaf = {
-      id: nanoid(),
-      label: "label 5",
-      content: "5",
-    };
-    const leaf2 = {
-      id: nanoid(),
-      label: "label 6",
-      content: "6",
-    };
-
-    this.rootId = root.id!;
-
-    this.elements.set(this.rootId, {
-      data: root,
-      childIds: [child.id!, child2.id!, child3.id!],
-    });
-    this.elements.set(child2.id!, {
-      data: child2,
-      parentId: this.rootId,
-      childIds: [],
-    });
-    this.elements.set(child3.id!, {
-      data: child3,
-      parentId: this.rootId,
-      childIds: [],
-    });
-    this.elements.set(child.id!, {
-      data: child,
-      parentId: root.id,
-      childIds: [leaf.id!, leaf2.id!],
-    });
-    this.elements.set(leaf.id!, { data: leaf, parentId: child.id });
-    this.elements.set(leaf2.id!, { data: leaf2, parentId: child.id });
-
-    // this.save().then(() => this.load());
     this.load();
+
+    if (!this.elements.size) {
+      this.loadDefaultElements();
+    }
   }
 
-  getElement(id?: string): TreeElement {
+  getElement(id?: string): TreeElement | undefined {
     const providedOrRootId = id ?? this.rootId;
+
     const result = this.elements.get(providedOrRootId);
 
-    if (result == null) {
-      throw new Error(
-        `Expected to find an element with id ${providedOrRootId}`
-      );
-    }
-
-    return result;
+    return result || undefined;
   }
 
   async deleteElement(id: string): Promise<void> {
@@ -102,6 +45,7 @@ export default class CodeToolbox {
 
     const answer = await vscode.window.showInformationMessage(
       messageForUser,
+      { modal: true },
       "Yes",
       "No"
     );
@@ -212,6 +156,46 @@ export default class CodeToolbox {
 
   load(): void {
     this.deserialize(this.context.globalState.get(this.storageKey) || "[]");
+  }
+
+  private async loadDefaultElements(): Promise<void> {
+    const root: TreeElementData = {
+      id: nanoid(),
+      label: "root",
+      content: "",
+    };
+    const exampleFolder: TreeElementData = {
+      id: nanoid(),
+      label: "example folder",
+      content: "",
+    };
+    const exampleFragment: TreeElementData = {
+      id: nanoid(),
+      label: "example code fragment",
+      fileExtension: ".js",
+      content: `for (let i = 0; i < 5; i++) {
+  console.log('Hello world!');
+}
+`,
+    };
+
+    this.rootId = root.id;
+
+    this.elements.set(root.id, {
+      data: root,
+      childIds: [exampleFolder.id],
+    });
+    this.elements.set(exampleFolder.id, {
+      data: exampleFolder,
+      childIds: [exampleFragment.id],
+      parentId: root.id,
+    });
+    this.elements.set(exampleFragment.id, {
+      data: exampleFragment,
+      parentId: exampleFolder.id,
+    });
+
+    await this.save();
   }
 
   private serialize(): string {
