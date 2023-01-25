@@ -17,7 +17,7 @@ export interface TreeElementData {
 export default class CodeToolbox {
   public onSave = () => {};
   private readonly storageKey = "snippet.codeToolboxStorage";
-  private elements = new Map<string, TreeElement>();
+  private readonly elements = new Map<string, TreeElement>();
   private rootId: string = "";
 
   constructor(private readonly context: vscode.ExtensionContext) {
@@ -81,10 +81,13 @@ export default class CodeToolbox {
   }
 
   getElement(id?: string): TreeElement {
-    const result = this.elements.get(id ?? this.rootId);
+    const providedOrRootId = id ?? this.rootId;
+    const result = this.elements.get(providedOrRootId);
 
     if (result == null) {
-      throw new Error(`Expected to find an element with id ${id}`);
+      throw new Error(
+        `Expected to find an element with id ${providedOrRootId}`
+      );
     }
 
     return result;
@@ -124,7 +127,7 @@ export default class CodeToolbox {
   }
 
   async createFolder(name: string, relativeToId?: string): Promise<void> {
-    const relativeToElement = this.getElement(relativeToId); // TODO: use getElement or this.elements.get
+    const relativeToElement = this.getElement(relativeToId);
 
     const parentId =
       relativeToElement.childIds == null
@@ -134,11 +137,11 @@ export default class CodeToolbox {
     const folder: TreeElementData = {
       id: nanoid(),
       label: name,
-      content: "", // TODO: make optional (not needed in folders)
+      content: "",
     };
 
     this.elements.set(folder.id, { childIds: [], data: folder, parentId });
-    this.elements.get(parentId).childIds?.push(folder.id);
+    this.getElement(parentId).childIds?.push(folder.id);
 
     await this.save();
   }
@@ -148,19 +151,17 @@ export default class CodeToolbox {
       return;
     }
 
-    const sourceElement = this.elements.get(sourceId);
-    const targetElement = this.elements.get(targetId);
-    const targetIsRoot = targetId == null;
+    const sourceElement = this.getElement(sourceId);
+    const targetElement = this.getElement(targetId);
 
-    const newParentId = targetIsRoot
-      ? this.rootId
-      : targetElement.childIds == null
-      ? targetElement.parentId
-      : targetId;
+    const newParentId =
+      targetElement.childIds == null
+        ? targetElement.parentId
+        : targetElement.data.id;
 
     let tempId = newParentId;
     while (tempId) {
-      const curElement = this.elements.get(tempId);
+      const curElement = this.getElement(tempId);
       if (
         curElement?.data.id === sourceId ||
         curElement?.parentId === sourceId
@@ -170,15 +171,15 @@ export default class CodeToolbox {
       tempId = curElement?.parentId;
     }
 
-    const previousParent = this.elements.get(sourceElement.parentId!);
-    previousParent?.childIds?.splice(
+    const previousParent = this.getElement(sourceElement.parentId);
+    previousParent.childIds?.splice(
       previousParent.childIds.findIndex((id) => id === sourceId),
       1
     );
 
     sourceElement.parentId = newParentId;
-    const newParentElement = this.elements.get(newParentId!);
-    newParentElement?.childIds?.push(sourceId);
+    const newParentElement = this.getElement(newParentId);
+    newParentElement.childIds?.push(sourceId);
 
     await this.save();
   }
@@ -196,7 +197,7 @@ export default class CodeToolbox {
     };
 
     this.elements.set(data.id, { data, parentId: this.rootId });
-    this.elements.get(this.rootId)?.childIds?.push(data.id);
+    this.getElement(this.rootId).childIds?.push(data.id);
 
     await this.save();
   }
