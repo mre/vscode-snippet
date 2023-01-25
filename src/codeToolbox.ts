@@ -112,7 +112,6 @@ export default class CodeToolbox {
 
     this.elements.delete(id);
     const parent = this.getElement(toDelete.parentId);
-    // TODO: refactor (dup with move)
     parent.childIds?.splice(
       parent.childIds.findIndex((x) => x === id),
       1
