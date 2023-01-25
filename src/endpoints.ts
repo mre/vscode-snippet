@@ -171,7 +171,6 @@ export async function findSelectedText() {
 }
 
 export function saveToCodeToolbox(
-  toolbox: CodeToolbox,
   toolboxTreeProvider: CodeToolboxTreeProvider
 ) {
   return () => {
@@ -207,16 +206,20 @@ export function saveToCodeToolbox(
         value: defaultLabel,
       };
 
-      vscode.window.showInputBox(opt).then((label) => {
-        toolbox
-          .saveCode(content, fileExtension, label)
-          .then(() => toolboxTreeProvider.refresh());
+      vscode.window.showInputBox(opt).then(async (label) => {
+        await toolboxTreeProvider.toolbox.saveCode(
+          content,
+          fileExtension,
+          label
+        );
       });
     });
   };
 }
 
-export function insertCodeFromToolbox(toolbox: CodeToolbox) {
+export function insertCodeFromToolbox(
+  toolboxTreeProvider: CodeToolboxTreeProvider
+) {
   return (id: string) => {
     if (!id) {
       vscode.window.showInformationMessage(
@@ -232,7 +235,7 @@ export function insertCodeFromToolbox(toolbox: CodeToolbox) {
       return;
     }
 
-    const content = toolbox.getCode(id);
+    const content = toolboxTreeProvider.toolbox.getCode(id);
 
     if (content) {
       editor.edit((builder) => {
@@ -243,10 +246,9 @@ export function insertCodeFromToolbox(toolbox: CodeToolbox) {
 }
 
 export function deleteItemFromToolbox(
-  toolbox: CodeToolbox,
   toolboxTreeProvider: CodeToolboxTreeProvider
 ) {
-  return (item: ToolboxTreeItem) => {
+  return async (item: ToolboxTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
         'Delete item from the Code Toolbox by right clicking on it in the list and selecting "Delete"'
@@ -254,12 +256,11 @@ export function deleteItemFromToolbox(
       return;
     }
 
-    toolbox.deleteElement(item.id!).then(() => toolboxTreeProvider.refresh()); // TODO: incapsulate toolbox in toolboxTreeProvider
+    await toolboxTreeProvider.toolbox.deleteElement(item.id!);
   };
 }
 
 export function renameItemInToolbox(
-  toolbox: CodeToolbox,
   toolboxTreeProvider: CodeToolboxTreeProvider
 ) {
   return async (item: ToolboxTreeItem) => {
@@ -283,14 +284,11 @@ export function renameItemInToolbox(
       return;
     }
 
-    toolbox
-      .renameElement(item.id, newName)
-      .then(() => toolboxTreeProvider.refresh());
+    await toolboxTreeProvider.toolbox.renameElement(item.id, newName);
   };
 }
 
 export function createFolderInToolbox(
-  toolbox: CodeToolbox,
   toolboxTreeProvider: CodeToolboxTreeProvider
 ) {
   return async (item?: ToolboxTreeItem) => {
@@ -306,8 +304,6 @@ export function createFolderInToolbox(
       return;
     }
 
-    toolbox
-      .createFolder(folderName, item?.id)
-      .then(() => toolboxTreeProvider.refresh());
+    await toolboxTreeProvider.toolbox.createFolder(folderName, item?.id);
   };
 }

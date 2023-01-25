@@ -15,6 +15,7 @@ export interface TreeElementData {
 }
 
 export default class CodeToolbox {
+  public onSave = () => {};
   private readonly storageKey = "snippet.codeToolboxStorage";
   private elements = new Map<string, TreeElement>();
   private rootId: string = "";
@@ -118,12 +119,11 @@ export default class CodeToolbox {
   }
 
   async renameElement(id: string, newName: string): Promise<void> {
-    // TODO: save and refresh automatically ?
     this.getElement(id).data.label = newName;
     await this.save();
   }
 
-  async createFolder(name: string, relativeToId?: string) {
+  async createFolder(name: string, relativeToId?: string): Promise<void> {
     const relativeToElement = this.getElement(relativeToId); // TODO: use getElement or this.elements.get
 
     const parentId =
@@ -143,7 +143,7 @@ export default class CodeToolbox {
     await this.save();
   }
 
-  async moveElement(sourceId: string, targetId?: string) {
+  async moveElement(sourceId: string, targetId?: string): Promise<void> {
     if (targetId === sourceId) {
       return;
     }
@@ -202,14 +202,15 @@ export default class CodeToolbox {
   }
 
   getCode(id: string): string {
-    return this.elements.get(id)?.data.content?.toString() ?? "";
+    return this.getElement(id).data.content?.toString() || "";
   }
 
   async save(): Promise<void> {
     await this.context.globalState.update(this.storageKey, this.serialize());
+    this.onSave();
   }
 
-  load() {
+  load(): void {
     this.deserialize(this.context.globalState.get(this.storageKey) || "[]");
   }
 

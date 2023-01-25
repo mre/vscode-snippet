@@ -19,7 +19,7 @@ export class CodeToolboxTreeProvider
 
   constructor(
     context: vscode.ExtensionContext,
-    private readonly toolbox: CodeToolbox
+    public readonly toolbox: CodeToolbox
   ) {
     const view = vscode.window.createTreeView("codeToolbox", {
       treeDataProvider: this,
@@ -28,10 +28,7 @@ export class CodeToolboxTreeProvider
       dragAndDropController: this,
     });
     context.subscriptions.push(view);
-  }
-
-  refresh(): void {
-    this._onDidChangeTreeData.fire();
+    this.toolbox.onSave = () => this.refresh();
   }
 
   getTreeItem(
@@ -96,9 +93,11 @@ export class CodeToolboxTreeProvider
       return;
     }
 
-    this.toolbox
-      .moveElement(transferItem.value.id, target?.id)
-      .then(() => this.refresh());
+    return this.toolbox.moveElement(transferItem.value.id, target?.id);
+  }
+
+  private refresh(): void {
+    this._onDidChangeTreeData.fire();
   }
 }
 

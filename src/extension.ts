@@ -20,11 +20,11 @@ export function activate(ctx: vscode.ExtensionContext) {
     vscode.commands.registerCommand('snippet.showNextAnswer', endpoints.showNextAnswer)
     vscode.commands.registerCommand('snippet.toggleComments', endpoints.toggleComments)
 
-    vscode.commands.registerCommand('snippet.saveToCodeToolbox', endpoints.saveToCodeToolbox(toolbox, toolboxTreeProvider))
-    vscode.commands.registerCommand('snippet.insertCodeFromToolbox', endpoints.insertCodeFromToolbox(toolbox))
-    vscode.commands.registerCommand('snippet.deleteItemFromToolbox', endpoints.deleteItemFromToolbox(toolbox, toolboxTreeProvider))
-    vscode.commands.registerCommand('snippet.renameItemInToolbox', endpoints.renameItemInToolbox(toolbox, toolboxTreeProvider))
-    vscode.commands.registerCommand('snippet.createFolderInToolbox', endpoints.createFolderInToolbox(toolbox, toolboxTreeProvider))
+    vscode.commands.registerCommand('snippet.saveToCodeToolbox', endpoints.saveToCodeToolbox(toolboxTreeProvider))
+    vscode.commands.registerCommand('snippet.insertCodeFromToolbox', endpoints.insertCodeFromToolbox(toolboxTreeProvider))
+    vscode.commands.registerCommand('snippet.deleteItemFromToolbox', endpoints.deleteItemFromToolbox(toolboxTreeProvider))
+    vscode.commands.registerCommand('snippet.renameItemInToolbox', endpoints.renameItemInToolbox(toolboxTreeProvider))
+    vscode.commands.registerCommand('snippet.createFolderInToolbox', endpoints.createFolderInToolbox(toolboxTreeProvider))
 
     cache.state = ctx.globalState
     let provider = new SnippetProvider();
