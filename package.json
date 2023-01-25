@@ -91,7 +91,7 @@
         "category": "Snippet"
       },
       {
-        "title": "Insert code from a toolbox",
+        "title": "Insert code fragment from a toolbox",
         "command": "snippet.insertCodeFromToolbox",
         "category": "Snippet"
       },

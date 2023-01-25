@@ -2,12 +2,12 @@ import { nanoid } from "nanoid";
 import * as vscode from "vscode";
 
 export interface TreeElement {
-  item: TreeElementItem;
+  data: TreeElementData;
   parentId?: string;
   childIds?: string[];
 }
 
-export interface TreeElementItem {
+export interface TreeElementData {
   id: string;
   label: string;
   content: string;
@@ -54,26 +54,26 @@ export default class CodeToolbox {
     this.rootId = root.id!;
 
     this.elements.set(this.rootId, {
-      item: root,
+      data: root,
       childIds: [child.id!, child2.id!, child3.id!],
     });
     this.elements.set(child2.id!, {
-      item: child2,
+      data: child2,
       parentId: this.rootId,
       childIds: [],
     });
     this.elements.set(child3.id!, {
-      item: child3,
+      data: child3,
       parentId: this.rootId,
       childIds: [],
     });
     this.elements.set(child.id!, {
-      item: child,
+      data: child,
       parentId: root.id,
       childIds: [leaf.id!, leaf2.id!],
     });
-    this.elements.set(leaf.id!, { item: leaf, parentId: child.id });
-    this.elements.set(leaf2.id!, { item: leaf2, parentId: child.id });
+    this.elements.set(leaf.id!, { data: leaf, parentId: child.id });
+    this.elements.set(leaf2.id!, { data: leaf2, parentId: child.id });
 
     // this.save().then(() => this.load());
     this.load();
@@ -93,8 +93,9 @@ export default class CodeToolbox {
     const toDelete = this.getElement(id);
     const messageForUser =
       toDelete.childIds == null
-        ? "Are you sure you want to delete this item?"
-        : "Are you sure you want to delete this folder from a toolbox? Everything inside it will be deleted too.";
+        ? "Are you sure you want to delete this code fragment?"
+        : "Are you sure you want to delete this folder? Everything inside it will be deleted too.";
+
     const answer = await vscode.window.showInformationMessage(
       messageForUser,
       "Yes",
@@ -118,7 +119,7 @@ export default class CodeToolbox {
 
   async renameElement(id: string, newName: string): Promise<void> {
     // TODO: save and refresh automatically ?
-    this.getElement(id).item.label = newName;
+    this.getElement(id).data.label = newName;
     await this.save();
   }
 
@@ -128,15 +129,15 @@ export default class CodeToolbox {
     const parentId =
       relativeToElement.childIds == null
         ? relativeToElement.parentId
-        : relativeToElement.item.id;
+        : relativeToElement.data.id;
 
-    const folder: TreeElementItem = {
+    const folder: TreeElementData = {
       id: nanoid(),
       label: name,
       content: "", // TODO: make optional (not needed in folders)
     };
 
-    this.elements.set(folder.id, { childIds: [], item: folder, parentId });
+    this.elements.set(folder.id, { childIds: [], data: folder, parentId });
     this.elements.get(parentId).childIds?.push(folder.id);
 
     await this.save();
@@ -161,7 +162,7 @@ export default class CodeToolbox {
     while (tempId) {
       const curElement = this.elements.get(tempId);
       if (
-        curElement?.item.id === sourceId ||
+        curElement?.data.id === sourceId ||
         curElement?.parentId === sourceId
       ) {
         return;
@@ -187,21 +188,21 @@ export default class CodeToolbox {
     fileExtension: string,
     label?: string
   ): Promise<void> {
-    const item: TreeElementItem = {
+    const data: TreeElementData = {
       id: nanoid(),
       label: label || "untitled",
       content,
       fileExtension,
     };
 
-    this.elements.set(item.id, { item, parentId: this.rootId });
-    this.elements.get(this.rootId)?.childIds?.push(item.id);
+    this.elements.set(data.id, { data, parentId: this.rootId });
+    this.elements.get(this.rootId)?.childIds?.push(data.id);
 
     await this.save();
   }
 
   getCode(id: string): string {
-    return this.elements.get(id)?.item.content?.toString() ?? "";
+    return this.elements.get(id)?.data.content?.toString() ?? "";
   }
 
   async save(): Promise<void> {
@@ -221,10 +222,10 @@ export default class CodeToolbox {
     const tree = JSON.parse(json) as TreeElement[];
 
     tree.forEach((element) => {
-      this.elements.set(element.item.id, element);
+      this.elements.set(element.data.id, element);
 
       if (!element.parentId) {
-        this.rootId = element.item.id;
+        this.rootId = element.data.id;
       }
     });
   }

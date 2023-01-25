@@ -208,7 +208,6 @@ export function saveToCodeToolbox(
       };
 
       vscode.window.showInputBox(opt).then((label) => {
-        // TODO: refactor (refresh automatically?)
         toolbox
           .saveCode(content, fileExtension, label)
           .then(() => toolboxTreeProvider.refresh());
@@ -221,14 +220,14 @@ export function insertCodeFromToolbox(toolbox: CodeToolbox) {
   return (id: string) => {
     if (!id) {
       vscode.window.showInformationMessage(
-        "Insert a code fragment into the editor by clicking on it in the Code Fragments view." // TODO: think about consistent naming (element ? item ? folder ? code ? code fragment ?)
+        "Insert a code fragment into the editor by clicking on it in the Code Toolbox view."
       );
     }
 
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       vscode.window.showInformationMessage(
-        "Open a file in the editor to insert a fragment."
+        "Open a file in the editor to insert a Code Fragment."
       );
       return;
     }
@@ -255,7 +254,7 @@ export function deleteItemFromToolbox(
       return;
     }
 
-    toolbox.deleteElement(item.id!).then(() => toolboxTreeProvider.refresh());
+    toolbox.deleteElement(item.id!).then(() => toolboxTreeProvider.refresh()); // TODO: incapsulate toolbox in toolboxTreeProvider
   };
 }
 
