@@ -195,6 +195,10 @@ export function saveToCodeToolbox(
       }
 
       const defaultLabel = content.substring(0, 100);
+      const fileName = editor.document.fileName;
+      const indexOfLastDot = fileName.lastIndexOf(".");
+      const fileExtension =
+        indexOfLastDot === -1 ? "" : fileName.slice(indexOfLastDot);
 
       const opt: vscode.InputBoxOptions = {
         ignoreFocusOut: false,
@@ -206,7 +210,7 @@ export function saveToCodeToolbox(
       vscode.window.showInputBox(opt).then((label) => {
         // TODO: refactor (refresh automatically?)
         toolbox
-          .saveCode(content, label)
+          .saveCode(content, fileExtension, label)
           .then(() => toolboxTreeProvider.refresh());
       });
     });

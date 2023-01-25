@@ -53,7 +53,8 @@ export class CodeToolboxTreeProvider
           curElement.childIds == null
             ? vscode.TreeItemCollapsibleState.None
             : vscode.TreeItemCollapsibleState.Expanded,
-          id
+          id,
+          curElement.item.fileExtension
         );
       }) ?? []
     );
@@ -106,13 +107,16 @@ export class ToolboxTreeItem extends vscode.TreeItem {
     public readonly label: string,
     content: string,
     public readonly collapsibleState: vscode.TreeItemCollapsibleState,
-    id: string
+    id: string,
+    fileExtension?: string
   ) {
     super(label, collapsibleState);
     this.id = id;
     this.tooltip = content;
 
     if (collapsibleState === vscode.TreeItemCollapsibleState.None) {
+      this.resourceUri = vscode.Uri.file(`./some-file${fileExtension || ""}`);
+
       this.command = {
         arguments: [this.id],
         command: "snippet.insertCodeFromToolbox",

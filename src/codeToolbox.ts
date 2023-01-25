@@ -11,6 +11,7 @@ export interface TreeElementItem {
   id: string;
   label: string;
   content: string;
+  fileExtension?: string;
 }
 
 export default class CodeToolbox {
@@ -181,11 +182,16 @@ export default class CodeToolbox {
     await this.save();
   }
 
-  async saveCode(content: string, label?: string): Promise<void> {
+  async saveCode(
+    content: string,
+    fileExtension: string,
+    label?: string
+  ): Promise<void> {
     const item: TreeElementItem = {
       id: nanoid(),
       label: label || "untitled",
       content,
+      fileExtension,
     };
 
     this.elements.set(item.id, { item, parentId: this.rootId });
