@@ -1,7 +1,7 @@
 "use strict";
 
 import * as vscode from "vscode";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosHeaders, AxiosRequestConfig, AxiosResponse } from "axios";
 import { getConfig } from "./config";
 import { HttpProxyAgent } from "http-proxy-agent";
 
@@ -77,7 +77,7 @@ class Snippet {
     return this.verboseState;
   }
 
-  private _requestConfig(): {} {
+  private _requestConfig(): AxiosRequestConfig {
     let config = {
       // Fake user agent to get plain-text output.
       // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
@@ -130,7 +130,7 @@ class Snippet {
       status: 200,
       statusText: "OK",
       headers: {},
-      config: {},
+      config: { headers: new AxiosHeaders() },
     };
   }
 
