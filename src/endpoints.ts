@@ -211,6 +211,8 @@ export function saveToCodeToolbox(
           fileExtension,
           label
         );
+
+        await vscode.commands.executeCommand("codeToolbox.focus");
       });
     });
   };
