@@ -178,7 +178,8 @@
         },
         {
           "when": "editorHasSelection",
-          "command": "snippet.saveSnippet"
+          "command": "snippet.saveSnippet",
+          "group": "1_modification"
         }
       ]
     },
