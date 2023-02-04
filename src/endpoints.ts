@@ -217,7 +217,7 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
           return;
         }
 
-        await treeProvider.storage.saveCode(content, fileExtension, label);
+        await treeProvider.storage.saveSnippet(content, fileExtension, label);
 
         await vscode.commands.executeCommand("snippetsView.focus");
       });
@@ -242,7 +242,7 @@ export function insertSnippet(treeProvider: SnippetsTreeProvider) {
       return;
     }
 
-    const content = treeProvider.storage.getCode(id);
+    const content = treeProvider.storage.getSnippet(id);
 
     if (content) {
       editor.edit((builder) => {

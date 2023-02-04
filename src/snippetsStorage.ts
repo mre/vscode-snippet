@@ -154,7 +154,7 @@ export default class SnippetsStorage {
     await this.save();
   }
 
-  async saveCode(
+  async saveSnippet(
     content: string,
     fileExtension: string,
     label?: string
@@ -172,7 +172,7 @@ export default class SnippetsStorage {
     await this.save();
   }
 
-  getCode(id: string): string {
+  getSnippet(id: string): string {
     return this.getElement(id).data.content?.toString() || "";
   }
 
