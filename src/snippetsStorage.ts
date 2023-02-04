@@ -28,6 +28,10 @@ export default class SnippetsStorage {
     }
   }
 
+  getFoldersList(): string[] {
+    return ["one/two", "three"];
+  }
+
   getElement(id?: string): TreeElement | undefined {
     const providedOrRootId = id ?? this.rootId;
 
@@ -38,10 +42,9 @@ export default class SnippetsStorage {
 
   async deleteElement(id: string): Promise<void> {
     const toDelete = this.getElement(id);
-    const messageForUser =
-      toDelete.childIds == null
-        ? "Are you sure you want to delete this snippet?"
-        : "Are you sure you want to delete this folder? Everything inside it will be deleted too.";
+    const messageForUser = this.isFolder(toDelete)
+      ? "Are you sure you want to delete this folder? Everything inside it will be deleted too."
+      : "Are you sure you want to delete this snippet?";
 
     const answer = await vscode.window.showInformationMessage(
       messageForUser,
@@ -72,10 +75,9 @@ export default class SnippetsStorage {
   async createFolder(name: string, relativeToId?: string): Promise<void> {
     const relativeToElement = this.getElement(relativeToId);
 
-    const parentId =
-      relativeToElement.childIds == null
-        ? relativeToElement.parentId
-        : relativeToElement.data.id;
+    const parentId = this.isFolder(relativeToElement)
+      ? relativeToElement.data.id
+      : relativeToElement.parentId;
 
     const folder: TreeElementData = {
       id: nanoid(),
@@ -97,10 +99,9 @@ export default class SnippetsStorage {
     const sourceElement = this.getElement(sourceId);
     const targetElement = this.getElement(targetId);
 
-    const newParentId =
-      targetElement.childIds == null
-        ? targetElement.parentId
-        : targetElement.data.id;
+    const newParentId = this.isFolder(targetElement)
+      ? targetElement.data.id
+      : targetElement.parentId;
 
     let tempId = newParentId;
     while (tempId) {
@@ -213,5 +214,9 @@ export default class SnippetsStorage {
         this.rootId = element.data.id;
       }
     });
+  }
+
+  private isFolder(element: TreeElement): boolean {
+    return element.childIds != null;
   }
 }

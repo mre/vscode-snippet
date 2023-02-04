@@ -179,11 +179,23 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
       return;
     }
 
-    editor.edit(() => {
+    editor.edit(async () => {
       const content = editor.document.getText(editor.selection);
 
       if (content.length < 1) {
         showNoTextMsg();
+        return;
+      }
+
+      const foldersList = treeProvider.storage.getFoldersList();
+      const folder = await vscode.window.showQuickPick(foldersList, {
+        placeHolder: "Folder name",
+        title: "Select a folder",
+      });
+
+      vscode.window.showInformationMessage(`Got folder: ${folder}`);
+
+      if (!folder) {
         return;
       }
 
@@ -193,14 +205,14 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
       const fileExtension =
         indexOfLastDot === -1 ? "" : fileName.slice(indexOfLastDot);
 
-      const opt: vscode.InputBoxOptions = {
+      const nameInputOptions: vscode.InputBoxOptions = {
         ignoreFocusOut: false,
         placeHolder: "Snippet Name",
         prompt: "Give the snippet a name...",
         value: defaultLabel,
       };
 
-      vscode.window.showInputBox(opt).then(async (label) => {
+      vscode.window.showInputBox(nameInputOptions).then(async (label) => {
         await treeProvider.storage.saveCode(content, fileExtension, label);
 
         await vscode.commands.executeCommand("snippetsView.focus");
