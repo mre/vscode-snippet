@@ -66,8 +66,9 @@ You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd>
 
 1. Select some text in an editor window.
 2. Right click and choose "Save snippet"
-3. Enter a name of the snippet
-4. Press <kbd>Enter</kbd>
+3. Select a folder for the snippet
+4. Enter a name of the snippet
+5. Press <kbd>Enter</kbd>
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/save.gif)
 
