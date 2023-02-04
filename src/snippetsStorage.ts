@@ -14,6 +14,11 @@ export interface TreeElementData {
   fileExtension?: string;
 }
 
+export interface FolderListItem extends vscode.QuickPickItem {
+  id: string;
+  label: string;
+}
+
 export default class SnippetsStorage {
   public onSave = () => {};
   private readonly storageKey = "snippet.snippetsStorageKey";
@@ -28,31 +33,37 @@ export default class SnippetsStorage {
     }
   }
 
-  getFoldersList(): string[] {
-    const list: string[] = [];
+  getFoldersList(): FolderListItem[] {
+    const result: FolderListItem[] = [];
 
-    this.populateFoldersList(list, this.getElement(this.rootId), "/");
-    list.sort((a, b) => a.localeCompare(b));
+    this.populateFoldersList(result, this.getElement(this.rootId), {
+      id: this.rootId,
+      label: "/",
+    });
+    result.sort((a, b) => a.label.localeCompare(b.label));
 
-    return list;
+    return result;
   }
 
   private populateFoldersList(
-    list: string[],
+    list: FolderListItem[],
     parent: TreeElement,
-    currentFolder: string
+    current: FolderListItem
   ): void {
-    list.push(currentFolder);
+    list.push(current);
 
     for (const childId of parent.childIds) {
       const child = this.getElement(childId);
 
       if (this.isFolder(child)) {
         const joinedName = `${
-          currentFolder === "/" ? "/" : `${currentFolder}/`
+          current.label === "/" ? "/" : `${current.label}/`
         }${child.data.label}`;
 
-        this.populateFoldersList(list, child, joinedName);
+        this.populateFoldersList(list, child, {
+          id: childId,
+          label: joinedName,
+        });
       }
     }
   }
@@ -97,7 +108,6 @@ export default class SnippetsStorage {
     await this.save();
   }
 
-  // TODO: add checks if folder with the name exists or snippet with the name exists (one create, on rename and on move)
   async createFolder(name: string, relativeToId?: string): Promise<void> {
     const relativeToElement = this.getElement(relativeToId);
 
@@ -157,17 +167,18 @@ export default class SnippetsStorage {
   async saveSnippet(
     content: string,
     fileExtension: string,
-    label?: string
+    label: string,
+    parentId: string
   ): Promise<void> {
     const data: TreeElementData = {
       id: nanoid(),
-      label: label || "untitled",
+      label,
       content,
       fileExtension,
     };
 
-    this.elements.set(data.id, { data, parentId: this.rootId });
-    this.getElement(this.rootId).childIds?.push(data.id);
+    this.elements.set(data.id, { data, parentId });
+    this.getElement(parentId).childIds?.push(data.id);
 
     await this.save();
   }

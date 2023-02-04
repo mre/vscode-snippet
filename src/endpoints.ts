@@ -193,8 +193,6 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
         title: "Select a folder",
       });
 
-      vscode.window.showInformationMessage(`Got folder: ${folder}`);
-
       if (!folder) {
         return;
       }
@@ -217,7 +215,12 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
           return;
         }
 
-        await treeProvider.storage.saveSnippet(content, fileExtension, label);
+        await treeProvider.storage.saveSnippet(
+          content,
+          fileExtension,
+          label,
+          folder.id
+        );
 
         await vscode.commands.executeCommand("snippetsView.focus");
       });
