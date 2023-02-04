@@ -86,28 +86,28 @@
         "category": "Snippet"
       },
       {
-        "title": "Save to code toolbox",
-        "command": "snippet.saveToCodeToolbox",
+        "title": "Save snippet",
+        "command": "snippet.saveSnippet",
         "category": "Snippet"
       },
       {
-        "title": "Insert code fragment from a toolbox",
-        "command": "snippet.insertCodeFromToolbox",
+        "title": "Insert snippet",
+        "command": "snippet.insertSnippet",
         "category": "Snippet"
       },
       {
         "title": "Delete",
-        "command": "snippet.deleteItemFromToolbox",
+        "command": "snippet.deleteSnippet",
         "category": "Snippet"
       },
       {
         "title": "Rename",
-        "command": "snippet.renameItemInToolbox",
+        "command": "snippet.renameSnippet",
         "category": "Snippet"
       },
       {
         "title": "New Folder",
-        "command": "snippet.createFolderInToolbox",
+        "command": "snippet.createFolder",
         "category": "Snippet",
         "icon": {
           "light": "assets/icons/add-light.svg",
@@ -148,25 +148,25 @@
     "menus": {
       "view/title": [
         {
-          "command": "snippet.createFolderInToolbox",
-          "when": "view == codeToolbox",
+          "command": "snippet.createFolder",
+          "when": "view == snippetsView",
           "group": "navigation"
         }
       ],
       "view/item/context": [
         {
-          "command": "snippet.createFolderInToolbox",
-          "when": "view == codeToolbox",
+          "command": "snippet.createFolder",
+          "when": "view == snippetsView",
           "group": "snippet.viewItemContext.baseGroup@1"
         },
         {
-          "command": "snippet.renameItemInToolbox",
-          "when": "view == codeToolbox",
+          "command": "snippet.renameSnippet",
+          "when": "view == snippetsView",
           "group": "snippet.viewItemContext.baseGroup@2"
         },
         {
-          "command": "snippet.deleteItemFromToolbox",
-          "when": "view == codeToolbox",
+          "command": "snippet.deleteSnippet",
+          "when": "view == snippetsView",
           "group": "snippet.viewItemContext.baseGroup@3"
         }
       ],
@@ -178,15 +178,15 @@
         },
         {
           "when": "editorHasSelection",
-          "command": "snippet.saveToCodeToolbox"
+          "command": "snippet.saveSnippet"
         }
       ]
     },
     "views": {
       "explorer": [
         {
-          "id": "codeToolbox",
-          "name": "Code toolbox"
+          "id": "snippetsView",
+          "name": "Snippets"
         }
       ]
     },

@@ -3,10 +3,7 @@ import { pickLanguage, getLanguage, getConfig } from "./config";
 import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
-import {
-  CodeToolboxTreeProvider,
-  ToolboxTreeItem,
-} from "./codeToolboxTreeProvider";
+import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
 
 export interface Request {
   language: string;
@@ -169,9 +166,7 @@ export async function findSelectedText() {
   );
 }
 
-export function saveToCodeToolbox(
-  toolboxTreeProvider: CodeToolboxTreeProvider
-) {
+export function saveSnippet(treeProvider: SnippetsTreeProvider) {
   return () => {
     const showNoTextMsg = () =>
       vscode.window.showInformationMessage(
@@ -200,31 +195,25 @@ export function saveToCodeToolbox(
 
       const opt: vscode.InputBoxOptions = {
         ignoreFocusOut: false,
-        placeHolder: "Code Fragment Name",
-        prompt: "Give the fragment a name...",
+        placeHolder: "Snippet Name",
+        prompt: "Give the snippet a name...",
         value: defaultLabel,
       };
 
       vscode.window.showInputBox(opt).then(async (label) => {
-        await toolboxTreeProvider.toolbox.saveCode(
-          content,
-          fileExtension,
-          label
-        );
+        await treeProvider.storage.saveCode(content, fileExtension, label);
 
-        await vscode.commands.executeCommand("codeToolbox.focus");
+        await vscode.commands.executeCommand("snippetsView.focus");
       });
     });
   };
 }
 
-export function insertCodeFromToolbox(
-  toolboxTreeProvider: CodeToolboxTreeProvider
-) {
+export function insertSnippet(treeProvider: SnippetsTreeProvider) {
   return (id: string) => {
     if (!id) {
       vscode.window.showInformationMessage(
-        "Insert a code fragment into the editor by clicking on it in the Code Toolbox view."
+        "Insert a snippet into the editor by clicking on it in the Snippets view."
       );
       return;
     }
@@ -232,12 +221,12 @@ export function insertCodeFromToolbox(
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
       vscode.window.showInformationMessage(
-        "Open a file in the editor to insert a Code Fragment."
+        "Open a file in the editor to insert a snippet."
       );
       return;
     }
 
-    const content = toolboxTreeProvider.toolbox.getCode(id);
+    const content = treeProvider.storage.getCode(id);
 
     if (content) {
       editor.edit((builder) => {
@@ -247,36 +236,32 @@ export function insertCodeFromToolbox(
   };
 }
 
-export function deleteItemFromToolbox(
-  toolboxTreeProvider: CodeToolboxTreeProvider
-) {
-  return async (item: ToolboxTreeItem) => {
+export function deleteSnippet(treeProvider: SnippetsTreeProvider) {
+  return async (item: SnippetsTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        'Delete item from the Code Toolbox by right clicking on it in the list and selecting "Delete"'
+        'Delete a snippet or a folder by right clicking on it in the list and selecting "Delete"'
       );
       return;
     }
 
-    await toolboxTreeProvider.toolbox.deleteElement(item.id!);
+    await treeProvider.storage.deleteElement(item.id!);
   };
 }
 
-export function renameItemInToolbox(
-  toolboxTreeProvider: CodeToolboxTreeProvider
-) {
-  return async (item: ToolboxTreeItem) => {
+export function renameSnippet(treeProvider: SnippetsTreeProvider) {
+  return async (item: SnippetsTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        'Rename item by right clicking on it in the list and selecting "Rename"'
+        'Rename a snippet or a folder by right clicking on it in the list and selecting "Rename"'
       );
       return;
     }
 
     const opt: vscode.InputBoxOptions = {
       ignoreFocusOut: false,
-      placeHolder: "Code Fragment Name",
-      prompt: "Rename Code Fragment...",
+      placeHolder: "New Name",
+      prompt: "Rename...",
       value: item.label,
     };
 
@@ -286,14 +271,12 @@ export function renameItemInToolbox(
       return;
     }
 
-    await toolboxTreeProvider.toolbox.renameElement(item.id, newName);
+    await treeProvider.storage.renameElement(item.id, newName);
   };
 }
 
-export function createFolderInToolbox(
-  toolboxTreeProvider: CodeToolboxTreeProvider
-) {
-  return async (item?: ToolboxTreeItem) => {
+export function createFolder(treeProvider: SnippetsTreeProvider) {
+  return async (item?: SnippetsTreeItem) => {
     const opt: vscode.InputBoxOptions = {
       ignoreFocusOut: false,
       placeHolder: "Folder Name",
@@ -306,6 +289,6 @@ export function createFolderInToolbox(
       return;
     }
 
-    await toolboxTreeProvider.toolbox.createFolder(folderName, item?.id);
+    await treeProvider.storage.createFolder(folderName, item?.id);
   };
 }

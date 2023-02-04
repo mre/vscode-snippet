@@ -14,9 +14,9 @@ export interface TreeElementData {
   fileExtension?: string;
 }
 
-export default class CodeToolbox {
+export default class SnippetsStorage {
   public onSave = () => {};
-  private readonly storageKey = "snippet.codeToolboxStorage";
+  private readonly storageKey = "snippet.snippetsStorageKey";
   private readonly elements = new Map<string, TreeElement>();
   private rootId: string = "";
 
@@ -40,7 +40,7 @@ export default class CodeToolbox {
     const toDelete = this.getElement(id);
     const messageForUser =
       toDelete.childIds == null
-        ? "Are you sure you want to delete this code fragment?"
+        ? "Are you sure you want to delete this snippet?"
         : "Are you sure you want to delete this folder? Everything inside it will be deleted too.";
 
     const answer = await vscode.window.showInformationMessage(
@@ -169,9 +169,9 @@ export default class CodeToolbox {
       label: "example folder",
       content: "",
     };
-    const exampleFragment: TreeElementData = {
+    const exampleSnippet: TreeElementData = {
       id: nanoid(),
-      label: "example code fragment",
+      label: "example snippet",
       fileExtension: ".js",
       content: `for (let i = 0; i < 5; i++) {
   console.log('Hello world!');
@@ -187,11 +187,11 @@ export default class CodeToolbox {
     });
     this.elements.set(exampleFolder.id, {
       data: exampleFolder,
-      childIds: [exampleFragment.id],
+      childIds: [exampleSnippet.id],
       parentId: root.id,
     });
-    this.elements.set(exampleFragment.id, {
-      data: exampleFragment,
+    this.elements.set(exampleSnippet.id, {
+      data: exampleSnippet,
       parentId: exampleFolder.id,
     });
 

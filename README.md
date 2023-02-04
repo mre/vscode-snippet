@@ -62,56 +62,56 @@ You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd>
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/findSelectedShortcut.gif)
 
-### Saving a code fragment to the Code Toolbox
+### Saving a snippet
 
 1. Select some text in an editor window.
-2. Right click and choose "Save to code toolbox"
-3. Enter a name of the code fragment
+2. Right click and choose "Save snippet"
+3. Enter a name of the snippet
 4. Press <kbd>Enter</kbd>
 
-![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/code-toolbox/save.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/save.gif)
 
-### Inserting a code fragment to the current cursor position
+### Inserting a snippet
 
 1. Open the Explorer by clicking <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kdb>
-2. Open the Code Toolbox section
-3. Click on the code fragment that you want to insert
+2. Open the Snippets
+3. Click on the snippet that you want to insert
 
-![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/code-toolbox/insert.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/insert.gif)
 
-### Creating a folder for the code fragments
+### Creating a folder for snippets
 
-1. Open the Code Toolbox section
-2. Click on the <kbd>+</kbd> icon (alternatively, you can right click on any code fragment or a folder and select "New Folder")
+1. Open the Snippets section
+2. Click on the <kbd>+</kbd> icon (alternatively, you can right click on any snippet or a folder and select "New Folder")
 3. Enter a name of the folder
 4. Press <kbd>Enter</kbd>
 
-![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/code-toolbox/create-folder.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/create-folder.gif)
 
-### Renaming a code fragment or a folder
+### Renaming a snippet or a folder
 
-1. Open the Code Toolbox section
-2. Right click on the code fragment or a folder that you want to rename
+1. Open the Snippets section
+2. Right click on the snippet or a folder that you want to rename
 3. Select "Rename"
 4. Enter a new name
 5. Press <kbd>Enter</kbd>
 
-![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/code-toolbox/rename.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/rename.gif)
 
-### Deleting a code fragment or a folder
+### Deleting a snippet or a folder
 
-1. Open the Code Toolbox section
-2. Right click on the code fragment or a folder that you want to delete
+1. Open the Snippets section
+2. Right click on the snippet or a folder that you want to delete
 3. Select "Delete"
 4. Confirm your choice
 
-![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/code-toolbox/delete.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/delete.gif)
 
-### Moving a code fragment or a folder
+### Moving a snippet or a folder
 
-You can move code fragments or folders in the Code Toolbox by dragging and dropping them
+You can move snippets or folders in the Snippets view by dragging and dropping them
 
-![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/code-toolbox/move.gif)
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/move.gif)
 
 ## Development
 

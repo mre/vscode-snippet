@@ -1,50 +1,50 @@
 import * as vscode from "vscode";
-import CodeToolbox from "./codeToolbox";
+import SnippetsStorage from "./snippetsStorage";
 
-export class CodeToolboxTreeProvider
+export class SnippetsTreeProvider
   implements
-    vscode.TreeDataProvider<ToolboxTreeItem>,
-    vscode.TreeDragAndDropController<ToolboxTreeItem>
+    vscode.TreeDataProvider<SnippetsTreeItem>,
+    vscode.TreeDragAndDropController<SnippetsTreeItem>
 {
-  dropMimeTypes = ["application/vnd.code.tree.codeToolbox"];
+  dropMimeTypes = ["application/vnd.code.tree.snippetsView"];
   dragMimeTypes = ["text/uri-list"];
 
   private _onDidChangeTreeData: vscode.EventEmitter<
-    ToolboxTreeItem | undefined | null | void
-  > = new vscode.EventEmitter<ToolboxTreeItem | undefined | null | void>();
+    SnippetsTreeItem | undefined | null | void
+  > = new vscode.EventEmitter<SnippetsTreeItem | undefined | null | void>();
 
   readonly onDidChangeTreeData: vscode.Event<
-    ToolboxTreeItem | undefined | null | void
+    SnippetsTreeItem | undefined | null | void
   > = this._onDidChangeTreeData.event;
 
   constructor(
     context: vscode.ExtensionContext,
-    public readonly toolbox: CodeToolbox
+    public readonly storage: SnippetsStorage
   ) {
-    const view = vscode.window.createTreeView("codeToolbox", {
+    const view = vscode.window.createTreeView("snippetsView", {
       treeDataProvider: this,
       showCollapseAll: true,
       canSelectMany: false,
       dragAndDropController: this,
     });
     context.subscriptions.push(view);
-    this.toolbox.onSave = () => this.refresh();
+    this.storage.onSave = () => this.refresh();
   }
 
   getTreeItem(
-    element: ToolboxTreeItem
+    element: SnippetsTreeItem
   ): vscode.TreeItem | Thenable<vscode.TreeItem> {
     return element;
   }
 
   getChildren(
-    element?: ToolboxTreeItem | undefined
-  ): vscode.ProviderResult<ToolboxTreeItem[]> {
+    element?: SnippetsTreeItem | undefined
+  ): vscode.ProviderResult<SnippetsTreeItem[]> {
     return (
-      this.toolbox.getElement(element?.id)?.childIds?.map((id) => {
-        const curElement = this.toolbox.getElement(id);
+      this.storage.getElement(element?.id)?.childIds?.map((id) => {
+        const curElement = this.storage.getElement(id);
 
-        return new ToolboxTreeItem(
+        return new SnippetsTreeItem(
           curElement.data.label,
           curElement.data.content,
           curElement.childIds == null
@@ -58,7 +58,7 @@ export class CodeToolboxTreeProvider
   }
 
   handleDrag(
-    source: readonly ToolboxTreeItem[],
+    source: readonly SnippetsTreeItem[],
     dataTransfer: vscode.DataTransfer,
     token: vscode.CancellationToken
   ): void | Thenable<void> {
@@ -71,13 +71,13 @@ export class CodeToolboxTreeProvider
     }
 
     dataTransfer.set(
-      "application/vnd.code.tree.codeToolbox",
+      "application/vnd.code.tree.snippetsView",
       new vscode.DataTransferItem(source[0])
     );
   }
 
   handleDrop(
-    target: ToolboxTreeItem | undefined,
+    target: SnippetsTreeItem | undefined,
     dataTransfer: vscode.DataTransfer,
     token: vscode.CancellationToken
   ): void | Thenable<void> {
@@ -86,14 +86,14 @@ export class CodeToolboxTreeProvider
     }
 
     const transferItem = dataTransfer.get(
-      "application/vnd.code.tree.codeToolbox"
+      "application/vnd.code.tree.snippetsView"
     );
 
     if (!transferItem) {
       return;
     }
 
-    return this.toolbox.moveElement(transferItem.value.id, target?.id);
+    return this.storage.moveElement(transferItem.value.id, target?.id);
   }
 
   private refresh(): void {
@@ -101,7 +101,7 @@ export class CodeToolboxTreeProvider
   }
 }
 
-export class ToolboxTreeItem extends vscode.TreeItem {
+export class SnippetsTreeItem extends vscode.TreeItem {
   constructor(
     public readonly label: string,
     content: string,
@@ -121,7 +121,7 @@ export class ToolboxTreeItem extends vscode.TreeItem {
     this.resourceUri = vscode.Uri.file(`./some-file${fileExtension || ""}`);
     this.command = {
       arguments: [this.id],
-      command: "snippet.insertCodeFromToolbox",
+      command: "snippet.insertSnippet",
       title: "Insert code",
       tooltip: "Insert code",
     };
