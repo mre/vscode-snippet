@@ -281,6 +281,12 @@ export function createFolder(treeProvider: SnippetsTreeProvider) {
       ignoreFocusOut: false,
       placeHolder: "Folder Name",
       prompt: "Specify Folder Name...",
+      validateInput: (value: string) => {
+        if (value.includes("/")) {
+          return 'Folder name cannot contain "/"';
+        }
+        return null;
+      },
     };
 
     const folderName = await vscode.window.showInputBox(opt);
