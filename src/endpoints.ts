@@ -213,6 +213,10 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
       };
 
       vscode.window.showInputBox(nameInputOptions).then(async (label) => {
+        if (!label) {
+          return;
+        }
+
         await treeProvider.storage.saveCode(content, fileExtension, label);
 
         await vscode.commands.executeCommand("snippetsView.focus");
