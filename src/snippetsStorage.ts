@@ -29,7 +29,32 @@ export default class SnippetsStorage {
   }
 
   getFoldersList(): string[] {
-    return ["one/two", "three"];
+    const list: string[] = [];
+
+    this.populateFoldersList(list, this.getElement(this.rootId), "/");
+    list.sort((a, b) => a.localeCompare(b));
+
+    return list;
+  }
+
+  private populateFoldersList(
+    list: string[],
+    parent: TreeElement,
+    currentFolder: string
+  ): void {
+    list.push(currentFolder);
+
+    for (const childId of parent.childIds) {
+      const child = this.getElement(childId);
+
+      if (this.isFolder(child)) {
+        const joinedName = `${
+          currentFolder === "/" ? "/" : `${currentFolder}/`
+        }${child.data.label}`;
+
+        this.populateFoldersList(list, child, joinedName);
+      }
+    }
   }
 
   getElement(id?: string): TreeElement | undefined {
@@ -72,6 +97,7 @@ export default class SnippetsStorage {
     await this.save();
   }
 
+  // TODO: add checks if folder with the name exists or snippet with the name exists (one create, on rename and on move)
   async createFolder(name: string, relativeToId?: string): Promise<void> {
     const relativeToElement = this.getElement(relativeToId);
 
