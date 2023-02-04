@@ -75,12 +75,12 @@ You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd>
 ### Inserting a snippet
 
 1. Open the Explorer by clicking <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>E</kdb>
-2. Open the Snippets
+2. Open the Snippets section
 3. Click on the snippet that you want to insert
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/insert.gif)
 
-### Creating a folder for snippets
+### Creating a folder for the snippets
 
 1. Open the Snippets section
 2. Click on the <kbd>+</kbd> icon (alternatively, you can right click on any snippet or a folder and select "New Folder")
