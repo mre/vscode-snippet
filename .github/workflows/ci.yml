@@ -5,6 +5,7 @@ on: [push, pull_request_target]
 jobs:
   build:
     permissions:
+      checks: write
       contents: read
       pull-requests: write
     runs-on: ubuntu-latest
