@@ -1,16 +1,11 @@
-# standard
-.vscode/**
-typings/**
-out/test/**
-test/**
-src/**
-**/*.map
-**.ts
-**/.gitignore
-**/tsconfig.json
-vsc-extension-quickstart.md
-Makefile
-
-# test
-test-folder/**
-.vscode-test/**
+# Everything is excluded unless we add it manually, preventing accidental
+# inclusion of unwanted files.
+*
+*/**
+!LICENSE
+!README.md
+!assets/**
+!contrib/**
+!out/extension.js
+!package.json
+!package-lock.json
