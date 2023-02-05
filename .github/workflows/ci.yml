@@ -4,6 +4,9 @@ on: [push, pull_request_target]
 
 jobs:
   build:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     strategy:
       matrix:
