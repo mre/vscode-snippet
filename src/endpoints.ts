@@ -3,6 +3,7 @@ import { pickLanguage, getLanguage, getConfig } from "./config";
 import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
+import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
 
 export interface Request {
   language: string;
@@ -163,4 +164,156 @@ export async function findSelectedText() {
     0,
     getConfig("openInNewEditor")
   );
+}
+
+export function saveSnippet(treeProvider: SnippetsTreeProvider) {
+  return () => {
+    const showNoTextMsg = () =>
+      vscode.window.showInformationMessage(
+        "Select a piece of code in the editor to save it."
+      );
+
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      showNoTextMsg();
+      return;
+    }
+
+    editor.edit(async () => {
+      const content = editor.document.getText(editor.selection);
+
+      if (content.length < 1) {
+        showNoTextMsg();
+        return;
+      }
+
+      const foldersList = treeProvider.storage.getFoldersList();
+      const folder = await vscode.window.showQuickPick(foldersList, {
+        placeHolder: "Folder name",
+        title: "Select a folder",
+      });
+
+      if (!folder) {
+        return;
+      }
+
+      const defaultLabel = content.substring(0, 100);
+      const fileName = editor.document.fileName;
+      const indexOfLastDot = fileName.lastIndexOf(".");
+      const fileExtension =
+        indexOfLastDot === -1 ? "" : fileName.slice(indexOfLastDot);
+
+      const nameInputOptions: vscode.InputBoxOptions = {
+        ignoreFocusOut: false,
+        placeHolder: "Snippet Name",
+        prompt: "Give the snippet a name...",
+        value: defaultLabel,
+      };
+
+      vscode.window.showInputBox(nameInputOptions).then(async (label) => {
+        if (!label) {
+          return;
+        }
+
+        await treeProvider.storage.saveSnippet(
+          content,
+          fileExtension,
+          label,
+          folder.id
+        );
+
+        await vscode.commands.executeCommand("snippetsView.focus");
+      });
+    });
+  };
+}
+
+export function insertSnippet(treeProvider: SnippetsTreeProvider) {
+  return (id: string) => {
+    if (!id) {
+      vscode.window.showInformationMessage(
+        "Insert a snippet into the editor by clicking on it in the Snippets view."
+      );
+      return;
+    }
+
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+      vscode.window.showInformationMessage(
+        "Open a file in the editor to insert a snippet."
+      );
+      return;
+    }
+
+    const content = treeProvider.storage.getSnippet(id);
+
+    if (content) {
+      editor.edit((builder) => {
+        builder.insert(editor.selection.start, content);
+      });
+    }
+  };
+}
+
+export function deleteSnippet(treeProvider: SnippetsTreeProvider) {
+  return async (item: SnippetsTreeItem) => {
+    if (!item) {
+      vscode.window.showInformationMessage(
+        'Delete a snippet or a folder by right clicking on it in the list and selecting "Delete"'
+      );
+      return;
+    }
+
+    await treeProvider.storage.deleteElement(item.id!);
+  };
+}
+
+export function renameSnippet(treeProvider: SnippetsTreeProvider) {
+  return async (item: SnippetsTreeItem) => {
+    if (!item) {
+      vscode.window.showInformationMessage(
+        'Rename a snippet or a folder by right clicking on it in the list and selecting "Rename"'
+      );
+      return;
+    }
+
+    const opt: vscode.InputBoxOptions = {
+      ignoreFocusOut: false,
+      placeHolder: "New Name",
+      prompt: "Rename...",
+      value: item.label,
+    };
+
+    const newName = await vscode.window.showInputBox(opt);
+
+    if (!newName) {
+      return;
+    }
+
+    await treeProvider.storage.renameElement(item.id, newName);
+  };
+}
+
+export function createFolder(treeProvider: SnippetsTreeProvider) {
+  return async (item?: SnippetsTreeItem) => {
+    const opt: vscode.InputBoxOptions = {
+      ignoreFocusOut: false,
+      placeHolder: "Folder Name",
+      prompt: "Specify Folder Name...",
+      validateInput: (value: string) => {
+        if (value.includes("/")) {
+          return 'Folder name cannot contain "/"';
+        }
+        return null;
+      },
+    };
+
+    const folderName = await vscode.window.showInputBox(opt);
+
+    if (!folderName) {
+      return;
+    }
+
+    await treeProvider.storage.createFolder(folderName, item?.id);
+  };
 }
