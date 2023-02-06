@@ -60,8 +60,8 @@ export function activate(ctx: vscode.ExtensionContext) {
   );
 
   cache.state = ctx.globalState;
-  let provider = new SnippetProvider();
-  let disposableProvider = vscode.workspace.registerTextDocumentContentProvider(
+  const provider = new SnippetProvider();
+  const disposableProvider = vscode.workspace.registerTextDocumentContentProvider(
     "snippet",
     provider
   );

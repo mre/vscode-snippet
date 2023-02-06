@@ -23,7 +23,7 @@ export default class SnippetsStorage {
   public onSave = () => {};
   private readonly storageKey = "snippet.snippetsStorageKey";
   private readonly elements = new Map<string, TreeElement>();
-  private rootId: string = "";
+  private rootId = "";
 
   constructor(private readonly context: vscode.ExtensionContext) {
     this.load();
