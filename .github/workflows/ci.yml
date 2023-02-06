@@ -1,21 +1,23 @@
 name: CI
 
-on: [push]
+on:
+  push:
+  pull_request_target:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x, 12.x]
-    name: Node ${{ matrix.node }} sample
+        node-version: [16.x, 18.x]
+    name: Node ${{ matrix.node-version }}
     steps:
       - uses: actions/checkout@v1
 
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: ${{ matrix.node }}
+          node-version: ${{ matrix.node-version }}
 
       - name: Install Dependencies
         run: npm install
@@ -71,7 +73,7 @@ jobs:
       - name: Setup node
         uses: actions/setup-node@v1
         with:
-          node-version: 12.x
+          node-version: 18.x
 
       - run: npm install
 
