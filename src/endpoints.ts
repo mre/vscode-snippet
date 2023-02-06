@@ -10,10 +10,10 @@ export interface Request {
   query: string;
 }
 
-let loadingStatus = vscode.window.createStatusBarItem(
+const loadingStatus = vscode.window.createStatusBarItem(
   vscode.StatusBarAlignment.Left
 );
-loadingStatus.text = `$(clock) Loading Snippet ...`;
+loadingStatus.text = "$(clock) Loading Snippet ...";
 
 export async function findWithProvider(
   language: string,
@@ -24,7 +24,7 @@ export async function findWithProvider(
 ) {
   loadingStatus.show();
 
-  let uri = encodeRequest(userQuery, language, verbose, number);
+  const uri = encodeRequest(userQuery, language, verbose, number);
 
   // Calls back into the provider
   let doc = await vscode.workspace.openTextDocument(uri);
@@ -35,7 +35,7 @@ export async function findWithProvider(
   } catch (e) {
     console.log(`Cannot set document language to ${language}: ${e}`);
   }
-  let editor = vscode.window.activeTextEditor;
+  const editor = vscode.window.activeTextEditor;
 
   // Open in new editor in case the respective config flag is set to true
   // or there is no open user-created editor where we could paste the snippet in.
@@ -46,8 +46,8 @@ export async function findWithProvider(
       preserveFocus: true,
     });
   } else {
-    let snippet = new vscode.SnippetString(doc.getText());
-    let success = await editor.insertSnippet(snippet);
+    const snippet = new vscode.SnippetString(doc.getText());
+    const success = await editor.insertSnippet(snippet);
     if (!success) {
       vscode.window.showInformationMessage("Error while opening snippet.");
     }
@@ -55,14 +55,14 @@ export async function findWithProvider(
 }
 
 export async function getInput(): Promise<Request> {
-  let language = await getLanguage();
-  let userQuery = await query(language);
+  const language = await getLanguage();
+  const userQuery = await query(language);
   return { language, query: userQuery };
 }
 
 export async function findForLanguage() {
-  let language = await pickLanguage();
-  let userQuery = await query(language);
+  const language = await pickLanguage();
+  const userQuery = await query(language);
   await findWithProvider(
     language,
     userQuery,
@@ -73,7 +73,7 @@ export async function findForLanguage() {
 }
 
 export async function findDefault() {
-  let request = await getInput();
+  const request = await getInput();
   await findWithProvider(
     request.language,
     request.query,
@@ -84,7 +84,7 @@ export async function findDefault() {
 }
 
 export async function findInplace() {
-  let request = await getInput();
+  const request = await getInput();
   await findWithProvider(
     request.language,
     request.query,
@@ -95,7 +95,7 @@ export async function findInplace() {
 }
 
 export async function findInNewEditor() {
-  let request = await getInput();
+  const request = await getInput();
   await findWithProvider(
     request.language,
     request.query,
@@ -149,14 +149,14 @@ export async function toggleComments() {
 }
 
 export async function findSelectedText() {
-  let editor = vscode.window.activeTextEditor;
+  const editor = vscode.window.activeTextEditor;
   if (!editor) {
     vscode.window.showErrorMessage("There is no open editor window");
     return;
   }
-  let selection = editor.selection;
-  let query = editor.document.getText(selection);
-  let language = await getLanguage();
+  const selection = editor.selection;
+  const query = editor.document.getText(selection);
+  const language = await getLanguage();
   await findWithProvider(
     language,
     query,
@@ -259,7 +259,7 @@ export function deleteSnippet(treeProvider: SnippetsTreeProvider) {
   return async (item: SnippetsTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        'Delete a snippet or a folder by right clicking on it in the list and selecting "Delete"'
+        "Delete a snippet or a folder by right clicking on it in the list and selecting \"Delete\""
       );
       return;
     }
@@ -272,7 +272,7 @@ export function renameSnippet(treeProvider: SnippetsTreeProvider) {
   return async (item: SnippetsTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        'Rename a snippet or a folder by right clicking on it in the list and selecting "Rename"'
+        "Rename a snippet or a folder by right clicking on it in the list and selecting \"Rename\""
       );
       return;
     }
@@ -302,7 +302,7 @@ export function createFolder(treeProvider: SnippetsTreeProvider) {
       prompt: "Specify Folder Name...",
       validateInput: (value: string) => {
         if (value.includes("/")) {
-          return 'Folder name cannot contain "/"';
+          return "Folder name cannot contain \"/\"";
         }
         return null;
       },

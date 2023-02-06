@@ -11,8 +11,8 @@ export default class SnippetProvider implements TextDocumentContentProvider {
    * @returns {string} - Code Snippet
    **/
   public async provideTextDocumentContent(uri?: Uri): Promise<string> {
-    let request = decodeRequest(uri);
-    let response = await snippet.load(
+    const request = decodeRequest(uri);
+    const response = await snippet.load(
       request.language,
       request.query,
       request.answerNumber
@@ -40,16 +40,16 @@ export function encodeRequest(
       return variableName === "language"
         ? language
         : variableName === "query"
-        ? query
-        : variableName === "index"
-        ? answerNumber
-        : match;
+          ? query
+          : variableName === "index"
+            ? answerNumber
+            : match;
     }
   );
   return vscode.Uri.parse(`snippet:${title}?${data}`);
 }
 
 export function decodeRequest(uri: vscode.Uri): any {
-  let obj = JSON.parse(uri.query);
+  const obj = JSON.parse(uri.query);
   return obj;
 }

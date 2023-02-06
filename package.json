@@ -216,6 +216,7 @@
     "precompile": "rimraf out",
     "watch": "rollup -c --watch",
     "prewatch": "rimraf out",
+    "lint": "eslint src",
     "test": "npm run test-compile && export NODE_ENV=test && node ./out/test/runTest.js",
     "test-compile": "tsc -p ./ --allowSyntheticDefaultImports",
     "pretest-compile": "rimraf out"
@@ -237,7 +238,10 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^12.12.11",
     "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.50.0",
+    "@typescript-eslint/parser": "^5.50.0",
     "@vscode/test-electron": "^2.2.3",
+    "eslint": "^8.33.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "rimraf": "^4.1.2",

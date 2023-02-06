@@ -19,19 +19,18 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - run: npm install
+      - name: Install Dependencies
+        run: npm install
 
       - name: Lint
-        uses: mooyoul/tslint-actions@v1.1.1
-        if: github.actor != 'dependabot[bot]'
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          pattern: "*.ts"
+        run: npm run lint
 
-      - run: xvfb-run -a npm test
+      - name: Test (Linux)
+        run: xvfb-run -a npm test
         if: runner.os == 'Linux'
 
-      - run: npm test
+      - name: Test (non-Linux)
+        run: npm test
         if: runner.os != 'Linux'
 
       - name: Vscode package plugin
