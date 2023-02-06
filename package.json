@@ -221,7 +221,7 @@
     "event-stream": "4.0.1",
     "http-proxy-agent": "^4.0.1",
     "nanoid": "^3.3.4",
-    "vsce": "^2.15.0"
+    "@vscode/vsce": "^2.15.0"
   },
   "devDependencies": {
     "@types/glob": "^8.0.1",
