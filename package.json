@@ -214,6 +214,7 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./ --allowSyntheticDefaultImports",
     "watch": "tsc -watch -p ./",
+    "lint": "eslint src",
     "test": "npm run compile && export NODE_ENV=test && node ./out/test/runTest.js"
   },
   "dependencies": {
