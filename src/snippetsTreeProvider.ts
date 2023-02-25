@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import SnippetsStorage from "./snippetsStorage";
 
 export class SnippetsTreeProvider
-  implements
+implements
     vscode.TreeDataProvider<SnippetsTreeItem>,
     vscode.TreeDragAndDropController<SnippetsTreeItem>
 {

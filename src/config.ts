@@ -14,7 +14,7 @@ class LanguageItem implements vscode.QuickPickItem {
 }
 
 export async function pickLanguage() {
-  let languages = await vscode.languages.getLanguages();
+  const languages = await vscode.languages.getLanguages();
   const disposables: Disposable[] = [];
 
   // return await vscode.window.showQuickPick(languages);
@@ -23,7 +23,7 @@ export async function pickLanguage() {
     return await new Promise<string | undefined>((resolve, reject) => {
       const input = vscode.window.createQuickPick<LanguageItem>();
       input.placeholder = "Select or enter programming language";
-      let default_items = [];
+      const default_items = [];
       languages.forEach(language => {
         default_items.push(new LanguageItem(language));
       });
@@ -54,7 +54,7 @@ export async function pickLanguage() {
 }
 
 async function getDefaultLanguage() {
-  let defaultLanguage: string = getConfig("defaultLanguage");
+  const defaultLanguage: string = getConfig("defaultLanguage");
   if (defaultLanguage && defaultLanguage.trim()) {
     return defaultLanguage;
   }
@@ -65,6 +65,6 @@ export async function getLanguage(): Promise<string> {
   if (vscode.window.visibleTextEditors.length === 0) {
     return getDefaultLanguage();
   }
-  let editor = vscode.window.activeTextEditor;
+  const editor = vscode.window.activeTextEditor;
   return editor.document.languageId;
 }
