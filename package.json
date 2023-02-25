@@ -145,7 +145,7 @@
         },
         "snippet.insertByDoubleClick": {
           "type": "boolean",
-          "default": true,
+          "default": false,
           "description": "Insert snippet by double click."
         }
       }

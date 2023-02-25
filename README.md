@@ -25,6 +25,7 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
   - ${language} - the programming language
   - ${query} - the snippet query (search text)
   - ${index} - the index of the snippet (e.g. 2 for the third answer)
+- `insertByDoubleClick`: insert snippet by double click.
 
 ## Installation
 
