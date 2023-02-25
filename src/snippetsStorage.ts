@@ -20,13 +20,14 @@ export interface FolderListItem extends vscode.QuickPickItem {
 }
 
 export default class SnippetsStorage {
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public onSave = () => {};
-  private readonly storageKey = "snippet.snippetsStorageKey";
+  public onSave?: () => void;
   private readonly elements = new Map<string, TreeElement>();
   private rootId = "";
 
-  constructor(private readonly context: vscode.ExtensionContext) {
+  constructor(
+    private readonly context: vscode.ExtensionContext,
+    private readonly storageKey: string
+  ) {
     this.load();
 
     if (!this.elements.size) {
@@ -190,7 +191,7 @@ export default class SnippetsStorage {
 
   async save(): Promise<void> {
     await this.context.globalState.update(this.storageKey, this.serialize());
-    this.onSave();
+    this.onSave?.();
   }
 
   load(): void {

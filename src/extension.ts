@@ -8,7 +8,10 @@ import { SnippetsTreeProvider } from "./snippetsTreeProvider";
 import SnippetsStorage from "./snippetsStorage";
 
 export function activate(ctx: vscode.ExtensionContext) {
-  const snippetsStorage = new SnippetsStorage(ctx);
+  const snippetStorageKey = "snippet.snippetsStorageKey";
+  ctx.globalState.setKeysForSync([snippetStorageKey]);
+
+  const snippetsStorage = new SnippetsStorage(ctx, snippetStorageKey);
   const snippetsTreeProvider = new SnippetsTreeProvider(ctx, snippetsStorage);
 
   vscode.commands.registerCommand("snippet.find", endpoints.findDefault);
@@ -61,9 +64,7 @@ export function activate(ctx: vscode.ExtensionContext) {
 
   cache.state = ctx.globalState;
   const provider = new SnippetProvider();
-  const disposableProvider = vscode.workspace.registerTextDocumentContentProvider(
-    "snippet",
-    provider
-  );
+  const disposableProvider =
+    vscode.workspace.registerTextDocumentContentProvider("snippet", provider);
   ctx.subscriptions.push(disposableProvider);
 }
