@@ -229,7 +229,19 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
 }
 
 export function insertSnippet(treeProvider: SnippetsTreeProvider) {
+  const clickedOnce = new Set<string>();
+
   return (id: string) => {
+    const isInsertByDoubleClick = getConfig("insertByDoubleClick");
+
+    if (isInsertByDoubleClick && !clickedOnce.has(id)) {
+      clickedOnce.add(id);
+      setTimeout(() => {
+        clickedOnce.delete(id);
+      }, 250);
+      return;
+    }
+
     if (!id) {
       vscode.window.showInformationMessage(
         "Insert a snippet into the editor by clicking on it in the Snippets view."

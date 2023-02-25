@@ -142,6 +142,11 @@
           "type": "string",
           "default": "[${language}] ${query} (${index})",
           "markdownDescription": "Template string of a snippet title.  \nYou can use the following variables:\n- ${language} - the programming language\n- ${query} - the snippet query (search text)\n- ${index} - the index of the snippet (e.g. 2 for the third answer)"
+        },
+        "snippet.insertByDoubleClick": {
+          "type": "boolean",
+          "default": true,
+          "description": "Insert snippet by double click."
         }
       }
     },
