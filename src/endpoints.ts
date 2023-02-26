@@ -232,9 +232,9 @@ export function insertSnippet(treeProvider: SnippetsTreeProvider) {
   const clickedOnce = new Set<string>();
 
   return (id: string) => {
-    const isInsertByDoubleClick = getConfig("insertByDoubleClick");
+    const isInsertWithDoubleClick = getConfig("insertWithDoubleClick");
 
-    if (isInsertByDoubleClick && !clickedOnce.has(id)) {
+    if (isInsertWithDoubleClick && !clickedOnce.has(id)) {
       clickedOnce.add(id);
       setTimeout(() => {
         clickedOnce.delete(id);
@@ -271,7 +271,7 @@ export function deleteSnippet(treeProvider: SnippetsTreeProvider) {
   return async (item: SnippetsTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        "Delete a snippet or a folder by right clicking on it in the list and selecting \"Delete\""
+        'Delete a snippet or a folder by right clicking on it in the list and selecting "Delete"'
       );
       return;
     }
@@ -284,7 +284,7 @@ export function renameSnippet(treeProvider: SnippetsTreeProvider) {
   return async (item: SnippetsTreeItem) => {
     if (!item) {
       vscode.window.showInformationMessage(
-        "Rename a snippet or a folder by right clicking on it in the list and selecting \"Rename\""
+        'Rename a snippet or a folder by right clicking on it in the list and selecting "Rename"'
       );
       return;
     }
@@ -314,7 +314,7 @@ export function createFolder(treeProvider: SnippetsTreeProvider) {
       prompt: "Specify Folder Name...",
       validateInput: (value: string) => {
         if (value.includes("/")) {
-          return "Folder name cannot contain \"/\"";
+          return 'Folder name cannot contain "/"';
         }
         return null;
       },
