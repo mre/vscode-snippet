@@ -231,7 +231,7 @@
     "event-stream": "4.0.1",
     "http-proxy-agent": "^4.0.1",
     "nanoid": "^3.3.4",
-    "@vscode/vsce": "^2.15.0"
+    "@vscode/vsce": "^2.18.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^24.0.1",
@@ -246,11 +246,11 @@
     "@typescript-eslint/eslint-plugin": "^5.53.0",
     "@typescript-eslint/parser": "^5.53.0",
     "@vscode/test-electron": "^2.2.3",
-    "eslint": "^8.34.0",
+    "eslint": "^8.35.0",
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "rimraf": "^4.1.2",
-    "rollup": "^3.17.2",
+    "rollup": "^3.17.3",
     "rollup-plugin-node-externals": "^5.1.2",
     "typescript": "^4.9.5"
   }
