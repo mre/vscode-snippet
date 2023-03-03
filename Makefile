@@ -15,12 +15,12 @@ ls: ## Lists all the files that will be published
 	vsce ls
 
 .PHONY: package
-package: ## Package extension for publication
+package: install update-vsce ls ## Package extension for publication
 	vsce package
 
 .PHONY: update-vsce
 update-vsce: ## Update vsce extension manager
-	npm install @vscode/vsce
+	npm update @vscode/vsce
 
 .PHONY: publish
 publish: update-vsce ls install package ## Publish on VSCode Marketplace

@@ -15,6 +15,9 @@ You might need to wait a moment for the first `npm install` to finish. You can s
 ![screenshot](./assets/Screenshot%20build%20task.png)
 
 
+## Packaging
+Run `make package` to package a `.vsix` file.
+
 ### additional commands
 To get a list of all available commands, try `make help`.  
 To test your changes, go to the Debug panel in VSCode and click on the `play` button. This will start the extension in a new window where you can test it.
