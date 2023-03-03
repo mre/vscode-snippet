@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Extension",
+            "type": "extensionHost",
+            "request": "launch",
+            "args": [
+                // development in clean environment - source: https://github.com/microsoft/vscode/issues/159572#issuecomment-1240523504
+                "--profile=extension-dev", // optional, but recommended - will launch extension in a clean instance
+                // "--profile-temp", // alternative - will launch extension in a clean instance everytime
+                "--extensionDevelopmentPath=${workspaceFolder}",
+            ],
+            "outFiles": [
+                "${workspaceFolder}/out/**/*.js"
+            ],
+            "preLaunchTask": "npm: watch",
+        }
+    ]
+}
