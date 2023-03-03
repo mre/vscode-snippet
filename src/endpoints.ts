@@ -43,7 +43,7 @@ export async function findWithProvider(
     await vscode.window.showTextDocument(doc, {
       viewColumn: vscode.ViewColumn.Two,
       preview: true,
-      preserveFocus: true,
+      preserveFocus: false,
     });
   } else {
     const snippet = new vscode.SnippetString(doc.getText());
