@@ -1,0 +1,46 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "npm",
+			"script": "install",
+			"group": "build",
+			"isBackground": true,
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "silent"
+			},
+			"label": "npm: install",
+			"detail": "install dependencies from package"
+		},
+		/* from: https://github.com/microsoft/vscode-extension-samples/blob/main/helloworld-sample/.vscode/tasks.json */
+		{
+			"type": "npm",
+			"script": "watch",
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+			"dependsOn": [
+				"npm: install"
+			],
+			"isBackground": true,
+			"problemMatcher": {
+				"owner": "custom",
+				"pattern": {
+					"regexp": "IMJUSTHEREBECAUSETHERENEEDSTOBEADEFAULT - https://github.com/microsoft/vscode/issues/6209#issuecomment-1378126445"
+				},
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": "rollup v", // e.g. 'rollup v3.18.0'
+					"endsPattern": "waiting for changes..."
+				},
+			},
+			"presentation": {
+				"reveal": "silent"
+			},
+			"label": "npm: watch",
+			"detail": "compile & watch"
+		}
+	]
+}
