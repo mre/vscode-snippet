@@ -17,6 +17,28 @@ export default class SnippetProvider implements TextDocumentContentProvider {
       request.query,
       request.answerNumber
     );
+
+    if (response.data.trimLeft().startsWith("/LANG/QUESTION")) {
+      return `404 NOT FOUND
+
+Unknown cheat sheet. Please try to reformulate your query.
+Query format:
+
+    /LANG/QUESTION
+
+Examples:
+
+    /python/read+json
+    /golang/run+external+program
+    /js/regex+search
+
+See /:help for more info.
+
+If the problem persists, file a GitHub issue at
+github.com/chubin/cheat.sh or ping @igor_chubin
+`;
+    }
+
     return response.data;
   }
 }
@@ -40,10 +62,10 @@ export function encodeRequest(
       return variableName === "language"
         ? language
         : variableName === "query"
-          ? query
-          : variableName === "index"
-            ? answerNumber
-            : match;
+        ? query
+        : variableName === "index"
+        ? answerNumber
+        : match;
     }
   );
   return vscode.Uri.parse(`snippet:${title}?${data}`);
