@@ -62,10 +62,10 @@ export function encodeRequest(
       return variableName === "language"
           ? language
           : variableName === "query"
-          ? query
-          : variableName === "index"
-          ? answerNumber
-          : match;
+            ? query
+            : variableName === "index"
+              ? answerNumber
+              : match;
     }
   );
   return vscode.Uri.parse(`snippet:${title}?${data}`);
