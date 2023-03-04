@@ -60,12 +60,12 @@ export function encodeRequest(
     /(\$\{(.*?)\})/g,
     (match: string, _, variableName: string) => {
       return variableName === "language"
-          ? language
-          : variableName === "query"
-            ? query
-            : variableName === "index"
-              ? answerNumber
-              : match;
+        ? language
+        : variableName === "query"
+          ? query
+          : variableName === "index"
+            ? answerNumber
+            : match;
     }
   );
   return vscode.Uri.parse(`snippet:${title}?${data}`);
