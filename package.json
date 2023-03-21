@@ -202,6 +202,16 @@
         "key": "ctrl+shift+s",
         "mac": "cmd+shift+s",
         "when": "editorHasSelection"
+      },
+      {
+        "key": "c",
+        "command": "snippet.showNextAnswer",
+        "when": "resourceScheme == 'snippet' && editorReadonly"
+      },
+      {
+        "key": "v",
+        "command": "snippet.showPreviousAnswer",
+        "when": "resourceScheme == 'snippet' && editorReadonly"
       }
     ]
   },
