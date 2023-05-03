@@ -28,10 +28,12 @@ suite("snippet.findSelectedText", () => {
     });
 
     test("The text of the initial document is not changed", async () => {
-      assert.strictEqual(
-        vscode.window.activeTextEditor.document.getText(),
-        queryText
-      );
+      const initialDocument =
+        vscode.window.visibleTextEditors.find(
+          (editor) => editor !== vscode.window.activeTextEditor
+        )?.document ?? vscode.window.activeTextEditor.document;
+
+      assert.strictEqual(initialDocument.getText(), queryText);
     });
 
     test("Sends the correct query", async () => {
