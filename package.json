@@ -261,7 +261,7 @@
     "mocha": "^10.2.0",
     "rimraf": "^5.0.0",
     "rollup": "^3.21.6",
-    "rollup-plugin-node-externals": "^5.1.2",
+    "rollup-plugin-node-externals": "^6.0.0",
     "typescript": "^5.0.4"
   }
 }
