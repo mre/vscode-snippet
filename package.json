@@ -260,7 +260,7 @@
     "glob": "^8.1.0",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.1",
-    "rollup": "^3.23.1",
+    "rollup": "^3.24.0",
     "rollup-plugin-node-externals": "^5.1.2",
     "typescript": "^5.1.3"
   }
