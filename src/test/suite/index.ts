@@ -13,8 +13,7 @@ export function run(): Promise<void> {
   const testsRoot = path.resolve(__dirname, "..");
 
   return new Promise((c, e) => {
-    // TODO: change pattern to "**/**.test.js"
-    const files = glob.globSync("**/find.test.js", { cwd: testsRoot });
+    const files = glob.globSync("**/**.test.js", { cwd: testsRoot });
 
     // Add files to the test suite
     files.forEach((f) => mocha.addFile(path.resolve(testsRoot, f)));
