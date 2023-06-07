@@ -1,5 +1,6 @@
 import * as vscode from "vscode";
 import { MockResponseData } from "../snippet";
+import * as sinon from "sinon";
 
 export function getResponseFromResultDocument(): MockResponseData {
   const editors = vscode.window.visibleTextEditors.filter(
@@ -52,6 +53,36 @@ export async function openDocumentAndFindSelectedText({
   );
 
   await vscode.commands.executeCommand("snippet.findSelectedText");
+}
+
+export async function openDocumentAndFind({
+  queryText,
+  language,
+  documentText,
+  openInNewEditor,
+}: {
+  queryText: string;
+  language: string;
+  documentText: string;
+  openInNewEditor: boolean;
+}): Promise<void> {
+  await openDocument({ language, documentText, openInNewEditor });
+
+  const createQuickPickStub = sinon.stub(vscode.window, "createQuickPick");
+  const quickPick = createQuickPickStub.wrappedMethod();
+  sinon.stub(quickPick, "show").callsFake(() => {
+    // Ignore this call
+  });
+  sinon.stub(quickPick, "value").value(queryText);
+  const onDidAcceptStub = sinon.stub(quickPick, "onDidAccept");
+  onDidAcceptStub.callsFake((listener) => {
+    const disposable = onDidAcceptStub.wrappedMethod(listener);
+    listener();
+    return disposable;
+  });
+  createQuickPickStub.returns(quickPick);
+
+  await vscode.commands.executeCommand("snippet.find");
 }
 
 export async function closeAllEditors(): Promise<void> {

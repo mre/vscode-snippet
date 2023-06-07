@@ -5,7 +5,7 @@ import {
   closeAllEditors,
   getInitialDocument,
   getResponseFromResultDocument,
-  openDocument,
+  openDocumentAndFind,
 } from "../testUtils";
 import * as sinon from "sinon";
 
@@ -17,9 +17,10 @@ suite("snippet.find", () => {
 
     before(
       async () =>
-        await openDocument({
+        await openDocumentAndFind({
           language,
           documentText,
+          queryText,
           openInNewEditor: true,
         })
     );
@@ -31,22 +32,6 @@ suite("snippet.find", () => {
     });
 
     test("Opens a new editor", async () => {
-      const createQuickPickStub = sinon.stub(vscode.window, "createQuickPick");
-      const quickPick = createQuickPickStub.wrappedMethod();
-      sinon.stub(quickPick, "show").callsFake(() => {
-        // Ignore this call
-      });
-      sinon.stub(quickPick, "value").value(queryText);
-      const onDidAcceptStub = sinon.stub(quickPick, "onDidAccept");
-      onDidAcceptStub.callsFake((listener) => {
-        const disposable = onDidAcceptStub.wrappedMethod(listener);
-        listener();
-        return disposable;
-      });
-      createQuickPickStub.returns(quickPick);
-
-      await vscode.commands.executeCommand("snippet.find");
-
       assert.strictEqual(vscode.window.visibleTextEditors.length, 2);
     });
 
