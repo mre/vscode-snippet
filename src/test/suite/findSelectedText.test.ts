@@ -3,6 +3,7 @@ import * as vscode from "vscode";
 import { after, before } from "mocha";
 import {
   closeAllEditors,
+  getInitialDocument,
   getResponseFromResultDocument,
   openDocumentAndFindSelectedText,
 } from "../testUtils";
@@ -27,11 +28,8 @@ suite("snippet.findSelectedText", () => {
       assert.strictEqual(vscode.window.visibleTextEditors.length, 2);
     });
 
-    test("The text of the initial document is not changed", async () => {
-      const initialDocument =
-        vscode.window.visibleTextEditors.find(
-          (editor) => editor !== vscode.window.activeTextEditor
-        )?.document ?? vscode.window.activeTextEditor.document;
+    test("The text of the initial document is not changed", () => {
+      const initialDocument = getInitialDocument();
 
       assert.strictEqual(initialDocument.getText(), queryText);
     });

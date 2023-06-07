@@ -5,8 +5,32 @@ export function getResponseFromResultDocument(): MockResponseData {
   const editors = vscode.window.visibleTextEditors.filter(
     (x) => !x.document.isUntitled
   );
-  const responseText = editors[editors.length - 1].document.getText();
+  const last = editors[editors.length - 1];
+  if (!last) {
+    throw new Error("Response document not found.");
+  }
+  const responseText = last.document.getText();
   return JSON.parse(responseText);
+}
+
+export async function openDocument({
+  language = "javascript",
+  documentText,
+  openInNewEditor,
+}: {
+  language?: string;
+  documentText: string;
+  openInNewEditor: boolean;
+}): Promise<void> {
+  const document = await vscode.workspace.openTextDocument({
+    language,
+    content: documentText,
+  });
+  await vscode.window.showTextDocument(document);
+
+  const config = vscode.workspace.getConfiguration("snippet");
+  const configTarget = vscode.ConfigurationTarget.Global;
+  await config.update("openInNewEditor", openInNewEditor, configTarget);
 }
 
 export async function openDocumentAndFindSelectedText({
@@ -18,11 +42,7 @@ export async function openDocumentAndFindSelectedText({
   queryText?: string;
   openInNewEditor: boolean;
 }): Promise<void> {
-  const document = await vscode.workspace.openTextDocument({
-    language: language,
-    content: queryText,
-  });
-  await vscode.window.showTextDocument(document);
+  await openDocument({ language, documentText: queryText, openInNewEditor });
 
   vscode.window.activeTextEditor.selection = new vscode.Selection(
     0,
@@ -31,13 +51,17 @@ export async function openDocumentAndFindSelectedText({
     queryText.length
   );
 
-  const config = vscode.workspace.getConfiguration("snippet");
-  const configTarget = vscode.ConfigurationTarget.Global;
-  await config.update("openInNewEditor", openInNewEditor, configTarget);
-
   await vscode.commands.executeCommand("snippet.findSelectedText");
 }
 
 export async function closeAllEditors(): Promise<void> {
   await vscode.commands.executeCommand("workbench.action.closeAllEditors");
+}
+
+export function getInitialDocument(): vscode.TextDocument {
+  return (
+    vscode.window.visibleTextEditors.find(
+      (editor) => editor !== vscode.window.activeTextEditor
+    )?.document ?? vscode.window.activeTextEditor.document
+  );
 }

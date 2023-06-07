@@ -4,9 +4,9 @@ import * as vscode from "vscode";
 import { cache } from "./cache";
 
 function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
-  return new Promise((resolve, _reject) => {
+  return new Promise((resolve) => {
     const quickPick = vscode.window.createQuickPick();
-    quickPick.title = "Enter keywords for snippet search (e.g. \"read file\")";
+    quickPick.title = 'Enter keywords for snippet search (e.g. "read file")';
     quickPick.items = items;
 
     quickPick.onDidChangeValue(() => {
@@ -34,7 +34,7 @@ export async function query(language: string): Promise<string> {
   for (const key in suggestions) {
     const tempQuickItem: vscode.QuickPickItem = {
       label: suggestions[key],
-      description: ""
+      description: "",
     };
     suggestionsQuickItems.push(tempQuickItem);
   }
