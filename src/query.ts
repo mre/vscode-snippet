@@ -28,18 +28,23 @@ function quickPickCustom(items: vscode.QuickPickItem[]): Promise<string> {
 }
 
 export async function query(language: string): Promise<string> {
-  const suggestions = cache.state.get(`snippet_suggestions_${language}`, []);
+  const suggestions = new Set(
+    cache.state.get<string[]>(`snippet_suggestions_${language}`, [])
+  );
 
   const suggestionsQuickItems: Array<vscode.QuickPickItem> = [];
-  for (const key in suggestions) {
+  for (const suggestion of suggestions) {
     const tempQuickItem: vscode.QuickPickItem = {
-      label: suggestions[key],
+      label: suggestion,
       description: "",
     };
     suggestionsQuickItems.push(tempQuickItem);
   }
   const input = await quickPickCustom(suggestionsQuickItems);
-  suggestions.push(input);
-  cache.state.update(`snippet_suggestions_${language}`, suggestions.sort());
+  suggestions.add(input);
+  cache.state.update(
+    `snippet_suggestions_${language}`,
+    [...suggestions].sort()
+  );
   return input;
 }
