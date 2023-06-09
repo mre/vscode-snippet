@@ -22,13 +22,17 @@ export async function findWithProvider(
   number: number,
   openInNewEditor = true
 ) {
+  let doc: vscode.TextDocument | null = null;
+
   loadingStatus.show();
+  try {
+    const uri = encodeRequest(userQuery, language, verbose, number);
 
-  const uri = encodeRequest(userQuery, language, verbose, number);
-
-  // Calls back into the provider
-  let doc = await vscode.workspace.openTextDocument(uri);
-  loadingStatus.hide();
+    // Calls back into the provider
+    doc = await vscode.workspace.openTextDocument(uri);
+  } finally {
+    loadingStatus.hide();
+  }
 
   try {
     doc = await vscode.languages.setTextDocumentLanguage(doc, language);

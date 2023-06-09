@@ -2,7 +2,7 @@
   "name": "snippet",
   "displayName": "Snippet",
   "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "publisher": "vscode-snippet",
   "engines": {
     "vscode": "^1.74.0"
@@ -252,6 +252,7 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "^12.12.11",
+    "@types/sinon": "^10.0.15",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.59.9",
     "@typescript-eslint/parser": "^5.59.9",
@@ -261,6 +262,7 @@
     "mocha": "^10.2.0",
     "rimraf": "^5.0.1",
     "rollup-plugin-node-externals": "^6.1.1",
+    "sinon": "^15.1.0",
     "rollup": "^3.24.0",
     "typescript": "^5.1.3"
   }
