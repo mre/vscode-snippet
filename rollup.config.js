@@ -1,15 +1,8 @@
-const typescript = require("@rollup/plugin-typescript");
-const nodeResolve = require("@rollup/plugin-node-resolve");
-const commonjs = require("@rollup/plugin-commonjs");
-const json = require("@rollup/plugin-json");
-const terser = require("@rollup/plugin-terser");
-const externals = require("rollup-plugin-node-externals");
-
 const productionMode = process.env.NODE_ENV === "production";
 
-const sourceMapEnabled = !productionMode
+const sourceMapEnabled = !productionMode;
 
-module.exports = {
+module.exports = (async () => ({
   input: "src/extension.ts",
   output: {
     dir: "out",
@@ -18,16 +11,16 @@ module.exports = {
   },
   external: ["vscode"],
   plugins: [
-    commonjs(),
-    json(),
-    typescript({
-      compilerOptions: { 
+    (await import("@rollup/plugin-commonjs")).default(),
+    (await import("@rollup/plugin-json")).default(),
+    (await import("@rollup/plugin-typescript")).default({
+      compilerOptions: {
         module: "esnext",
         sourceMap: sourceMapEnabled,
       },
     }),
-    !productionMode && externals(),
-    productionMode && nodeResolve(),
-    productionMode && terser(),
+    !productionMode && (await import("rollup-plugin-node-externals")).default(),
+    productionMode && (await import("@rollup/plugin-node-resolve")).default(),
+    productionMode && (await import("@rollup/plugin-terser")).default(),
   ],
-};
+}))();

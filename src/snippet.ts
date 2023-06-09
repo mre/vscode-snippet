@@ -78,7 +78,7 @@ class Snippet {
   }
 
   private _requestConfig(): AxiosRequestConfig {
-    const config = {
+    const config: AxiosRequestConfig = {
       // Fake user agent to get plain-text output.
       // See https://github.com/chubin/cheat.sh/blob/1e21d96d065b6cce7d198c1a3edba89081c78a0b/bin/srv.py#L47
       headers: {

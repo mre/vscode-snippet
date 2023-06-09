@@ -237,11 +237,11 @@
     "pretest-compile": "rimraf out"
   },
   "dependencies": {
+    "@vscode/vsce": "^2.19.0",
     "axios": "^1.4.0",
     "event-stream": "4.0.1",
-    "http-proxy-agent": "^4.0.1",
-    "nanoid": "^3.3.4",
-    "@vscode/vsce": "^2.19.0"
+    "http-proxy-agent": "^7.0.0",
+    "nanoid": "^3.3.4"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.0",
@@ -257,11 +257,11 @@
     "@typescript-eslint/parser": "^5.59.9",
     "@vscode/test-electron": "^2.3.2",
     "eslint": "^8.42.0",
-    "glob": "^8.1.0",
+    "glob": "^10.2.6",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.1",
+    "rollup-plugin-node-externals": "^6.1.1",
     "rollup": "^3.24.0",
-    "rollup-plugin-node-externals": "^5.1.2",
     "typescript": "^5.1.3"
   }
 }
