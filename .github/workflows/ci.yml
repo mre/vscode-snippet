@@ -55,12 +55,17 @@ jobs:
         with:
           name: package
 
-      - name: Vscode release plugin
-        uses: JCofman/vscodeaction@master
-        env:
-          PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
+      - name: Publish to Open VSX Registry
+        uses: HaaLeo/publish-vscode-extension@v1
         with:
-          args: publish -p $PUBLISHER_TOKEN -i package.vsix
+          pat: ${{ secrets.OPEN_VSX_TOKEN }}
+          extensionFile: package.vsix
+      - name: Publish to Visual Studio Marketplace
+        uses: HaaLeo/publish-vscode-extension@v1
+        with:
+          pat: ${{ secrets.PUBLISHER_TOKEN }}
+          registryUrl: https://marketplace.visualstudio.com
+          extensionFile: package.vsix
 
   pre-release:
     if: endsWith(github.ref, '-pre')
