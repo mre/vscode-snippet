@@ -6,6 +6,7 @@ import SnippetProvider from "./provider";
 import * as endpoints from "./endpoints";
 import { SnippetsTreeProvider } from "./snippetsTreeProvider";
 import SnippetsStorage from "./snippetsStorage";
+import { CompletionManager } from "./completionManager";
 
 export function activate(ctx: vscode.ExtensionContext) {
   const snippetStorageKey = "snippet.snippetsStorageKey";
@@ -13,6 +14,7 @@ export function activate(ctx: vscode.ExtensionContext) {
 
   const snippetsStorage = new SnippetsStorage(ctx, snippetStorageKey);
   const snippetsTreeProvider = new SnippetsTreeProvider(ctx, snippetsStorage);
+  new CompletionManager(ctx, snippetsStorage);
 
   vscode.commands.registerCommand("snippet.find", endpoints.findDefault);
   vscode.commands.registerCommand(
