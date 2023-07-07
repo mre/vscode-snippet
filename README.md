@@ -6,7 +6,7 @@
 [![GitHub](https://img.shields.io/github/release/mre/vscode-snippet.svg?style=flat-square)](https://github.com/mre/vscode-snippet/releases)
 [![GitHub Marketplace](https://img.shields.io/badge/Marketplace-Snippet-blue.svg?colorA=24292e&colorB=0366d6&style=flat&longCache=true&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAM6wAADOsB5dZE0gAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAERSURBVCiRhZG/SsMxFEZPfsVJ61jbxaF0cRQRcRJ9hlYn30IHN/+9iquDCOIsblIrOjqKgy5aKoJQj4O3EEtbPwhJbr6Te28CmdSKeqzeqr0YbfVIrTBKakvtOl5dtTkK+v4HfA9PEyBFCY9AGVgCBLaBp1jPAyfAJ/AAdIEG0dNAiyP7+K1qIfMdonZic6+WJoBJvQlvuwDqcXadUuqPA1NKAlexbRTAIMvMOCjTbMwl1LtI/6KWJ5Q6rT6Ht1MA58AX8Apcqqt5r2qhrgAXQC3CZ6i1+KMd9TRu3MvA3aH/fFPnBodb6oe6HM8+lYHrGdRXW8M9bMZtPXUji69lmf5Cmamq7quNLFZXD9Rq7v0Bpc1o/tp0fisAAAAASUVORK5CYII=)](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.Snippet)
 
-A Visual Studio Code extension for [cht.sh](https://cht.sh/).  
+A Visual Studio Code extension for [cht.sh](https://cht.sh/).
 [Watch this lightning talk to learn more](https://www.youtube.com/watch?v=edGVRJf6uvg).
 
 ## Features
@@ -44,7 +44,7 @@ Marketplace](https://marketplace.visualstudio.com/items?itemName=vscode-snippet.
 
 ### Moving between answers
 
-Sometimes the first answer is not what you're looking for.  
+Sometimes the first answer is not what you're looking for.
 In that case, use `Snippet: Show next answer` and `Snippet: Show previous answer` to show alternative snippets.
 
 ### Search for snippet based on selected text
@@ -115,6 +115,11 @@ You can move snippets or folders in the Snippets view by dragging and dropping t
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/move.gif)
 
+### IntelliSense
+
+Saved snippets are displayed in IntelliSense
+
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/intellisense.gif)
 
 ## Contributing
 
