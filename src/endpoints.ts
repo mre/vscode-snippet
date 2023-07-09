@@ -4,6 +4,7 @@ import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
 import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
+import SnippetsStorage from "./snippetsStorage";
 
 export interface Request {
   language: string;
@@ -15,6 +16,7 @@ const loadingStatus = vscode.window.createStatusBarItem(
 );
 loadingStatus.text = "$(clock) Loading Snippet ...";
 
+// TODO: pass a saved snippet and insert it
 export async function findWithProvider(
   language: string,
   userQuery: string,
@@ -58,15 +60,17 @@ export async function findWithProvider(
   }
 }
 
-export async function getInput(): Promise<Request> {
+export async function getInput(
+  snippetsStorage: SnippetsStorage
+): Promise<Request> {
   const language = await getLanguage();
-  const userQuery = await query(language);
+  const userQuery = await query(language, snippetsStorage);
   return { language, query: userQuery };
 }
 
-export async function findForLanguage() {
+export async function findForLanguage(snippetsStorage: SnippetsStorage) {
   const language = await pickLanguage();
-  const userQuery = await query(language);
+  const userQuery = await query(language, snippetsStorage);
   await findWithProvider(
     language,
     userQuery,
@@ -76,8 +80,8 @@ export async function findForLanguage() {
   );
 }
 
-export async function findDefault() {
-  const request = await getInput();
+export async function findDefault(snippetsStorage: SnippetsStorage) {
+  const request = await getInput(snippetsStorage);
   await findWithProvider(
     request.language,
     request.query,
@@ -87,8 +91,8 @@ export async function findDefault() {
   );
 }
 
-export async function findInplace() {
-  const request = await getInput();
+export async function findInplace(snippetsStorage: SnippetsStorage) {
+  const request = await getInput(snippetsStorage);
   await findWithProvider(
     request.language,
     request.query,
@@ -98,8 +102,8 @@ export async function findInplace() {
   );
 }
 
-export async function findInNewEditor() {
-  const request = await getInput();
+export async function findInNewEditor(snippetsStorage: SnippetsStorage) {
+  const request = await getInput(snippetsStorage);
   await findWithProvider(
     request.language,
     request.query,
@@ -109,9 +113,9 @@ export async function findInNewEditor() {
   );
 }
 
-export async function showNextAnswer() {
+export async function showNextAnswer(snippetsStorage: SnippetsStorage) {
   if (!snippet.getCurrentQuery()) {
-    return await findDefault();
+    return await findDefault(snippetsStorage);
   }
   const answerNumber = snippet.getNextAnswerNumber();
   await findWithProvider(
@@ -123,9 +127,9 @@ export async function showNextAnswer() {
   );
 }
 
-export async function showPreviousAnswer() {
+export async function showPreviousAnswer(snippetsStorage: SnippetsStorage) {
   if (!snippet.getCurrentQuery()) {
-    return await findDefault();
+    return await findDefault(snippetsStorage);
   }
   const answerNumber = snippet.getPreviousAnswerNumber();
   if (answerNumber == null) {

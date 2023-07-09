@@ -16,27 +16,27 @@ export function activate(ctx: vscode.ExtensionContext) {
   const snippetsTreeProvider = new SnippetsTreeProvider(ctx, snippetsStorage);
   new CompletionManager(ctx, snippetsStorage);
 
-  vscode.commands.registerCommand("snippet.find", endpoints.findDefault);
-  vscode.commands.registerCommand(
-    "snippet.findForLanguage",
-    endpoints.findForLanguage
+  vscode.commands.registerCommand("snippet.find", () =>
+    endpoints.findDefault(snippetsStorage)
   );
-  vscode.commands.registerCommand("snippet.findInplace", endpoints.findInplace);
-  vscode.commands.registerCommand(
-    "snippet.findInNewEditor",
-    endpoints.findInNewEditor
+  vscode.commands.registerCommand("snippet.findForLanguage", () =>
+    endpoints.findForLanguage(snippetsStorage)
+  );
+  vscode.commands.registerCommand("snippet.findInplace", () =>
+    endpoints.findInplace(snippetsStorage)
+  );
+  vscode.commands.registerCommand("snippet.findInNewEditor", () =>
+    endpoints.findInNewEditor(snippetsStorage)
   );
   vscode.commands.registerCommand(
     "snippet.findSelectedText",
     endpoints.findSelectedText
   );
-  vscode.commands.registerCommand(
-    "snippet.showPreviousAnswer",
-    endpoints.showPreviousAnswer
+  vscode.commands.registerCommand("snippet.showPreviousAnswer", () =>
+    endpoints.showPreviousAnswer(snippetsStorage)
   );
-  vscode.commands.registerCommand(
-    "snippet.showNextAnswer",
-    endpoints.showNextAnswer
+  vscode.commands.registerCommand("snippet.showNextAnswer", () =>
+    endpoints.showNextAnswer(snippetsStorage)
   );
   vscode.commands.registerCommand(
     "snippet.toggleComments",
