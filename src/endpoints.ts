@@ -5,6 +5,7 @@ import { encodeRequest } from "./provider";
 import snippet from "./snippet";
 import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
 import SnippetsStorage from "./snippetsStorage";
+import languages from "./languages";
 
 export interface Request {
   language: string;
@@ -224,8 +225,12 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
       const defaultLabel = content.substring(0, 100);
       const fileName = editor.document.fileName;
       const indexOfLastDot = fileName.lastIndexOf(".");
+      const extensionByLangId =
+        languages.getExtensions(editor.document.languageId)[0] || "";
       const fileExtension =
-        indexOfLastDot === -1 ? "" : fileName.slice(indexOfLastDot);
+        indexOfLastDot === -1
+          ? extensionByLangId
+          : fileName.slice(indexOfLastDot);
 
       const nameInputOptions: vscode.InputBoxOptions = {
         ignoreFocusOut: false,
