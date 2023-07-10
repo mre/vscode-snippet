@@ -9,6 +9,7 @@ import SnippetsStorage from "./snippetsStorage";
 export interface Request {
   language: string;
   query: string;
+  savedSnippetContent?: string;
 }
 
 const loadingStatus = vscode.window.createStatusBarItem(
@@ -16,43 +17,50 @@ const loadingStatus = vscode.window.createStatusBarItem(
 );
 loadingStatus.text = "$(clock) Loading Snippet ...";
 
-// TODO: pass a saved snippet and insert it
 export async function findWithProvider(
   language: string,
   userQuery: string,
   verbose: boolean,
   number: number,
-  openInNewEditor = true
+  openInNewEditor = true,
+  savedSnippetContent?: string
 ) {
   let doc: vscode.TextDocument | null = null;
 
-  loadingStatus.show();
-  try {
-    const uri = encodeRequest(userQuery, language, verbose, number);
+  if (!savedSnippetContent) {
+    loadingStatus.show();
+    try {
+      const uri = encodeRequest(userQuery, language, verbose, number);
 
-    // Calls back into the provider
-    doc = await vscode.workspace.openTextDocument(uri);
-  } finally {
-    loadingStatus.hide();
+      // Calls back into the provider
+      doc = await vscode.workspace.openTextDocument(uri);
+    } finally {
+      loadingStatus.hide();
+    }
+
+    try {
+      doc = await vscode.languages.setTextDocumentLanguage(doc, language);
+    } catch (e) {
+      console.log(`Cannot set document language to ${language}: ${e}`);
+    }
   }
 
-  try {
-    doc = await vscode.languages.setTextDocumentLanguage(doc, language);
-  } catch (e) {
-    console.log(`Cannot set document language to ${language}: ${e}`);
-  }
   const editor = vscode.window.activeTextEditor;
 
   // Open in new editor in case the respective config flag is set to true
   // or there is no open user-created editor where we could paste the snippet in.
-  if (openInNewEditor || !editor || editor.document.uri.scheme == "snippet") {
+  if (
+    !savedSnippetContent &&
+    (openInNewEditor || !editor || editor.document.uri.scheme == "snippet")
+  ) {
     await vscode.window.showTextDocument(doc, {
       viewColumn: vscode.ViewColumn.Two,
       preview: true,
       preserveFocus: false,
     });
   } else {
-    const snippet = new vscode.SnippetString(doc.getText());
+    const text = savedSnippetContent ? savedSnippetContent : doc.getText();
+    const snippet = new vscode.SnippetString(text);
     const success = await editor.insertSnippet(snippet);
     if (!success) {
       vscode.window.showInformationMessage("Error while opening snippet.");
@@ -65,7 +73,11 @@ export async function getInput(
 ): Promise<Request> {
   const language = await getLanguage();
   const userQuery = await query(language, snippetsStorage);
-  return { language, query: userQuery };
+  return {
+    language,
+    query: userQuery.input,
+    savedSnippetContent: userQuery.savedSnippetContent,
+  };
 }
 
 export async function findForLanguage(snippetsStorage: SnippetsStorage) {
@@ -73,10 +85,11 @@ export async function findForLanguage(snippetsStorage: SnippetsStorage) {
   const userQuery = await query(language, snippetsStorage);
   await findWithProvider(
     language,
-    userQuery,
+    userQuery.input,
     snippet.getVerbose(),
     0,
-    getConfig("openInNewEditor")
+    getConfig("openInNewEditor"),
+    userQuery.savedSnippetContent
   );
 }
 
@@ -87,7 +100,8 @@ export async function findDefault(snippetsStorage: SnippetsStorage) {
     request.query,
     snippet.getVerbose(),
     0,
-    getConfig("openInNewEditor")
+    getConfig("openInNewEditor"),
+    request.savedSnippetContent
   );
 }
 
@@ -98,7 +112,8 @@ export async function findInplace(snippetsStorage: SnippetsStorage) {
     request.query,
     snippet.getVerbose(),
     0,
-    false
+    false,
+    request.savedSnippetContent
   );
 }
 
@@ -109,7 +124,8 @@ export async function findInNewEditor(snippetsStorage: SnippetsStorage) {
     request.query,
     snippet.getVerbose(),
     0,
-    true
+    true,
+    request.savedSnippetContent
   );
 }
 
