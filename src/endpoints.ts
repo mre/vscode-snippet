@@ -47,7 +47,7 @@ export async function findWithProvider(
 
   const editor = vscode.window.activeTextEditor;
 
-  // Open in new editor in case the respective config flag is set to true
+  // Open in new editor in case there is no saved snippet content and the respective config flag is set to true
   // or there is no open user-created editor where we could paste the snippet in.
   if (
     !savedSnippetContent &&
