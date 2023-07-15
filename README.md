@@ -121,6 +121,10 @@ Saved snippets are displayed in IntelliSense
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/intellisense.gif)
 
+### Searching for saved snippets
+
+![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/search.gif)
+
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)

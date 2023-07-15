@@ -4,10 +4,13 @@ import { query } from "./query";
 import { encodeRequest } from "./provider";
 import snippet from "./snippet";
 import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
+import SnippetsStorage from "./snippetsStorage";
+import languages from "./languages";
 
 export interface Request {
   language: string;
   query: string;
+  savedSnippetContent?: string;
 }
 
 const loadingStatus = vscode.window.createStatusBarItem(
@@ -20,37 +23,45 @@ export async function findWithProvider(
   userQuery: string,
   verbose: boolean,
   number: number,
-  openInNewEditor = true
+  openInNewEditor = true,
+  savedSnippetContent?: string
 ) {
   let doc: vscode.TextDocument | null = null;
 
-  loadingStatus.show();
-  try {
-    const uri = encodeRequest(userQuery, language, verbose, number);
+  if (!savedSnippetContent) {
+    loadingStatus.show();
+    try {
+      const uri = encodeRequest(userQuery, language, verbose, number);
 
-    // Calls back into the provider
-    doc = await vscode.workspace.openTextDocument(uri);
-  } finally {
-    loadingStatus.hide();
+      // Calls back into the provider
+      doc = await vscode.workspace.openTextDocument(uri);
+    } finally {
+      loadingStatus.hide();
+    }
+
+    try {
+      doc = await vscode.languages.setTextDocumentLanguage(doc, language);
+    } catch (e) {
+      console.log(`Cannot set document language to ${language}: ${e}`);
+    }
   }
 
-  try {
-    doc = await vscode.languages.setTextDocumentLanguage(doc, language);
-  } catch (e) {
-    console.log(`Cannot set document language to ${language}: ${e}`);
-  }
   const editor = vscode.window.activeTextEditor;
 
-  // Open in new editor in case the respective config flag is set to true
+  // Open in new editor in case there is no saved snippet content and the respective config flag is set to true
   // or there is no open user-created editor where we could paste the snippet in.
-  if (openInNewEditor || !editor || editor.document.uri.scheme == "snippet") {
+  if (
+    !savedSnippetContent &&
+    (openInNewEditor || !editor || editor.document.uri.scheme == "snippet")
+  ) {
     await vscode.window.showTextDocument(doc, {
       viewColumn: vscode.ViewColumn.Two,
       preview: true,
       preserveFocus: false,
     });
   } else {
-    const snippet = new vscode.SnippetString(doc.getText());
+    const text = savedSnippetContent ? savedSnippetContent : doc.getText();
+    const snippet = new vscode.SnippetString(text);
     const success = await editor.insertSnippet(snippet);
     if (!success) {
       vscode.window.showInformationMessage("Error while opening snippet.");
@@ -58,60 +69,70 @@ export async function findWithProvider(
   }
 }
 
-export async function getInput(): Promise<Request> {
+export async function getInput(
+  snippetsStorage: SnippetsStorage
+): Promise<Request> {
   const language = await getLanguage();
-  const userQuery = await query(language);
-  return { language, query: userQuery };
+  const userQuery = await query(language, snippetsStorage);
+  return {
+    language,
+    query: userQuery.input,
+    savedSnippetContent: userQuery.savedSnippetContent,
+  };
 }
 
-export async function findForLanguage() {
+export async function findForLanguage(snippetsStorage: SnippetsStorage) {
   const language = await pickLanguage();
-  const userQuery = await query(language);
+  const userQuery = await query(language, snippetsStorage);
   await findWithProvider(
     language,
-    userQuery,
+    userQuery.input,
     snippet.getVerbose(),
     0,
-    getConfig("openInNewEditor")
+    getConfig("openInNewEditor"),
+    userQuery.savedSnippetContent
   );
 }
 
-export async function findDefault() {
-  const request = await getInput();
+export async function findDefault(snippetsStorage: SnippetsStorage) {
+  const request = await getInput(snippetsStorage);
   await findWithProvider(
     request.language,
     request.query,
     snippet.getVerbose(),
     0,
-    getConfig("openInNewEditor")
+    getConfig("openInNewEditor"),
+    request.savedSnippetContent
   );
 }
 
-export async function findInplace() {
-  const request = await getInput();
+export async function findInplace(snippetsStorage: SnippetsStorage) {
+  const request = await getInput(snippetsStorage);
   await findWithProvider(
     request.language,
     request.query,
     snippet.getVerbose(),
     0,
-    false
+    false,
+    request.savedSnippetContent
   );
 }
 
-export async function findInNewEditor() {
-  const request = await getInput();
+export async function findInNewEditor(snippetsStorage: SnippetsStorage) {
+  const request = await getInput(snippetsStorage);
   await findWithProvider(
     request.language,
     request.query,
     snippet.getVerbose(),
     0,
-    true
+    true,
+    request.savedSnippetContent
   );
 }
 
-export async function showNextAnswer() {
+export async function showNextAnswer(snippetsStorage: SnippetsStorage) {
   if (!snippet.getCurrentQuery()) {
-    return await findDefault();
+    return await findDefault(snippetsStorage);
   }
   const answerNumber = snippet.getNextAnswerNumber();
   await findWithProvider(
@@ -123,9 +144,9 @@ export async function showNextAnswer() {
   );
 }
 
-export async function showPreviousAnswer() {
+export async function showPreviousAnswer(snippetsStorage: SnippetsStorage) {
   if (!snippet.getCurrentQuery()) {
-    return await findDefault();
+    return await findDefault(snippetsStorage);
   }
   const answerNumber = snippet.getPreviousAnswerNumber();
   if (answerNumber == null) {
@@ -204,8 +225,12 @@ export function saveSnippet(treeProvider: SnippetsTreeProvider) {
       const defaultLabel = content.substring(0, 100);
       const fileName = editor.document.fileName;
       const indexOfLastDot = fileName.lastIndexOf(".");
+      const extensionByLangId =
+        languages.getExtensions(editor.document.languageId)[0] || "";
       const fileExtension =
-        indexOfLastDot === -1 ? "" : fileName.slice(indexOfLastDot);
+        indexOfLastDot === -1
+          ? extensionByLangId
+          : fileName.slice(indexOfLastDot);
 
       const nameInputOptions: vscode.InputBoxOptions = {
         ignoreFocusOut: false,
