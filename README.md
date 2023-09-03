@@ -26,6 +26,7 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
   - ${query} - the snippet query (search text)
   - ${index} - the index of the snippet (e.g. 2 for the third answer)
 - `insertWithDoubleClick`: insert snippet with double click.
+- `showCopySuccessNotification`: Whether to show a notification after the snippet is copied to the clipboard.
 
 ## Installation
 
@@ -108,6 +109,12 @@ You can configure a keyboard shortcut. By default this is <kbd>⌘ Command</kbd>
 4. Confirm your choice
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/delete.gif)
+
+### Copying a snippet to the clipboard
+
+1. Open the Snippets section
+2. Right click on the snippet that you want to copy
+3. Select "Copy"
 
 ### Moving a snippet or a folder
 
