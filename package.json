@@ -2,7 +2,7 @@
   "name": "snippet",
   "displayName": "Snippet",
   "description": "Insert a snippet from cht.sh for Python, JavaScript, Ruby, C#, Go, Rust (and any other language)",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "publisher": "vscode-snippet",
   "engines": {
     "vscode": "^1.74.0"
@@ -106,6 +106,11 @@
         "category": "Snippet"
       },
       {
+        "title": "Copy",
+        "command": "snippet.copySnippet",
+        "category": "Snippet"
+      },
+      {
         "title": "New Folder",
         "command": "snippet.createFolder",
         "category": "Snippet",
@@ -147,6 +152,11 @@
           "type": "boolean",
           "default": false,
           "description": "Insert snippet with double click."
+        },
+        "snippet.showCopySuccessNotification": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to show a notification after the snippet is copied to the clipboard."
         }
       }
     },
@@ -165,14 +175,19 @@
           "group": "snippet.viewItemContext.baseGroup@1"
         },
         {
+          "command": "snippet.copySnippet",
+          "when": "view == snippetsView && viewItem == snippet",
+          "group": "snippet.viewItemContext.baseGroup@2"
+        },
+        {
           "command": "snippet.renameSnippet",
           "when": "view == snippetsView",
-          "group": "snippet.viewItemContext.baseGroup@2"
+          "group": "snippet.viewItemContext.baseGroup@3"
         },
         {
           "command": "snippet.deleteSnippet",
           "when": "view == snippetsView",
-          "group": "snippet.viewItemContext.baseGroup@3"
+          "group": "snippet.viewItemContext.baseGroup@4"
         }
       ],
       "editor/context": [

@@ -60,6 +60,10 @@ export function activate(ctx: vscode.ExtensionContext) {
     endpoints.renameSnippet(snippetsTreeProvider)
   );
   vscode.commands.registerCommand(
+    "snippet.copySnippet",
+    endpoints.copySnippet(snippetsTreeProvider)
+  );
+  vscode.commands.registerCommand(
     "snippet.createFolder",
     endpoints.createFolder(snippetsTreeProvider)
   );

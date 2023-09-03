@@ -335,6 +335,44 @@ export function renameSnippet(treeProvider: SnippetsTreeProvider) {
   };
 }
 
+export function copySnippet(treeProvider: SnippetsTreeProvider) {
+  return async (item: SnippetsTreeItem) => {
+    if (!item) {
+      vscode.window.showInformationMessage(
+        'Copy a snippet right clicking on it in the list and selecting "Copy"'
+      );
+      return;
+    }
+
+    const content = treeProvider.storage.getSnippet(item.id);
+
+    try {
+      await vscode.env.clipboard.writeText(content);
+
+      if (getConfig("showCopySuccessNotification")) {
+        const hideNotification = await vscode.window.showInformationMessage(
+          "The snippet was copied to the clipboard",
+          { modal: false },
+          "Do not show again"
+        );
+
+        if (hideNotification) {
+          const config = vscode.workspace.getConfiguration("snippet");
+          await config.update(
+            "showCopySuccessNotification",
+            false,
+            vscode.ConfigurationTarget.Global
+          );
+        }
+      }
+    } catch {
+      vscode.window.showErrorMessage(
+        "Failed to copy the snippet to the clipboard"
+      );
+    }
+  };
+}
+
 export function createFolder(treeProvider: SnippetsTreeProvider) {
   return async (item?: SnippetsTreeItem) => {
     const opt: vscode.InputBoxOptions = {
