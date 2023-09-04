@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as clipboard from "./clipboard";
 import { pickLanguage, getLanguage, getConfig } from "./config";
 import { query } from "./query";
 import { encodeRequest } from "./provider";
@@ -345,31 +346,16 @@ export function copySnippet(treeProvider: SnippetsTreeProvider) {
     }
 
     const content = treeProvider.storage.getSnippet(item.id);
+    await clipboard.copySnippet(content);
+  };
+}
 
-    try {
-      await vscode.env.clipboard.writeText(content);
+export function findAndCopy(snippetsStorage: SnippetsStorage) {
+  return async () => {
+    const language = await getLanguage();
+    const userQuery = await query(language, snippetsStorage, true);
 
-      if (getConfig("showCopySuccessNotification")) {
-        const hideNotification = await vscode.window.showInformationMessage(
-          "The snippet was copied to the clipboard",
-          { modal: false },
-          "Do not show again"
-        );
-
-        if (hideNotification) {
-          const config = vscode.workspace.getConfiguration("snippet");
-          await config.update(
-            "showCopySuccessNotification",
-            false,
-            vscode.ConfigurationTarget.Global
-          );
-        }
-      }
-    } catch {
-      vscode.window.showErrorMessage(
-        "Failed to copy the snippet to the clipboard"
-      );
-    }
+    await clipboard.copySnippet(userQuery.savedSnippetContent);
   };
 }
 

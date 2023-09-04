@@ -111,6 +111,11 @@
         "category": "Snippet"
       },
       {
+        "title": "Find and copy",
+        "command": "snippet.findAndCopy",
+        "category": "Snippet"
+      },
+      {
         "title": "New Folder",
         "command": "snippet.createFolder",
         "category": "Snippet",
