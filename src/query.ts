@@ -6,7 +6,8 @@ import SnippetsStorage from "./snippetsStorage";
 import languages from "./languages";
 
 function quickPickCustom(
-  items: vscode.QuickPickItem[]
+  items: vscode.QuickPickItem[],
+  clearActiveItems = true
 ): Promise<string | vscode.QuickPickItem> {
   return new Promise((resolve) => {
     const quickPick = vscode.window.createQuickPick();
@@ -14,7 +15,9 @@ function quickPickCustom(
     quickPick.items = items;
 
     quickPick.onDidChangeValue(() => {
-      quickPick.activeItems = [];
+      if (clearActiveItems) {
+        quickPick.activeItems = [];
+      }
     });
 
     quickPick.onDidAccept(() => {
@@ -38,7 +41,8 @@ export interface QueryResult {
 
 export async function query(
   language: string,
-  snippetsStorage: SnippetsStorage
+  snippetsStorage: SnippetsStorage,
+  suggestOnlySaved = false
 ): Promise<QueryResult> {
   const suggestions = new Set(
     cache.state.get<string[]>(`snippet_suggestions_${language}`, [])
@@ -58,15 +62,20 @@ export async function query(
     }
   }
 
-  for (const suggestion of suggestions) {
-    const tempQuickItem: vscode.QuickPickItem = {
-      label: suggestion,
-      description: "",
-    };
-    suggestionsQuickItems.push(tempQuickItem);
+  if (!suggestOnlySaved) {
+    for (const suggestion of suggestions) {
+      const tempQuickItem: vscode.QuickPickItem = {
+        label: suggestion,
+        description: "",
+      };
+      suggestionsQuickItems.push(tempQuickItem);
+    }
   }
 
-  const selectedItem = await quickPickCustom(suggestionsQuickItems);
+  const selectedItem = await quickPickCustom(
+    suggestionsQuickItems,
+    !suggestOnlySaved
+  );
   const input =
     typeof selectedItem === "string" ? selectedItem : selectedItem.label;
   const savedSnippetContent =

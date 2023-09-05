@@ -113,6 +113,10 @@ export class SnippetsTreeItem extends vscode.TreeItem {
 
     this.id = id;
     this.tooltip = content;
+    this.contextValue =
+      collapsibleState === vscode.TreeItemCollapsibleState.None
+        ? "snippet"
+        : "folder";
 
     if (collapsibleState !== vscode.TreeItemCollapsibleState.None) {
       return;

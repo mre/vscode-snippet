@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as clipboard from "./clipboard";
 import { pickLanguage, getLanguage, getConfig } from "./config";
 import { query } from "./query";
 import { encodeRequest } from "./provider";
@@ -332,6 +333,29 @@ export function renameSnippet(treeProvider: SnippetsTreeProvider) {
     }
 
     await treeProvider.storage.renameElement(item.id, newName);
+  };
+}
+
+export function copySnippet(treeProvider: SnippetsTreeProvider) {
+  return async (item: SnippetsTreeItem) => {
+    if (!item) {
+      vscode.window.showInformationMessage(
+        'Copy a snippet right clicking on it in the list and selecting "Copy"'
+      );
+      return;
+    }
+
+    const content = treeProvider.storage.getSnippet(item.id);
+    await clipboard.copySnippet(content);
+  };
+}
+
+export function findAndCopy(snippetsStorage: SnippetsStorage) {
+  return async () => {
+    const language = await getLanguage();
+    const userQuery = await query(language, snippetsStorage, true);
+
+    await clipboard.copySnippet(userQuery.savedSnippetContent);
   };
 }
 
