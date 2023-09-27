@@ -280,7 +280,7 @@
     "eslint": "^8.50.0",
     "glob": "^10.3.5",
     "mocha": "^10.2.0",
-    "rimraf": "^5.0.1",
+    "rimraf": "^5.0.4",
     "rollup-plugin-node-externals": "^6.1.1",
     "sinon": "^16.0.0",
     "rollup": "^3.29.3",
