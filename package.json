@@ -261,7 +261,7 @@
     "axios": "^1.6.0",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^7.0.0",
-    "nanoid": "^3.3.4"
+    "nanoid": "^5.0.2"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^25.0.7",
