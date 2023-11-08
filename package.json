@@ -270,7 +270,7 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.3",
+    "@types/mocha": "^10.0.4",
     "@types/node": "^12.12.11",
     "@types/sinon": "^17.0.0",
     "@types/vscode": "^1.74.0",
