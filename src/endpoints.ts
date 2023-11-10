@@ -62,8 +62,9 @@ export async function findWithProvider(
     });
   } else {
     const text = savedSnippetContent ? savedSnippetContent : doc.getText();
-    const snippet = new vscode.SnippetString(text);
-    const success = await editor.insertSnippet(snippet);
+    const success = await editor.edit((builder) => {
+      builder.insert(editor.selection.start, text);
+    });
     if (!success) {
       vscode.window.showInformationMessage("Error while opening snippet.");
     }
