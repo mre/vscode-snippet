@@ -258,7 +258,7 @@
   },
   "dependencies": {
     "@vscode/vsce": "^2.22.0",
-    "axios": "^1.6.0",
+    "axios": "^1.6.1",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^7.0.0",
     "nanoid": "^3.3.4"
@@ -270,20 +270,20 @@
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
     "@types/glob": "^8.1.0",
-    "@types/mocha": "^10.0.3",
+    "@types/mocha": "^10.0.4",
     "@types/node": "^12.12.11",
-    "@types/sinon": "^17.0.0",
+    "@types/sinon": "^17.0.1",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^5.61.0",
     "@typescript-eslint/parser": "^5.62.0",
     "@vscode/test-electron": "^2.3.6",
-    "eslint": "^8.52.0",
+    "eslint": "^8.53.0",
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.5",
     "rollup-plugin-node-externals": "^6.1.2",
     "sinon": "^17.0.1",
-    "rollup": "^4.2.0",
+    "rollup": "^4.3.0",
     "typescript": "^5.2.2"
   }
 }
