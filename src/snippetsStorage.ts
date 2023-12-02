@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid";
+import { randomUUID } from "crypto";
 import * as vscode from "vscode";
 
 export interface TreeElement {
@@ -119,7 +119,7 @@ export default class SnippetsStorage {
       : relativeToElement.parentId;
 
     const folder: TreeElementData = {
-      id: nanoid(),
+      id: randomUUID(),
       label: name,
       content: "",
     };
@@ -174,7 +174,7 @@ export default class SnippetsStorage {
     parentId: string
   ): Promise<void> {
     const data: TreeElementData = {
-      id: nanoid(),
+      id: randomUUID(),
       label,
       content,
       fileExtension,
@@ -211,17 +211,17 @@ export default class SnippetsStorage {
 
   private async loadDefaultElements(): Promise<void> {
     const root: TreeElementData = {
-      id: nanoid(),
+      id: randomUUID(),
       label: "root",
       content: "",
     };
     const exampleFolder: TreeElementData = {
-      id: nanoid(),
+      id: randomUUID(),
       label: "example folder",
       content: "",
     };
     const exampleSnippet: TreeElementData = {
-      id: nanoid(),
+      id: randomUUID(),
       label: "example snippet",
       fileExtension: ".js",
       content: `for (let i = 0; i < 5; i++) {
