@@ -20,7 +20,7 @@ export async function pickLanguage() {
   // return await vscode.window.showQuickPick(languages);
 
   try {
-    return await new Promise<string | undefined>((resolve, reject) => {
+    return await new Promise<string | undefined>((resolve) => {
       const input = vscode.window.createQuickPick<LanguageItem>();
       input.placeholder = "Select or enter programming language";
       const default_items = [];

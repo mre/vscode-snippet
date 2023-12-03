@@ -31,7 +31,7 @@ class Snippet {
   verboseState: boolean;
 
   // Local cache for saving unnecessary requests
-  requestCache: any;
+  requestCache: object;
 
   constructor() {
     this.currNum = 0;
