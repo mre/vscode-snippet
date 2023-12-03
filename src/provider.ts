@@ -71,7 +71,7 @@ export function encodeRequest(
   return vscode.Uri.parse(`snippet:${title}?${data}`);
 }
 
-export function decodeRequest(uri: vscode.Uri): object {
+export function decodeRequest(uri: vscode.Uri): any {
   const obj = JSON.parse(uri.query);
   return obj;
 }
