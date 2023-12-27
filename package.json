@@ -258,7 +258,7 @@
   },
   "dependencies": {
     "@vscode/vsce": "^2.22.0",
-    "axios": "^1.6.2",
+    "axios": "^1.6.3",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^7.0.0"
   },
