@@ -282,7 +282,7 @@
     "rimraf": "^5.0.5",
     "rollup-plugin-node-externals": "^6.1.2",
     "sinon": "^17.0.1",
-    "rollup": "^4.9.4",
+    "rollup": "^4.9.5",
     "typescript": "^5.3.3"
   }
 }
