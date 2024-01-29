@@ -280,7 +280,7 @@
     "glob": "^10.3.10",
     "mocha": "^10.2.0",
     "rimraf": "^5.0.5",
-    "rollup-plugin-node-externals": "^6.1.2",
+    "rollup-plugin-node-externals": "^7.0.0",
     "sinon": "^17.0.1",
     "rollup": "^4.9.6",
     "typescript": "^5.3.3"
