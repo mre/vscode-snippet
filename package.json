@@ -283,6 +283,6 @@
     "rollup-plugin-node-externals": "^7.0.1",
     "sinon": "^17.0.1",
     "rollup": "^4.12.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.2"
   }
 }
