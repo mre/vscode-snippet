@@ -35,17 +35,23 @@ export class BackupManager {
   }
 
   getBackupItems(): BackupItem[] {
-    const items = this.backups.map((backup) => ({
-      id: backup.id,
-      label: `${formatUnixTime(backup.dateUnix)}`,
-      dateUnix: backup.dateUnix,
-      description: `${this.snippets.getSnippetCount(backup.elements)} snippet${
-        backup.elements.length === 1 ? "" : "s"
-      }`,
-      detail: backup.beforeOperation
+    const items = this.backups.map((backup) => {
+      const time = `${formatUnixTime(backup.dateUnix)}`;
+      const detail = backup.beforeOperation
         ? `before "${backup.beforeOperation}"`
-        : undefined,
-    }));
+        : undefined;
+      const description = `${this.snippets.getSnippetCount(
+        backup.elements
+      )} snippet${backup.elements.length === 1 ? "" : "s"}`;
+
+      return {
+        id: backup.id,
+        label: time,
+        dateUnix: backup.dateUnix,
+        description,
+        detail,
+      };
+    });
 
     items.sort((a, b) => b.dateUnix - a.dateUnix);
 
