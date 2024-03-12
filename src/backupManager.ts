@@ -26,7 +26,7 @@ export class BackupManager {
   ) {
     this.load();
     if (!this.backups.length) {
-      this.makeBackup([...this.snippets.getSnippets()]);
+      this.makeBackup([...this.snippets.getElements()]);
     }
     snippets.onBeforeSave = (elements) => this.makeBackup(elements);
   }

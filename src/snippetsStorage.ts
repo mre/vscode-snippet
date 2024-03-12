@@ -37,6 +37,10 @@ export default class SnippetsStorage {
     }
   }
 
+  getElements(): TreeElement[] {
+    return [...this.elements.values()];
+  }
+
   getFoldersList(): FolderListItem[] {
     const result: FolderListItem[] = [];
 
