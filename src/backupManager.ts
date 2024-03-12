@@ -1,9 +1,15 @@
+import { randomUUID } from "crypto";
 import * as vscode from "vscode";
 import SnippetsStorage, { TreeElement } from "./snippetsStorage";
 
 export interface Backup {
+  id: string;
   dateUnix: number;
   elements: TreeElement[];
+}
+
+export interface BackupItem extends vscode.QuickPickItem {
+  id: string;
 }
 
 // TODO: move all storage keys to a separate file and ensure no duplicates
@@ -24,8 +30,13 @@ export class BackupManager {
     snippets.onBeforeSave = (elements) => this.makeBackup(elements);
   }
 
-  getBackups(): Backup[] {
-    return this.backups.slice();
+  getBackupItems(): BackupItem[] {
+    return this.backups.map((backup) => ({
+      id: backup.id,
+      label: `${backup.dateUnix} • ${backup.elements.length} snippet${
+        backup.elements.length === 1 ? "" : "s"
+      }`,
+    }));
   }
 
   private load(): void {
@@ -36,11 +47,17 @@ export class BackupManager {
 
   private async makeBackup(elements: TreeElement[]) {
     const backup: Backup = {
+      id: randomUUID(),
       dateUnix: Math.floor(Date.now() / 1000),
       elements: elements,
     };
 
     this.backups.push(backup);
+
+    if (this.backups.length > MAX_BACKUPS) {
+      this.backups.shift();
+    }
+
     await this.save();
   }
 

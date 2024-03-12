@@ -1,12 +1,13 @@
 import * as vscode from "vscode";
+import { BackupManager } from "./backupManager";
 import * as clipboard from "./clipboard";
-import { pickLanguage, getLanguage, getConfig } from "./config";
-import { query } from "./query";
-import { encodeRequest } from "./provider";
-import snippet from "./snippet";
-import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
-import SnippetsStorage from "./snippetsStorage";
+import { getConfig, getLanguage, pickLanguage } from "./config";
 import languages from "./languages";
+import { encodeRequest } from "./provider";
+import { query } from "./query";
+import snippet from "./snippet";
+import SnippetsStorage from "./snippetsStorage";
+import { SnippetsTreeItem, SnippetsTreeProvider } from "./snippetsTreeProvider";
 
 export interface Request {
   language: string;
@@ -381,5 +382,25 @@ export function createFolder(treeProvider: SnippetsTreeProvider) {
     }
 
     await treeProvider.storage.createFolder(folderName, item?.id);
+  };
+}
+
+export function showBackups(backupManager: BackupManager) {
+  return async () => {
+    const backups = backupManager.getBackupItems();
+    const selectedBackup = await vscode.window.showQuickPick(backups, {
+      placeHolder: "",
+      title: "Select a backup",
+    });
+
+    if (!selectedBackup) {
+      return;
+    }
+
+    vscode.window.showInformationMessage(
+      `backups: ${JSON.stringify(selectedBackup, undefined, 4)}`
+    );
+
+    await vscode.commands.executeCommand("snippetsView.focus");
   };
 }

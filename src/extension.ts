@@ -1,6 +1,7 @@
 "use strict";
 
 import * as vscode from "vscode";
+import { BackupManager } from "./backupManager";
 import { cache } from "./cache";
 import { CompletionManager } from "./completionManager";
 import * as endpoints from "./endpoints";
@@ -15,6 +16,8 @@ export function activate(ctx: vscode.ExtensionContext) {
   const snippetsStorage = new SnippetsStorage(ctx, snippetStorageKey);
   const snippetsTreeProvider = new SnippetsTreeProvider(ctx, snippetsStorage);
   new CompletionManager(ctx, snippetsStorage);
+
+  const backupManager = new BackupManager(ctx, snippetsStorage);
 
   vscode.commands.registerCommand("snippet.find", () =>
     endpoints.findDefault(snippetsStorage)
@@ -71,9 +74,10 @@ export function activate(ctx: vscode.ExtensionContext) {
     "snippet.createFolder",
     endpoints.createFolder(snippetsTreeProvider)
   );
-  vscode.commands.registerCommand("snippet.restoreBackups", () => {
-    vscode.window.showInformationMessage("Restoring backups...");
-  });
+  vscode.commands.registerCommand(
+    "snippet.restoreBackups",
+    endpoints.showBackups(backupManager)
+  );
 
   cache.state = ctx.globalState;
   const provider = new SnippetProvider();
