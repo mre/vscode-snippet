@@ -123,6 +123,15 @@
           "light": "assets/icons/add-light.svg",
           "dark": "assets/icons/add-dark.svg"
         }
+      },
+      {
+        "title": "Restore backups",
+        "command": "snippet.restoreBackups",
+        "category": "Snippet",
+        "icon": {
+          "light": "assets/icons/history-light.svg",
+          "dark": "assets/icons/history-dark.svg"
+        }
       }
     ],
     "configuration": {
@@ -169,6 +178,11 @@
       "view/title": [
         {
           "command": "snippet.createFolder",
+          "when": "view == snippetsView",
+          "group": "navigation"
+        },
+        {
+          "command": "snippet.restoreBackups",
           "when": "view == snippetsView",
           "group": "navigation"
         }

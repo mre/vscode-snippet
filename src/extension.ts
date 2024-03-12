@@ -2,11 +2,11 @@
 
 import * as vscode from "vscode";
 import { cache } from "./cache";
-import SnippetProvider from "./provider";
-import * as endpoints from "./endpoints";
-import { SnippetsTreeProvider } from "./snippetsTreeProvider";
-import SnippetsStorage from "./snippetsStorage";
 import { CompletionManager } from "./completionManager";
+import * as endpoints from "./endpoints";
+import SnippetProvider from "./provider";
+import SnippetsStorage from "./snippetsStorage";
+import { SnippetsTreeProvider } from "./snippetsTreeProvider";
 
 export function activate(ctx: vscode.ExtensionContext) {
   const snippetStorageKey = "snippet.snippetsStorageKey";
@@ -71,6 +71,9 @@ export function activate(ctx: vscode.ExtensionContext) {
     "snippet.createFolder",
     endpoints.createFolder(snippetsTreeProvider)
   );
+  vscode.commands.registerCommand("snippet.restoreBackups", () => {
+    vscode.window.showInformationMessage("Restoring backups...");
+  });
 
   cache.state = ctx.globalState;
   const provider = new SnippetProvider();
