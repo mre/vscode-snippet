@@ -206,10 +206,6 @@ export default class SnippetsStorage {
     this.onSave?.();
   }
 
-  load(): void {
-    this.deserialize(this.context.globalState.get(this.storageKey) || "[]");
-  }
-
   *getSnippets(): IterableIterator<TreeElement> {
     for (const element of this.elements.values()) {
       if (!this.isFolder(element)) {
@@ -220,6 +216,16 @@ export default class SnippetsStorage {
 
   getSnippetCount(elements: TreeElement[]) {
     return elements.filter((x) => !this.isFolder(x)).length;
+  }
+
+  async replaceElements(newElements: TreeElement[]): Promise<void> {
+    this.deserialize(JSON.stringify(newElements));
+    await this.context.globalState.update(this.storageKey, this.serialize());
+    this.onSave?.();
+  }
+
+  private load(): void {
+    this.deserialize(this.context.globalState.get(this.storageKey) || "[]");
   }
 
   private async loadDefaultElements(): Promise<void> {

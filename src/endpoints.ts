@@ -2,6 +2,7 @@ import * as vscode from "vscode";
 import { BackupManager } from "./backupManager";
 import * as clipboard from "./clipboard";
 import { getConfig, getLanguage, pickLanguage } from "./config";
+import { formatUnixTime } from "./date";
 import languages from "./languages";
 import { encodeRequest } from "./provider";
 import { query } from "./query";
@@ -389,7 +390,8 @@ export function showBackups(backupManager: BackupManager) {
   return async () => {
     const backups = backupManager.getBackupItems();
     const selectedBackup = await vscode.window.showQuickPick(backups, {
-      placeHolder: "",
+      placeHolder:
+        "Select a backup to restore. You will be able to undo this operation.",
       title: "Select a backup",
     });
 
@@ -397,10 +399,16 @@ export function showBackups(backupManager: BackupManager) {
       return;
     }
 
-    vscode.window.showInformationMessage(
-      `backups: ${JSON.stringify(selectedBackup, undefined, 4)}`
+    await backupManager.restoreBackup(selectedBackup.id);
+    await vscode.commands.executeCommand("snippetsView.focus");
+    const answer = await vscode.window.showInformationMessage(
+      `Restored backup from ${formatUnixTime(selectedBackup.dateUnix)}`,
+      "Ok",
+      "Undo"
     );
 
-    await vscode.commands.executeCommand("snippetsView.focus");
+    if (answer === "Undo") {
+      await backupManager.undoLastRestore();
+    }
   };
 }

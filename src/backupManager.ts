@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import * as vscode from "vscode";
+import { formatUnixTime } from "./date";
 import SnippetsStorage, { TreeElement } from "./snippetsStorage";
 
 export interface Backup {
@@ -19,6 +20,7 @@ const MAX_BACKUPS = 10;
 
 export class BackupManager {
   private backups: Backup[] = [];
+  private elementsBeforeRestore: TreeElement[] | null = null;
 
   constructor(
     private readonly context: vscode.ExtensionContext,
@@ -34,7 +36,7 @@ export class BackupManager {
   getBackupItems(): BackupItem[] {
     const items = this.backups.map((backup) => ({
       id: backup.id,
-      label: `${this.formatUnixTime(
+      label: `${formatUnixTime(
         backup.dateUnix
       )} • ${this.snippets.getSnippetCount(backup.elements)} snippet${
         backup.elements.length === 1 ? "" : "s"
@@ -47,12 +49,24 @@ export class BackupManager {
     return items;
   }
 
-  private formatUnixTime(seconds: number) {
-    const date = new Date(seconds * 1000);
-    return `${date.toDateString()}, ${date.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    })}`;
+  async restoreBackup(id: string) {
+    const backup = this.backups.find((backup) => backup.id === id);
+
+    if (!backup) {
+      return;
+    }
+
+    this.elementsBeforeRestore = this.snippets.getElements();
+    await this.snippets.replaceElements(backup.elements);
+  }
+
+  async undoLastRestore() {
+    if (this.elementsBeforeRestore === null) {
+      return;
+    }
+
+    await this.snippets.replaceElements(this.elementsBeforeRestore);
+    this.elementsBeforeRestore = null;
   }
 
   private load(): void {
