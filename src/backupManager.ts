@@ -33,10 +33,18 @@ export class BackupManager {
   getBackupItems(): BackupItem[] {
     return this.backups.map((backup) => ({
       id: backup.id,
-      label: `${backup.dateUnix} • ${backup.elements.length} snippet${
-        backup.elements.length === 1 ? "" : "s"
-      }`,
+      label: `${this.formatUnixTime(backup.dateUnix)} • ${
+        backup.elements.length
+      } snippet${backup.elements.length === 1 ? "" : "s"}`,
     }));
+  }
+
+  private formatUnixTime(seconds: number) {
+    const date = new Date(seconds * 1000);
+    return `${date.toDateString()}, ${date.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })}`;
   }
 
   private load(): void {
