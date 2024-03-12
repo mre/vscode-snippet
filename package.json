@@ -274,7 +274,7 @@
     "@types/sinon": "^17.0.3",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^7.2.0",
-    "@typescript-eslint/parser": "^7.1.1",
+    "@typescript-eslint/parser": "^7.2.0",
     "@vscode/test-electron": "^2.3.9",
     "eslint": "^8.57.0",
     "glob": "^10.3.10",
