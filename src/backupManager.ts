@@ -27,9 +27,6 @@ export class BackupManager {
     private readonly snippets: SnippetsStorage
   ) {
     this.load();
-    if (!this.backups.length) {
-      this.makeBackup([...this.snippets.getElements()]);
-    }
     snippets.onBeforeSave = (elements, operation) =>
       this.makeBackup(elements, operation);
   }
