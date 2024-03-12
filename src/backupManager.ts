@@ -10,6 +10,7 @@ export interface Backup {
 
 export interface BackupItem extends vscode.QuickPickItem {
   id: string;
+  dateUnix: number;
 }
 
 // TODO: move all storage keys to a separate file and ensure no duplicates
@@ -31,12 +32,19 @@ export class BackupManager {
   }
 
   getBackupItems(): BackupItem[] {
-    return this.backups.map((backup) => ({
+    const items = this.backups.map((backup) => ({
       id: backup.id,
-      label: `${this.formatUnixTime(backup.dateUnix)} • ${
-        backup.elements.length
-      } snippet${backup.elements.length === 1 ? "" : "s"}`,
+      label: `${this.formatUnixTime(
+        backup.dateUnix
+      )} • ${this.snippets.getSnippetCount(backup.elements)} snippet${
+        backup.elements.length === 1 ? "" : "s"
+      }`,
+      dateUnix: backup.dateUnix,
     }));
+
+    items.sort((a, b) => b.dateUnix - a.dateUnix);
+
+    return items;
   }
 
   private formatUnixTime(seconds: number) {

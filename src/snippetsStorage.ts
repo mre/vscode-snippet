@@ -214,6 +214,10 @@ export default class SnippetsStorage {
     }
   }
 
+  getSnippetCount(elements: TreeElement[]) {
+    return elements.filter((x) => !this.isFolder(x)).length;
+  }
+
   private async loadDefaultElements(): Promise<void> {
     const root: TreeElementData = {
       id: randomUUID(),
