@@ -21,6 +21,7 @@ export interface FolderListItem extends vscode.QuickPickItem {
 
 export default class SnippetsStorage {
   public onSave?: () => void;
+  public onBeforeSave?: (elements: TreeElement[]) => void;
   public onSnippetSave?: (snippet: TreeElement) => void;
   private readonly elements = new Map<string, TreeElement>();
   private rootId = "";
@@ -193,6 +194,10 @@ export default class SnippetsStorage {
   }
 
   async save(): Promise<void> {
+    const originalElements = JSON.parse(
+      this.context.globalState.get(this.storageKey) || "[]"
+    ) as TreeElement[];
+    this.onBeforeSave?.(originalElements);
     await this.context.globalState.update(this.storageKey, this.serialize());
     this.onSave?.();
   }
