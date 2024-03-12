@@ -63,7 +63,7 @@ export default class SnippetsStorage {
     for (const childId of parent.childIds) {
       const child = this.getElement(childId);
 
-      if (this.isFolder(child)) {
+      if (SnippetsStorage.isFolder(child)) {
         const joinedName = `${
           current.label === "/" ? "/" : `${current.label}/`
         }${child.data.label}`;
@@ -86,7 +86,7 @@ export default class SnippetsStorage {
 
   async deleteElement(id: string): Promise<void> {
     const toDelete = this.getElement(id);
-    const messageForUser = this.isFolder(toDelete)
+    const messageForUser = SnippetsStorage.isFolder(toDelete)
       ? "Are you sure you want to delete this folder? Everything inside it will be deleted too."
       : "Are you sure you want to delete this snippet?";
 
@@ -119,7 +119,7 @@ export default class SnippetsStorage {
   async createFolder(name: string, relativeToId?: string): Promise<void> {
     const relativeToElement = this.getElement(relativeToId);
 
-    const parentId = this.isFolder(relativeToElement)
+    const parentId = SnippetsStorage.isFolder(relativeToElement)
       ? relativeToElement.data.id
       : relativeToElement.parentId;
 
@@ -143,7 +143,7 @@ export default class SnippetsStorage {
     const sourceElement = this.getElement(sourceId);
     const targetElement = this.getElement(targetId);
 
-    const newParentId = this.isFolder(targetElement)
+    const newParentId = SnippetsStorage.isFolder(targetElement)
       ? targetElement.data.id
       : targetElement.parentId;
 
@@ -208,14 +208,14 @@ export default class SnippetsStorage {
 
   *getSnippets(): IterableIterator<TreeElement> {
     for (const element of this.elements.values()) {
-      if (!this.isFolder(element)) {
+      if (!SnippetsStorage.isFolder(element)) {
         yield element;
       }
     }
   }
 
   getSnippetCount(elements: TreeElement[]) {
-    return elements.filter((x) => !this.isFolder(x)).length;
+    return elements.filter((x) => !SnippetsStorage.isFolder(x)).length;
   }
 
   async replaceElements(newElements: TreeElement[]): Promise<void> {
@@ -285,7 +285,7 @@ export default class SnippetsStorage {
     });
   }
 
-  private isFolder(element: TreeElement): boolean {
+  static isFolder(element: TreeElement): boolean {
     return element.childIds != null;
   }
 }

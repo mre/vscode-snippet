@@ -399,10 +399,10 @@ export function showBackups(backupManager: BackupManager) {
       return;
     }
 
-    await backupManager.restoreBackup(selectedBackup.id);
+    await backupManager.restoreBackup(selectedBackup.item.id);
     await vscode.commands.executeCommand("snippetsView.focus");
     const answer = await vscode.window.showInformationMessage(
-      `Restored backup from ${formatUnixTime(selectedBackup.dateUnix)}`,
+      `Restored backup from ${formatUnixTime(selectedBackup.item.dateUnix)}`,
       "Ok",
       "Undo"
     );

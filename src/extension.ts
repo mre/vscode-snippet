@@ -16,7 +16,6 @@ export function activate(ctx: vscode.ExtensionContext) {
   const snippetsStorage = new SnippetsStorage(ctx, snippetStorageKey);
   const snippetsTreeProvider = new SnippetsTreeProvider(ctx, snippetsStorage);
   new CompletionManager(ctx, snippetsStorage);
-
   const backupManager = new BackupManager(ctx, snippetsStorage);
 
   vscode.commands.registerCommand("snippet.find", () =>

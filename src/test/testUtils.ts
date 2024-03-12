@@ -1,6 +1,6 @@
+import * as sinon from "sinon";
 import * as vscode from "vscode";
 import { MockResponseData } from "../snippet";
-import * as sinon from "sinon";
 
 export function getResponseFromResultDocument(): MockResponseData {
   const editors = vscode.window.visibleTextEditors.filter(

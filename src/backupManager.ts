@@ -11,8 +11,7 @@ export interface Backup {
 }
 
 export interface BackupItem extends vscode.QuickPickItem {
-  id: string;
-  dateUnix: number;
+  item: Backup;
 }
 
 const STORAGE_KEY = "snippet.snippetBackupsStorageKey";
@@ -42,15 +41,14 @@ export class BackupManager {
       )} snippet${backup.elements.length === 1 ? "" : "s"}`;
 
       return {
-        id: backup.id,
         label: time,
-        dateUnix: backup.dateUnix,
+        item: backup,
         description,
         detail,
       };
     });
 
-    items.sort((a, b) => b.dateUnix - a.dateUnix);
+    items.sort((a, b) => b.item.dateUnix - a.item.dateUnix);
 
     return items;
   }
