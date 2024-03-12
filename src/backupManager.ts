@@ -7,6 +7,7 @@ export interface Backup {
   id: string;
   dateUnix: number;
   elements: TreeElement[];
+  beforeOperation?: string;
 }
 
 export interface BackupItem extends vscode.QuickPickItem {
@@ -14,7 +15,6 @@ export interface BackupItem extends vscode.QuickPickItem {
   dateUnix: number;
 }
 
-// TODO: move all storage keys to a separate file and ensure no duplicates
 const STORAGE_KEY = "snippet.snippetBackupsStorageKey";
 const MAX_BACKUPS = 10;
 
@@ -30,18 +30,21 @@ export class BackupManager {
     if (!this.backups.length) {
       this.makeBackup([...this.snippets.getElements()]);
     }
-    snippets.onBeforeSave = (elements) => this.makeBackup(elements);
+    snippets.onBeforeSave = (elements, operation) =>
+      this.makeBackup(elements, operation);
   }
 
   getBackupItems(): BackupItem[] {
     const items = this.backups.map((backup) => ({
       id: backup.id,
-      label: `${formatUnixTime(
-        backup.dateUnix
-      )} • ${this.snippets.getSnippetCount(backup.elements)} snippet${
+      label: `${formatUnixTime(backup.dateUnix)}`,
+      dateUnix: backup.dateUnix,
+      description: `${this.snippets.getSnippetCount(backup.elements)} snippet${
         backup.elements.length === 1 ? "" : "s"
       }`,
-      dateUnix: backup.dateUnix,
+      detail: backup.beforeOperation
+        ? `before "${backup.beforeOperation}"`
+        : undefined,
     }));
 
     items.sort((a, b) => b.dateUnix - a.dateUnix);
@@ -75,11 +78,12 @@ export class BackupManager {
     ) as Backup[];
   }
 
-  private async makeBackup(elements: TreeElement[]) {
+  private async makeBackup(elements: TreeElement[], operation?: string) {
     const backup: Backup = {
       id: randomUUID(),
       dateUnix: Math.floor(Date.now() / 1000),
-      elements: elements,
+      elements,
+      beforeOperation: operation,
     };
 
     this.backups.push(backup);
