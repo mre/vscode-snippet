@@ -1,4 +1,5 @@
 import * as assert from "assert";
+import { randomUUID } from "crypto";
 import { afterEach } from "mocha";
 import * as sinon from "sinon";
 import * as vscode from "vscode";
@@ -91,6 +92,27 @@ suite("snippet.restoreBackups", () => {
         JSON.stringify(backups[2].item.elements),
         originalElements
       );
+    });
+  });
+
+  test("Saves up to 10 backups", async () => {
+    sinon.stub(vscode.window, "showInputBox").callsFake(() => {
+      return Promise.resolve(randomUUID());
+    });
+    const originalElements =
+      cache.state.get<string>("snippet.snippetsStorageKey") || "[]";
+    const snippet = (JSON.parse(originalElements) as TreeElement[]).find(
+      (x) => !SnippetsStorage.isFolder(x)
+    );
+
+    for (let i = 0; i < 11; i++) {
+      await vscode.commands.executeCommand("snippet.renameSnippet", {
+        id: snippet.data.id,
+      });
+    }
+
+    await getBackups(async (backups: BackupItem[]) => {
+      assert.strictEqual(backups.length, 10);
     });
   });
 });
