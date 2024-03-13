@@ -95,6 +95,26 @@ suite("snippet.restoreBackups", () => {
     });
   });
 
+  test("Creates a backup after move", async () => {
+    const originalElements =
+      cache.state.get<string>("snippet.snippetsStorageKey") || "[]";
+    const elements = JSON.parse(originalElements) as TreeElement[];
+
+    await vscode.commands.executeCommand(
+      "snippet.test_moveElement",
+      elements[2].data.id,
+      elements[1].data.id
+    );
+
+    await getBackups(async (backups: BackupItem[]) => {
+      assert.strictEqual(backups.length, 4);
+      assert.strictEqual(
+        JSON.stringify(backups[3].item.elements),
+        originalElements
+      );
+    });
+  });
+
   test("Saves up to 10 backups", async () => {
     sinon.stub(vscode.window, "showInputBox").callsFake(() => {
       return Promise.resolve(randomUUID());

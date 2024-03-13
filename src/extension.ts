@@ -78,6 +78,14 @@ export function activate(ctx: vscode.ExtensionContext) {
     endpoints.showBackups(backupManager)
   );
 
+  if (process.env.NODE_ENV === "test") {
+    vscode.commands.registerCommand(
+      "snippet.test_moveElement",
+      async (sourceId, targetId) =>
+        await snippetsStorage.moveElement(sourceId, targetId)
+    );
+  }
+
   cache.state = ctx.globalState;
   const provider = new SnippetProvider();
   const disposableProvider =
