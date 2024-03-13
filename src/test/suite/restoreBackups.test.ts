@@ -54,7 +54,7 @@ suite("snippet.restoreBackups", () => {
     await getBackups(async (backups: BackupItem[]) => {
       assert.strictEqual(backups.length, 2);
       assert.strictEqual(
-        JSON.stringify(backups[1].item.elements),
+        JSON.stringify(backups[0].item.elements),
         originalElementsJson
       );
     });
@@ -82,7 +82,7 @@ suite("snippet.restoreBackups", () => {
 
       assert.strictEqual(backups.length, 3);
       assert.strictEqual(
-        JSON.stringify(backups[2].item.elements),
+        JSON.stringify(backups[0].item.elements),
         originalElementsJson
       );
     });
@@ -101,7 +101,7 @@ suite("snippet.restoreBackups", () => {
     await getBackups(async (backups: BackupItem[]) => {
       assert.strictEqual(backups.length, 4);
       assert.strictEqual(
-        JSON.stringify(backups[3].item.elements),
+        JSON.stringify(backups[0].item.elements),
         originalElementsJson
       );
     });

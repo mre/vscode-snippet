@@ -50,9 +50,7 @@ export class BackupManager {
       };
     });
 
-    if (process.env.NODE_ENV !== "test") {
-      items.sort((a, b) => b.item.dateUnix - a.item.dateUnix);
-    }
+    items.sort((a, b) => b.item.dateUnix - a.item.dateUnix);
 
     return items;
   }
@@ -86,7 +84,7 @@ export class BackupManager {
   private async makeBackup(elements: TreeElement[], operation?: string) {
     const backup: Backup = {
       id: randomUUID(),
-      dateUnix: Math.floor(Date.now() / 1000),
+      dateUnix: Date.now(),
       elements,
       beforeOperation: operation,
     };
