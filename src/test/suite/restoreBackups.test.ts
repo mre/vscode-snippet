@@ -6,6 +6,7 @@ import { MessageItem } from "vscode";
 import { BackupItem } from "../../backupManager";
 import { cache } from "../../cache";
 import SnippetsStorage, { TreeElement } from "../../snippetsStorage";
+import { closeAllEditors, openDocumentAndSelectText } from "../testUtils";
 
 suite("snippet.restoreBackups", () => {
   afterEach(() => {
@@ -13,7 +14,7 @@ suite("snippet.restoreBackups", () => {
   });
 
   test("No backups initially", async () => {
-    await getBackups((backups: BackupItem[]) => {
+    await getBackups(async (backups: BackupItem[]) => {
       assert.strictEqual(backups.length, 0);
     });
   });
@@ -22,10 +23,8 @@ suite("snippet.restoreBackups", () => {
     sinon.stub(vscode.window, "showInputBox").callsFake(() => {
       return Promise.resolve("new name");
     });
-
     const originalElements =
       cache.state.get<string>("snippet.snippetsStorageKey") || "[]";
-
     const snippet = (JSON.parse(originalElements) as TreeElement[]).find(
       (x) => !SnippetsStorage.isFolder(x)
     );
@@ -34,7 +33,7 @@ suite("snippet.restoreBackups", () => {
       id: snippet.data.id,
     });
 
-    await getBackups((backups: BackupItem[]) => {
+    await getBackups(async (backups: BackupItem[]) => {
       assert.strictEqual(backups.length, 1);
       assert.strictEqual(
         JSON.stringify(backups[0].item.elements),
@@ -47,10 +46,8 @@ suite("snippet.restoreBackups", () => {
     sinon.stub(vscode.window, "showInformationMessage").callsFake(() => {
       return Promise.resolve("Yes" as unknown as MessageItem);
     });
-
     const originalElements =
       cache.state.get<string>("snippet.snippetsStorageKey") || "[]";
-
     const snippet = (JSON.parse(originalElements) as TreeElement[]).find(
       (x) => !SnippetsStorage.isFolder(x)
     );
@@ -59,10 +56,39 @@ suite("snippet.restoreBackups", () => {
       id: snippet.data.id,
     });
 
-    await getBackups((backups: BackupItem[]) => {
+    await getBackups(async (backups: BackupItem[]) => {
       assert.strictEqual(backups.length, 2);
       assert.strictEqual(
-        JSON.stringify(backups[0].item.elements),
+        JSON.stringify(backups[1].item.elements),
+        originalElements
+      );
+    });
+  });
+
+  test("Creates a backup after save", async () => {
+    await openDocumentAndSelectText({
+      language: "javascript",
+      queryText: "query",
+      openInNewEditor: true,
+    });
+    sinon.stub(vscode.window, "showQuickPick").callsFake((folders) => {
+      return folders[0];
+    });
+    sinon.stub(vscode.window, "showInputBox").callsFake(() => {
+      return Promise.resolve("new snippet");
+    });
+    const originalElements =
+      cache.state.get<string>("snippet.snippetsStorageKey") || "[]";
+
+    await vscode.commands.executeCommand("snippet.saveSnippet");
+    sinon.restore();
+
+    await getBackups(async (backups: BackupItem[]) => {
+      await closeAllEditors();
+
+      assert.strictEqual(backups.length, 3);
+      assert.strictEqual(
+        JSON.stringify(backups[2].item.elements),
         originalElements
       );
     });
@@ -70,12 +96,12 @@ suite("snippet.restoreBackups", () => {
 });
 
 async function getBackups(
-  callback: (backups: BackupItem[]) => void
+  callback: (backups: BackupItem[]) => Promise<void>
 ): Promise<void> {
   const showQuickPickStub = sinon.stub(vscode.window, "showQuickPick");
 
-  showQuickPickStub.callsFake((backups: BackupItem[]) => {
-    callback(backups);
+  showQuickPickStub.callsFake(async (backups: BackupItem[]) => {
+    await callback(backups);
     return null;
   });
 

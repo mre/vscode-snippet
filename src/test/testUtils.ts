@@ -34,7 +34,7 @@ export async function openDocument({
   await config.update("openInNewEditor", openInNewEditor, configTarget);
 }
 
-export async function openDocumentAndFindSelectedText({
+export async function openDocumentAndSelectText({
   language = "javascript",
   queryText = Date.now().toString(),
   openInNewEditor,
@@ -51,6 +51,22 @@ export async function openDocumentAndFindSelectedText({
     0,
     queryText.length
   );
+}
+
+export async function openDocumentAndFindSelectedText({
+  language = "javascript",
+  queryText = Date.now().toString(),
+  openInNewEditor,
+}: {
+  language?: string;
+  queryText?: string;
+  openInNewEditor: boolean;
+}): Promise<void> {
+  await openDocumentAndSelectText({
+    language,
+    queryText,
+    openInNewEditor,
+  });
 
   await vscode.commands.executeCommand("snippet.findSelectedText");
 }
