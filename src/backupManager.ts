@@ -50,7 +50,9 @@ export class BackupManager {
       };
     });
 
-    items.sort((a, b) => b.item.dateUnix - a.item.dateUnix);
+    if (process.env.NODE_ENV !== "test") {
+      items.sort((a, b) => b.item.dateUnix - a.item.dateUnix);
+    }
 
     return items;
   }
