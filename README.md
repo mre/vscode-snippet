@@ -141,7 +141,7 @@ vscode-snippet creates backups of your snippets upon deleting, renaming, moving 
 To restore a backup:
 
 1. Open the Snippets section
-2. Click on the ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/assets/icons/history-light.svg) icon (alternatively, you can run the "Restore backups" command)
+2. Click on the ![History icon](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/history.png) icon (alternatively, you can run the "Restore backups" command)
 3. Select one of the backups from the list
 
 ![Demo of restoring backups](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/restore-backups.gif)
