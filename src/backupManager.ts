@@ -38,7 +38,9 @@ export class BackupManager {
         : undefined;
       const description = `${this.snippets.getSnippetCount(
         backup.elements
-      )} snippet${backup.elements.length === 1 ? "" : "s"}`;
+      )} snippet${
+        this.snippets.getSnippetCount(backup.elements) === 1 ? "" : "s"
+      }`;
 
       return {
         label: time,
