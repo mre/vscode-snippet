@@ -136,7 +136,7 @@ Saved snippets are displayed in IntelliSense
 
 ### Restoring with the built-in backup mechanism
 
-vscode-snippet creates backups of your snippets upon deleting, renaming, moving or saving snippets. These backups are stored **locally** on your machine.
+vscode-snippet creates backups of your snippets when you delete, rename, move or save snippets. These backups are stored **locally** on your computer.
 
 To restore a backup:
 

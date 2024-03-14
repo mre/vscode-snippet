@@ -107,6 +107,29 @@ suite("snippet.restoreBackups", () => {
     });
   });
 
+  test("Restores backup", async () => {
+    sinon.stub(vscode.window, "showInputBox").callsFake(() => {
+      return Promise.resolve(randomUUID());
+    });
+    sinon.stub(vscode.window, "showInformationMessage").callsFake(() => {
+      return Promise.resolve("Ok" as unknown as MessageItem);
+    });
+    const originalElementsJson = getElementsJson();
+    const snippet = getAnySnippet(originalElementsJson);
+
+    await vscode.commands.executeCommand("snippet.renameSnippet", {
+      id: snippet.data.id,
+    });
+
+    let backups: BackupItem[] = [];
+    await getBackups(async (b: BackupItem[]) => {
+      backups = b;
+    }, true);
+
+    assert.strictEqual(backups.length, 5);
+    assert.strictEqual(getElementsJson(), originalElementsJson);
+  });
+
   test("Saves up to 10 backups", async () => {
     sinon.stub(vscode.window, "showInputBox").callsFake(() => {
       return Promise.resolve(randomUUID());
@@ -127,13 +150,14 @@ suite("snippet.restoreBackups", () => {
 });
 
 async function getBackups(
-  callback: (backups: BackupItem[]) => Promise<void>
+  callback: (backups: BackupItem[]) => Promise<void>,
+  restoreLatest = false
 ): Promise<void> {
   const showQuickPickStub = sinon.stub(vscode.window, "showQuickPick");
 
   showQuickPickStub.callsFake(async (backups: BackupItem[]) => {
     await callback(backups);
-    return null;
+    return restoreLatest && backups[0] ? backups[0] : null;
   });
 
   await vscode.commands.executeCommand("snippet.restoreBackups");
