@@ -27,6 +27,7 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
   - ${index} - the index of the snippet (e.g. 2 for the third answer)
 - `insertWithDoubleClick`: insert snippet with double click.
 - `showCopySuccessNotification`: Whether to show a notification after the snippet is copied to the clipboard.
+- `saveBackups`: Whether to create backups of the snippets.
 
 ## Installation
 

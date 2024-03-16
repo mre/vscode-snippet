@@ -1,5 +1,6 @@
 import { randomUUID } from "crypto";
 import * as vscode from "vscode";
+import { getConfig } from "./config";
 import { formatUnixTime } from "./date";
 import SnippetsStorage, { TreeElement } from "./snippetsStorage";
 
@@ -83,6 +84,10 @@ export class BackupManager {
   }
 
   private async makeBackup(elements: TreeElement[], operation?: string) {
+    if (!getConfig("saveBackups")) {
+      return;
+    }
+
     const backup: Backup = {
       id: randomUUID(),
       dateUnix: Date.now(),

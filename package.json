@@ -171,6 +171,11 @@
           "type": "boolean",
           "default": true,
           "description": "Whether to show a notification after the snippet is copied to the clipboard."
+        },
+        "snippet.saveBackups": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to create backups of the snippets."
         }
       }
     },
