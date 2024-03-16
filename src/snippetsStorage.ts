@@ -19,9 +19,21 @@ export interface FolderListItem extends vscode.QuickPickItem {
   label: string;
 }
 
+export enum StorageOperation {
+  Save = "save snippet",
+  LoadDefault = "load default snippets",
+  Delete = "delete",
+  Rename = "rename",
+  CreateFolder = "create folder",
+  Move = "move",
+}
+
 export default class SnippetsStorage {
   public onSave?: () => void;
-  public onBeforeSave?: (elements: TreeElement[], operation?: string) => void;
+  public onBeforeSave?: (
+    elements: TreeElement[],
+    operation?: StorageOperation
+  ) => void;
   public onSnippetSave?: (snippet: TreeElement) => void;
   private readonly elements = new Map<string, TreeElement>();
   private rootId = "";
@@ -108,12 +120,12 @@ export default class SnippetsStorage {
       1
     );
 
-    await this.save("delete");
+    await this.save(StorageOperation.Delete);
   }
 
   async renameElement(id: string, newName: string): Promise<void> {
     this.getElement(id).data.label = newName;
-    await this.save("rename");
+    await this.save(StorageOperation.Rename);
   }
 
   async createFolder(name: string, relativeToId?: string): Promise<void> {
@@ -132,7 +144,7 @@ export default class SnippetsStorage {
     this.elements.set(folder.id, { childIds: [], data: folder, parentId });
     this.getElement(parentId).childIds?.push(folder.id);
 
-    await this.save("create folder");
+    await this.save(StorageOperation.CreateFolder);
   }
 
   async moveElement(sourceId: string, targetId?: string): Promise<void> {
@@ -169,7 +181,7 @@ export default class SnippetsStorage {
     const newParentElement = this.getElement(newParentId);
     newParentElement.childIds?.push(sourceId);
 
-    await this.save("move");
+    await this.save(StorageOperation.Move);
   }
 
   async saveSnippet(
@@ -189,7 +201,7 @@ export default class SnippetsStorage {
     this.elements.set(data.id, element);
     this.getElement(parentId).childIds?.push(data.id);
 
-    await this.save("save snippet");
+    await this.save(StorageOperation.Save);
     this.onSnippetSave?.(element);
   }
 
@@ -197,7 +209,7 @@ export default class SnippetsStorage {
     return this.getElement(id).data.content?.toString() || "";
   }
 
-  async save(operation?: string): Promise<void> {
+  async save(operation?: StorageOperation): Promise<void> {
     const originalElements = JSON.parse(
       this.context.globalState.get(this.storageKey) || "[]"
     ) as TreeElement[];
@@ -265,7 +277,7 @@ export default class SnippetsStorage {
       parentId: exampleFolder.id,
     });
 
-    await this.save("load default snippets");
+    await this.save(StorageOperation.LoadDefault);
   }
 
   private serialize(): string {

@@ -2,7 +2,10 @@ import { randomUUID } from "crypto";
 import * as vscode from "vscode";
 import { getConfig } from "./config";
 import { formatUnixTime } from "./date";
-import SnippetsStorage, { TreeElement } from "./snippetsStorage";
+import SnippetsStorage, {
+  StorageOperation,
+  TreeElement,
+} from "./snippetsStorage";
 
 export interface Backup {
   id: string;
@@ -83,7 +86,10 @@ export class BackupManager {
     ) as Backup[];
   }
 
-  private async makeBackup(elements: TreeElement[], operation?: string) {
+  private async makeBackup(
+    elements: TreeElement[],
+    operation?: StorageOperation
+  ) {
     if (!getConfig("saveBackups")) {
       return;
     }
