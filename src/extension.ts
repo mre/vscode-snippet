@@ -109,7 +109,9 @@ export function activate(ctx: vscode.ExtensionContext) {
       endpoints.showBackups(backupManager)
     )
   );
+
   if (process.env.NODE_ENV === "test") {
+    // Expose the "moveElement" method for test purposes
     ctx.subscriptions.push(
       vscode.commands.registerCommand(
         "snippet.test_moveElement",
