@@ -59,6 +59,7 @@ export class BackupManager {
     const backup = this.backups.find((backup) => backup.id === id);
 
     if (!backup) {
+      console.error(`Backup with id ${id} not found.`);
       return;
     }
 
