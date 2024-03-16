@@ -27,6 +27,7 @@ A Visual Studio Code extension for [cht.sh](https://cht.sh/).
   - ${index} - the index of the snippet (e.g. 2 for the third answer)
 - `insertWithDoubleClick`: insert snippet with double click.
 - `showCopySuccessNotification`: Whether to show a notification after the snippet is copied to the clipboard.
+- `saveBackups`: Whether to create backups of the snippets.
 
 ## Installation
 
@@ -131,6 +132,41 @@ Saved snippets are displayed in IntelliSense
 ### Searching for saved snippets
 
 ![Preview](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/search.gif)
+
+## Restoring snippets from backups
+
+### Restoring with the built-in backup mechanism
+
+vscode-snippet creates backups of your snippets when you delete, rename, move or save snippets. These backups are stored **locally** on your computer.
+
+To restore a backup:
+
+1. Open the Snippets section
+2. Click on the ![History icon](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/history.png) icon (alternatively, you can run the "Restore backups" command)
+3. Select one of the backups from the list
+
+![Demo of restoring backups](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/restore-backups.gif)
+
+### Restoring with the VSCode settings sync
+
+If you have [VSCode settings sync](https://code.visualstudio.com/docs/editor/settings-sync) enabled, you can restore snippets by using VSCode's built-in backup mechanisms: [https://code.visualstudio.com/docs/editor/settings-sync#\_restoring-data](https://code.visualstudio.com/docs/editor/settings-sync#_restoring-data)
+
+## Exporting snippets
+
+VSCode stores snippets in the `state.vscdb` file in a `JSON` format.
+
+To export the snippets:
+
+1. Find the `state.vscdb` file
+   - On Ubuntu Linux: `~/.config/Code/User/globalStorage/state.vscdb`
+   - On Windows: `AppData\Roaming\Code\User\globalStorage\state.vscdb`
+   - On macOS: `~/Library/Application Support/Code/User/globalStorage/state.vscdb`
+2. Inspect the content of this file using some tool that can open SQLite files, for example: [https://inloop.github.io/sqlite-viewer](https://inloop.github.io/sqlite-viewer)
+   1. On this website, upload the `state.vscdb` file and run the following command:
+   ```sql
+   SELECT * FROM 'ItemTable' WHERE key like 'vscode-snippet.snippet'
+   ```
+   ![SQLite Viewer](https://raw.githubusercontent.com/mre/vscode-snippet/master/contrib/snippets-storage/vscdb.png) 2. Then click "Execute". You should get a single row with the key `vscode-snippet.snippet` and a `JSON` value. This `JSON` contains all of your snippets.
 
 ## Contributing
 

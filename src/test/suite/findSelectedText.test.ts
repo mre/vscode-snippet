@@ -1,6 +1,6 @@
 import * as assert from "assert";
-import * as vscode from "vscode";
 import { after, before } from "mocha";
+import * as vscode from "vscode";
 import {
   closeAllEditors,
   getInitialDocument,

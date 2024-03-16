@@ -1,12 +1,14 @@
 import * as vscode from "vscode";
+import { BackupManager } from "./backupManager";
 import * as clipboard from "./clipboard";
-import { pickLanguage, getLanguage, getConfig } from "./config";
-import { query } from "./query";
-import { encodeRequest } from "./provider";
-import snippet from "./snippet";
-import { SnippetsTreeProvider, SnippetsTreeItem } from "./snippetsTreeProvider";
-import SnippetsStorage from "./snippetsStorage";
+import { getConfig, getLanguage, pickLanguage } from "./config";
+import { formatUnixTime } from "./date";
 import languages from "./languages";
+import { encodeRequest } from "./provider";
+import { query } from "./query";
+import snippet from "./snippet";
+import SnippetsStorage from "./snippetsStorage";
+import { SnippetsTreeItem, SnippetsTreeProvider } from "./snippetsTreeProvider";
 
 export interface Request {
   language: string;
@@ -381,5 +383,32 @@ export function createFolder(treeProvider: SnippetsTreeProvider) {
     }
 
     await treeProvider.storage.createFolder(folderName, item?.id);
+  };
+}
+
+export function showBackups(backupManager: BackupManager) {
+  return async () => {
+    const backups = backupManager.getBackupItems();
+    const selectedBackup = await vscode.window.showQuickPick(backups, {
+      placeHolder:
+        "Select a backup to restore. You will be able to undo this operation.",
+      title: "Select a backup",
+    });
+
+    if (!selectedBackup) {
+      return;
+    }
+
+    await backupManager.restoreBackup(selectedBackup.item.id);
+    await vscode.commands.executeCommand("snippetsView.focus");
+    const answer = await vscode.window.showInformationMessage(
+      `Restored backup from ${formatUnixTime(selectedBackup.item.dateUnix)}`,
+      "Ok",
+      "Undo"
+    );
+
+    if (answer === "Undo") {
+      await backupManager.undoLastRestore();
+    }
   };
 }

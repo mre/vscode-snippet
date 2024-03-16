@@ -19,8 +19,21 @@ export interface FolderListItem extends vscode.QuickPickItem {
   label: string;
 }
 
+export enum StorageOperation {
+  Save = "save snippet",
+  LoadDefault = "load default snippets",
+  Delete = "delete",
+  Rename = "rename",
+  CreateFolder = "create folder",
+  Move = "move",
+}
+
 export default class SnippetsStorage {
   public onSave?: () => void;
+  public onBeforeSave?: (
+    elements: TreeElement[],
+    operation?: StorageOperation
+  ) => void;
   public onSnippetSave?: (snippet: TreeElement) => void;
   private readonly elements = new Map<string, TreeElement>();
   private rootId = "";
@@ -34,6 +47,10 @@ export default class SnippetsStorage {
     if (!this.elements.size) {
       this.loadDefaultElements();
     }
+  }
+
+  getElements(): TreeElement[] {
+    return [...this.elements.values()];
   }
 
   getFoldersList(): FolderListItem[] {
@@ -58,7 +75,7 @@ export default class SnippetsStorage {
     for (const childId of parent.childIds) {
       const child = this.getElement(childId);
 
-      if (this.isFolder(child)) {
+      if (SnippetsStorage.isFolder(child)) {
         const joinedName = `${
           current.label === "/" ? "/" : `${current.label}/`
         }${child.data.label}`;
@@ -81,7 +98,7 @@ export default class SnippetsStorage {
 
   async deleteElement(id: string): Promise<void> {
     const toDelete = this.getElement(id);
-    const messageForUser = this.isFolder(toDelete)
+    const messageForUser = SnippetsStorage.isFolder(toDelete)
       ? "Are you sure you want to delete this folder? Everything inside it will be deleted too."
       : "Are you sure you want to delete this snippet?";
 
@@ -103,18 +120,18 @@ export default class SnippetsStorage {
       1
     );
 
-    await this.save();
+    await this.save(StorageOperation.Delete);
   }
 
   async renameElement(id: string, newName: string): Promise<void> {
     this.getElement(id).data.label = newName;
-    await this.save();
+    await this.save(StorageOperation.Rename);
   }
 
   async createFolder(name: string, relativeToId?: string): Promise<void> {
     const relativeToElement = this.getElement(relativeToId);
 
-    const parentId = this.isFolder(relativeToElement)
+    const parentId = SnippetsStorage.isFolder(relativeToElement)
       ? relativeToElement.data.id
       : relativeToElement.parentId;
 
@@ -127,7 +144,7 @@ export default class SnippetsStorage {
     this.elements.set(folder.id, { childIds: [], data: folder, parentId });
     this.getElement(parentId).childIds?.push(folder.id);
 
-    await this.save();
+    await this.save(StorageOperation.CreateFolder);
   }
 
   async moveElement(sourceId: string, targetId?: string): Promise<void> {
@@ -138,7 +155,7 @@ export default class SnippetsStorage {
     const sourceElement = this.getElement(sourceId);
     const targetElement = this.getElement(targetId);
 
-    const newParentId = this.isFolder(targetElement)
+    const newParentId = SnippetsStorage.isFolder(targetElement)
       ? targetElement.data.id
       : targetElement.parentId;
 
@@ -164,7 +181,7 @@ export default class SnippetsStorage {
     const newParentElement = this.getElement(newParentId);
     newParentElement.childIds?.push(sourceId);
 
-    await this.save();
+    await this.save(StorageOperation.Move);
   }
 
   async saveSnippet(
@@ -184,7 +201,7 @@ export default class SnippetsStorage {
     this.elements.set(data.id, element);
     this.getElement(parentId).childIds?.push(data.id);
 
-    await this.save();
+    await this.save(StorageOperation.Save);
     this.onSnippetSave?.(element);
   }
 
@@ -192,21 +209,35 @@ export default class SnippetsStorage {
     return this.getElement(id).data.content?.toString() || "";
   }
 
-  async save(): Promise<void> {
+  async save(operation?: StorageOperation): Promise<void> {
+    const originalElements = JSON.parse(
+      this.context.globalState.get(this.storageKey) || "[]"
+    ) as TreeElement[];
+    this.onBeforeSave?.(originalElements, operation);
     await this.context.globalState.update(this.storageKey, this.serialize());
     this.onSave?.();
   }
 
-  load(): void {
-    this.deserialize(this.context.globalState.get(this.storageKey) || "[]");
-  }
-
   *getSnippets(): IterableIterator<TreeElement> {
     for (const element of this.elements.values()) {
-      if (!this.isFolder(element)) {
+      if (!SnippetsStorage.isFolder(element)) {
         yield element;
       }
     }
+  }
+
+  getSnippetCount(elements: TreeElement[]) {
+    return elements.filter((x) => !SnippetsStorage.isFolder(x)).length;
+  }
+
+  async replaceElements(newElements: TreeElement[]): Promise<void> {
+    this.deserialize(JSON.stringify(newElements));
+    await this.context.globalState.update(this.storageKey, this.serialize());
+    this.onSave?.();
+  }
+
+  private load(): void {
+    this.deserialize(this.context.globalState.get(this.storageKey) || "[]");
   }
 
   private async loadDefaultElements(): Promise<void> {
@@ -246,7 +277,7 @@ export default class SnippetsStorage {
       parentId: exampleFolder.id,
     });
 
-    await this.save();
+    await this.save(StorageOperation.LoadDefault);
   }
 
   private serialize(): string {
@@ -266,7 +297,7 @@ export default class SnippetsStorage {
     });
   }
 
-  private isFolder(element: TreeElement): boolean {
+  static isFolder(element: TreeElement): boolean {
     return element.childIds != null;
   }
 }

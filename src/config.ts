@@ -17,8 +17,6 @@ export async function pickLanguage() {
   const languages = await vscode.languages.getLanguages();
   const disposables: Disposable[] = [];
 
-  // return await vscode.window.showQuickPick(languages);
-
   try {
     return await new Promise<string | undefined>((resolve) => {
       const input = vscode.window.createQuickPick<LanguageItem>();
