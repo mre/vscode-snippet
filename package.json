@@ -301,7 +301,7 @@
     "rimraf": "^5.0.5",
     "rollup-plugin-node-externals": "^7.1.1",
     "sinon": "^17.0.1",
-    "rollup": "^4.13.0",
+    "rollup": "^4.13.1",
     "typescript": "^5.4.3"
   }
 }
