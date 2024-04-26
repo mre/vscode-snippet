@@ -299,7 +299,7 @@
     "glob": "^10.3.12",
     "mocha": "^10.4.0",
     "rimraf": "^5.0.5",
-    "rollup-plugin-node-externals": "^7.1.1",
+    "rollup-plugin-node-externals": "^7.1.2",
     "sinon": "^17.0.1",
     "rollup": "^4.16.4",
     "typescript": "^5.4.5"
