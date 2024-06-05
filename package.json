@@ -276,7 +276,7 @@
     "pretest-compile": "rimraf out"
   },
   "dependencies": {
-    "@vscode/vsce": "^2.26.1",
+    "@vscode/vsce": "^2.27.0",
     "axios": "^1.7.2",
     "event-stream": "4.0.1",
     "http-proxy-agent": "^7.0.2"
