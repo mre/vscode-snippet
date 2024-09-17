@@ -295,7 +295,7 @@
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.18.0",
     "@vscode/test-electron": "^2.4.1",
-    "eslint": "^8.57.0",
+    "eslint": "^8.57.1",
     "glob": "^11.0.0",
     "mocha": "^10.7.0",
     "rimraf": "^6.0.1",
